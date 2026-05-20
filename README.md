@@ -19,10 +19,28 @@ lecture_notes/
 │       ├── CHEATSHEETS/     TL;DR + Quick Ref + Mind Map
 │       └── ROADMAP.md       의존성·추천 학습 순서
 │
-├── _deploy/                 GitHub Pages 배포본 (별도 git repo)
+├── tools/                   자동 생성 파이프라인 (Phase 1: 설계 + 골격)
+│   ├── ingest.py            CLI: PDF/URL/YouTube -> STUDY/QUIZ/CHEATSHEETS
+│   ├── source_bundle.py     공통 중간 표현 (dataclass)
+│   ├── adapters/            입력 어댑터 (pdf/url/youtube)
+│   ├── generators/          LLM 생성기 (study/quiz/cheatsheet)
+│   ├── prompts/             LLM 시스템 프롬프트 (정형 규약)
+│   ├── requirements.txt
+│   └── README.md            상세 설계·사용법
+│
+├── _deploy/                 GitHub Pages 배포본 (별도 git repo, Archive 됨)
 └── _private/                비공개 원본·도구·credential
                              (.gitignore / .vercelignore 로 격리)
 ```
+
+### 자동 생성 (Phase 2 가동 후)
+
+```bash
+# 새 자료를 자동으로 STUDY/QUIZ/CHEATSHEETS 마크다운으로 변환
+python tools/ingest.py file.pdf --course cs-os --stem chapter-01 --label "01강 개요"
+```
+
+상세는 `tools/README.md`.
 
 ## 새 코스 추가 절차
 

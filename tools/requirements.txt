@@ -1,0 +1,26 @@
+# tools/ingest.py 의존성. Python 3.10+ 필요 (dataclass 의 X | None 문법).
+#
+# 설치:
+#   python3 -m venv .venv && source .venv/bin/activate
+#   pip install -r tools/requirements.txt
+
+# LLM (Anthropic Claude)
+anthropic>=0.40.0
+
+# 환경변수 로드 (.env)
+python-dotenv>=1.0.0
+
+# PDF 어댑터
+pypdfium2>=4.30.0
+# pdfplumber>=0.11.0           # 대안: 더 정확한 텍스트 추출, 느림
+
+# URL 어댑터
+requests>=2.31.0
+trafilatura>=1.12.0             # 본문 추출 + 메타데이터
+
+# YouTube 어댑터
+youtube-transcript-api>=0.6.2
+# yt-dlp>=2024.10.0             # 메타·챕터 추출 (선택)
+
+# 텍스트 처리 (키워드 추출 등, 선택)
+# scikit-learn>=1.5.0           # TF-IDF (Phase 3+)

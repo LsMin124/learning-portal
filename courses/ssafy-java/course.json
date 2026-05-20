@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "id": "ssafy-java",
+  "title": "SSAFY 15기 자바비전공",
+  "subtitle": "Web Backend + DB + Spring + Vue",
+  "source": "SSAFY 15기",
+  "language": "ko",
+  "tags": ["java", "spring", "mybatis", "vue", "bootcamp"],
+  "totalCount": 28,
+  "sections": [
+    {
+      "title": "Web Backend",
+      "items": [
+        {"stem": "Web(Back)_01_0414_Servlet",                  "pages": 32, "label": "04/14 Servlet"},
+        {"stem": "Web(Back)_02_0415_JSP",                      "pages": 25, "label": "04/15 JSP"},
+        {"stem": "Web(Back)_02_0415_오후_JSP실습",              "pages": 6,  "label": "04/15 JSP 실습"},
+        {"stem": "Web(Back)_03_0416_Cookie_Session",           "pages": 30, "label": "04/16 Cookie/Session"},
+        {"stem": "Web(Back)_04_0420_EL_JSTL",                  "pages": 16, "label": "04/20 EL/JSTL"},
+        {"stem": "Web(Back)_05_0421_Filter",                   "pages": 21, "label": "04/21 Filter"},
+        {"stem": "Web(Back)_05_0421_오후_Back종합실습",          "pages": 6,  "label": "04/21 Back 종합실습"}
+      ]
+    },
+    {
+      "title": "DB",
+      "items": [
+        {"stem": "DB_01_0422_SELECT_기본",                     "pages": 44, "label": "04/22 SELECT 기본"},
+        {"stem": "DB_02_0423_SELECT_응용",                     "pages": 31, "label": "04/23 SELECT 응용"},
+        {"stem": "DB_03_0427_DDL_DML",                         "pages": 29, "label": "04/27 DDL/DML"},
+        {"stem": "DB_04_0428_Join_SubQuery",                   "pages": 43, "label": "04/28 JOIN/서브쿼리"},
+        {"stem": "DB_05_0429_JDBC",                            "pages": 16, "label": "04/29 JDBC"},
+        {"stem": "DB_06_0430_DB관통PJT",                       "pages": 43, "label": "04/30 DB 관통PJT"}
+      ]
+    },
+    {
+      "title": "Framework Back",
+      "items": [
+        {"stem": "Framework(Back)_01_0504_Framework",                  "pages": 44, "label": "05/04 Framework"},
+        {"stem": "Framework(Back)_02_0504_DI",                         "pages": 37, "label": "05/04 DI"},
+        {"stem": "Framework(Back)_03_0506_SpringBoot",                 "pages": 51, "label": "05/06 SpringBoot"},
+        {"stem": "Framework(Back)_04_0506_AOP",                        "pages": 27, "label": "05/06 AOP"},
+        {"stem": "Framework(Back)_05_0507_MVC1",                       "pages": 42, "label": "05/07 MVC 1"},
+        {"stem": "Framework(Back)_06_0511_MVC2",                       "pages": 32, "label": "05/11 MVC 2"},
+        {"stem": "Framework(Back)_07_0512_Interceptor",                "pages": 33, "label": "05/12 Interceptor"},
+        {"stem": "Framework(Back)_08_0513_MyBatis",                    "pages": 29, "label": "05/13 MyBatis"},
+        {"stem": "Framework(Back)_09_0514_MyBatis_동적쿼리",            "pages": 25, "label": "05/14 MyBatis 동적쿼리"},
+        {"stem": "Framework(Back)_11_0518_Spring 종합실습",             "pages": 41, "label": "05/18 Spring 종합실습"},
+        {"stem": "Framework(Back)_12_0519_REST_API",                   "pages": 0,  "label": "05/19 REST API"},
+        {"stem": "Framework(Back)_13_0520_Spring Batch",               "pages": 47, "label": "05/20 Spring Batch"},
+        {"stem": "Framework(Back)_14_0522_Spring CORS Pagnation PJT",  "pages": 36, "label": "05/22 Spring CORS/Pagination"}
+      ]
+    },
+    {
+      "title": "Framework Front",
+      "items": [
+        {"stem": "Framework(Front)_01_0521_Introduction_of_Vue",       "pages": 41, "label": "05/21 Vue 입문"}
+      ]
+    },
+    {
+      "title": "SW 문제해결",
+      "items": [
+        {"stem": "SW문제해결응용_22_0417_패턴매칭_알고리즘PJT",          "pages": 68, "label": "04/17 패턴매칭 알고리즘 PJT"}
+      ]
+    }
+  ]
+}

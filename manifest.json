@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "title": "학습 포털",
+  "description": "다양한 학습자료를 STUDY/QUIZ/CHEATSHEETS 3종으로 정형화한 통합 뷰어",
+  "categories": [
+    {
+      "id": "bootcamp",
+      "title": "강의·부트캠프",
+      "courses": [
+        {
+          "id": "ssafy-java",
+          "title": "SSAFY 15기 자바비전공",
+          "subtitle": "Web Backend + DB + Spring + Vue",
+          "path": "courses/ssafy-java",
+          "tags": ["java", "spring", "mybatis", "vue", "bootcamp"]
+        }
+      ]
+    },
+    {
+      "id": "cs-major",
+      "title": "CS 전공",
+      "courses": []
+    },
+    {
+      "id": "tutorial",
+      "title": "튜토리얼·온라인 코스",
+      "courses": []
+    },
+    {
+      "id": "other-eng",
+      "title": "기타 공학·이학",
+      "courses": []
+    },
+    {
+      "id": "personal",
+      "title": "프로젝트·블로그",
+      "courses": []
+    }
+  ]
+}

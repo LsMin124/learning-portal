@@ -1,0 +1,21 @@
+# Vercel 배포 시 제외 (절대 업로드 X)
+
+# 비공개 원본·도구·credential
+_private/
+
+# 다른 배포본 (혼선 방지)
+_deploy/
+
+# 작업 메타
+.claude/
+
+# OS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# Node 임시 (현재 정적이지만 미래 대비)
+node_modules/
+.vite/

@@ -1,0 +1,39 @@
+# 비공개 원본·도구·credential
+_private/
+
+# 배포본 (별도 git repo)
+_deploy/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Node (미래 SSG 도입 시)
+node_modules/
+.vite/
+dist/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 환경변수 (혹시 .env 도입 시)
+.env
+.env.local
+.env.*.local
+
+# 로그
+*.log
+
+# 임시
+tmp/
+*.tmp

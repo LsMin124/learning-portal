@@ -1,12 +1,14 @@
 # 학습 포털 — 멀티 코스 워크스페이스
 
-다양한 학습자료 (강의·전공서·튜토리얼·블로그) 를 **STUDY/QUIZ/CHEATSHEETS 3 종 + ROADMAP** 으로 정형화하여 통합 뷰어 (`portal.html`) 로 학습.
+다양한 학습자료 (강의·전공서·튜토리얼·블로그) 를 **STUDY/QUIZ/CHEATSHEETS 3 종 + ROADMAP** 으로 정형화하여 통합 뷰어 (`index.html`) 로 학습.
+
+**Live**: https://learning-portal-psi.vercel.app/
 
 ## 디렉토리 구조
 
 ```
 lecture_notes/
-├── portal.html              포털 (단일 페이지, manifest 동적 로드)
+├── index.html               포털 (단일 페이지, manifest 동적 로드)
 ├── manifest.json            전체 코스 카탈로그 (5 카테고리)
 │
 ├── courses/                 공개 학습 자료 (2차 가공)
@@ -95,7 +97,7 @@ lecture_notes/
 
 ```bash
 python3 -m http.server 8765 --bind 127.0.0.1
-# http://127.0.0.1:8765/portal.html
+# http://127.0.0.1:8765/  (또는 /index.html)
 ```
 
 ## 배포

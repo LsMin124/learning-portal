@@ -487,8 +487,11 @@ async function estimateMinutes(path){
     const txt = await res.text();
     const size = new Blob([txt]).size;
     if (size === 0){ estCache.set(path, ''); return ''; }
-    const minutes = Math.max(1, Math.round(size / 1024));
-    const result = `~ ${minutes}분`;
+    const rawMin = (size / 1024) * 4;
+    const minutes = Math.max(5, Math.round(rawMin / 5) * 5);
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    const result = '~ ' + (h ? `${h}h${m ? ` ${m}m` : ''}` : `${m}m`);
     estCache.set(path, result);
     return result;
   } catch { return ''; }

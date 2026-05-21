@@ -476,6 +476,23 @@ async function fetchJson(path){
   } catch { return null; }
 }
 
+const stripDate = s => (s || '').replace(/^\d{2}\/\d{2}\s+/, '');
+
+const estCache = new Map();
+async function estimateMinutes(path){
+  if (estCache.has(path)) return estCache.get(path);
+  try{
+    const res = await fetch(path, { method: 'HEAD' });
+    if (!res.ok){ estCache.set(path, ''); return ''; }
+    const size = parseInt(res.headers.get('Content-Length') || '0', 10);
+    if (size === 0){ estCache.set(path, ''); return ''; }
+    const minutes = Math.max(1, Math.round(size / 1024));
+    const text = `~ ${minutes}분`;
+    estCache.set(path, text);
+    return text;
+  } catch { return ''; }
+}
+
 // ───────── 코스 선택기 ─────────
 function renderCoursePicker(){
   pickerEl.innerHTML = '';
@@ -547,9 +564,11 @@ function renderSidebar(filter = ''){
       fileEl.className = 'file' + (done.has(it.stem) ? ' done' : '') + (state.current?.stem === it.stem ? ' active' : '');
       fileEl.innerHTML = `
         <div class="file-check" title="공부 완료 체크">${done.has(it.stem) ? '✓' : ''}</div>
-        <div class="file-title">${it.label}</div>
-        <div class="file-meta">${it.pages ? it.pages + 'p' : '–'}</div>
+        <div class="file-title">${stripDate(it.label)}</div>
+        <div class="file-meta"></div>
       `;
+      estimateMinutes(`${state.courseInfo.path}/STUDY/${encodeURIComponent(it.stem)}.md`)
+        .then(t => { const m = fileEl.querySelector('.file-meta'); if (m) m.textContent = t; });
       fileEl.querySelector('.file-check').addEventListener('click', (e) => {
         e.stopPropagation();
         const s = getDone(state.courseInfo.id);
@@ -639,7 +658,7 @@ async function renderMd(mode, subdir, label, emptyMsg){
   const path = `${state.courseInfo.path}/${subdir}/${encodeURIComponent(stem)}.md`;
   const header = document.createElement('div');
   header.className = 'doc-header';
-  header.innerHTML = `<div class="doc-title">${label} ${courseLabel}</div><div class="doc-sub">${path.replace('%20', ' ')}</div>`;
+  header.innerHTML = `<div class="doc-title">${label} ${stripDate(courseLabel)}</div>`;
   mainEl.appendChild(header);
 
   const view = document.createElement('div');

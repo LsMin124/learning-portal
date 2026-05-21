@@ -482,14 +482,15 @@ const estCache = new Map();
 async function estimateMinutes(path){
   if (estCache.has(path)) return estCache.get(path);
   try{
-    const res = await fetch(path, { method: 'HEAD' });
+    const res = await fetch(path);
     if (!res.ok){ estCache.set(path, ''); return ''; }
-    const size = parseInt(res.headers.get('Content-Length') || '0', 10);
+    const txt = await res.text();
+    const size = new Blob([txt]).size;
     if (size === 0){ estCache.set(path, ''); return ''; }
     const minutes = Math.max(1, Math.round(size / 1024));
-    const text = `~ ${minutes}분`;
-    estCache.set(path, text);
-    return text;
+    const result = `~ ${minutes}분`;
+    estCache.set(path, result);
+    return result;
   } catch { return ''; }
 }
 
@@ -564,7 +565,7 @@ function renderSidebar(filter = ''){
       fileEl.className = 'file' + (done.has(it.stem) ? ' done' : '') + (state.current?.stem === it.stem ? ' active' : '');
       fileEl.innerHTML = `
         <div class="file-check" title="공부 완료 체크">${done.has(it.stem) ? '✓' : ''}</div>
-        <div class="file-title">${stripDate(it.label)}</div>
+        <div class="file-title">${sec.items.indexOf(it) + 1}. ${stripDate(it.label)}</div>
         <div class="file-meta"></div>
       `;
       estimateMinutes(`${state.courseInfo.path}/STUDY/${encodeURIComponent(it.stem)}.md`)

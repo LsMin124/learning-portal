@@ -34,6 +34,12 @@ dist/
 # Claude Code 로컬 설정 (개인 권한·UI 상태)
 .claude/settings.local.json
 
+# 자동 처리 파이프라인 원본 자료 (저작권·용량 문제, .gitkeep 만 추적)
+tools/inbox/*
+!tools/inbox/.gitkeep
+tools/processed/*
+!tools/processed/.gitkeep
+
 # 로그
 *.log
 

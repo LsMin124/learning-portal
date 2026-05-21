@@ -42,6 +42,7 @@
 
 - **Q. 로봇과 자동화 기계의 차이는?** → **재프로그래밍 가능성**. 한 가지 task 만 반복하면 자동화 기계, 다양한 task 에 컨트롤러로 적응할 수 있으면 로봇.
 - **Q. Open chain 과 closed chain 중 어느 쪽 forward kinematics 가 더 어려운가?** → **Closed chain**. open 은 joint 순서대로 PoE 한 번이면 끝, closed 는 모든 leg 가 polynomial 시스템을 만족해야 하고 다중해.
+- **Q. Inverse kinematics 와 inverse dynamics 의 차이는?** → 전자는 *EE 목표 위치 → joint 각도* (6장, **기하**). 후자는 *목표 가속도 → joint 토크* (8장, **동역학**). 답의 종류가 위치 vs 힘으로 다름.
 - **Q. Holonomic 과 nonholonomic 의 차이를 한 줄로?** → **구속을 configuration 식으로 적을 수 있으면 holonomic, velocity 식으로만 적을 수 있으면 nonholonomic** (자동차 평행주차가 대표 사례).
 - **Q. Modern Robotics 책의 기술적 특징?** → **Exponential coordinate 통합 표현** — D-H 의 link-frame 부착 규칙 없이 base + EE frame 만으로 운동학·동역학을 일관되게 다룸.
 
@@ -90,22 +91,22 @@
 | Joint/EE 힘·토크 | F/T sensor |
 | 환경 | vision, RGB-D camera, laser range finder, acoustic |
 
-## 2.5 12 챕터 요약 인덱스
+## 2.5 12 챕터 요약 인덱스 (보강판)
 
 | Ch | 제목 | 핵심 문제 | 핵심 도구 |
 |--|--|--|--|
-| 2 | Configuration Space | 로봇 상태를 몇 개 숫자로? | Grübler, topology, task/workspace |
-| 3 | Rigid-Body Motions | 위치·자세 수학적 표현 | Rotation matrix, exp coord, twist, wrench, SE(3) |
-| 4 | Forward Kinematics | joint → EE 위치 | **PoE** 공식, D-H (Appendix) |
-| 5 | Velocity Kinematics & Statics | joint 속도 ↔ EE 속도/힘 | **Jacobian**, singularity, manipulability ellipsoid |
-| 6 | Inverse Kinematics | EE 목표 → joint | Analytic (PUMA), Newton-Raphson, pseudoinverse |
-| 7 | Closed Chains | passive joint 있는 폐루프 | 5-bar, Stewart-Gough, 다중해 분석 |
-| 8 | Dynamics | 힘·토크 ↔ 가속도 | Lagrangian, **Newton-Euler (recursive)** |
-| 9 | Trajectory Generation | 시간에 따른 joint 목표 | Point-to-point, via point, time-optimal scaling |
-| 10 | Motion Planning | 장애물 회피 경로 | Grid, **RRT/PRM**, potential fields |
-| 11 | Robot Control | feedback 으로 추종 | Motion/force/hybrid/**impedance**, computed torque |
-| 12 | Grasping & Manipulation | 접촉 모델링 | Form closure, force closure, pushing |
-| 13 | Wheeled Mobile Robots | 차량형 로봇 | **Holonomic vs nonholonomic**, odometry, mobile manipulation |
+| 2 | Configuration Space | 로봇 상태를 몇 개 숫자로? | Grübler, topology, *task ↔ workspace* |
+| 3 | Rigid-Body Motions | 위치·자세 수학적 표현 | Rotation matrix, exp coord, **twist**, **wrench**, SE(3) |
+| 4 | Forward Kinematics | joint → EE 위치 | **PoE** (space/body 두 형식), D-H (Appendix C) |
+| 5 | Velocity Kinematics & Statics | joint 속도 ↔ EE 속도/힘 | **Jacobian**, singularity, manipulability ellipsoid, τ=JᵀF |
+| 6 | Inverse Kinematics | EE 목표 → joint | Analytic (PUMA/Stanford), Newton-Raphson, **pseudoinverse** (redundancy) |
+| 7 | Closed Chains | passive joint 있는 폐루프 | 5-bar, Stewart-Gough, *differential* kinematics, 다중해 |
+| 8 | Dynamics | **forward** (τ→a) vs **inverse** (a→τ) | Lagrangian (E-L), **Newton-Euler** (outward + backward pass, recursive) |
+| 9 | Trajectory Generation | 시간에 따른 joint 목표 | path + time scaling, point-to-point, via point, time-optimal |
+| 10 | Motion Planning | 장애물 회피 경로. *Path ⊂ Motion* | Grid, **RRT/PRM**, potential fields, smoothing |
+| 11 | Robot Control | desired trajectory 추종 | Motion (pick&place) / Force (grinding) / **Hybrid** (chalkboard) / **Impedance** (haptic) / Computed torque |
+| 12 | Grasping & Manipulation | 접촉 모델링 | Friction cone, **Form closure** (geometry) vs **Force closure** (friction), pushing |
+| 13 | Wheeled Mobile Robots | 차량형 로봇 | omni (holonomic) vs car-like (**nonholonomic**), odometry, *통합 Jacobian for mobile manipulation* |
 
 ## 2.6 자주 빠지는 함정
 
@@ -113,10 +114,13 @@
 |--|--|
 | Config space dim = task space dim 항상 같음 | redundancy (7-DoF arm) 시 다름 |
 | Forward 는 항상 쉽고 inverse 는 항상 어려움 | closed chain 에선 자주 반대 |
+| Inverse dynamics 와 inverse kinematics 를 혼동 | dynamics = *힘·토크 ↔ 가속도* (8장). kinematics = *위치 ↔ 각도* (6장). 답의 종류가 다름. |
+| Path planning = Motion planning 동일 | **Path ⊂ Motion**. Path 는 기하만, Motion 은 동역학·시간·액추에이터 한계 포함. |
 | Jacobian 정의가 한 가지 | EE velocity 표현 (spatial/body/hybrid twist) 마다 다름 |
 | Backlash = slippage | backlash=gear 약점, slippage=belt/cable 약점 (별개) |
 | 구속 있으면 holonomic | configuration 식으로 적을 수 있어야 holonomic |
 | Closed chain 모든 joint 가 actuated | 보통 일부만, 나머지는 passive |
+| 같은 방향에서 위치·힘 동시 독립 제어 가능 | 상호 배타. 위치 강제 → 힘은 환경 결정. *hybrid motion-force* 가 별도 존재하는 이유. |
 
 ## 2.7 약어 표
 
@@ -133,6 +137,7 @@
 | RRT | Rapidly-exploring Random Tree |
 | PRM | Probabilistic Roadmap |
 | SO(3) / SE(3) | 3D 회전군 / 3D 강체운동군 |
+| E-L | Euler-Lagrange |
 
 ---
 
@@ -153,21 +158,21 @@ Modern Robotics
 │   ├── Ch 2: Configuration Space
 │   │   ├── DoF
 │   │   ├── Grübler's formula
-│   │   ├── Topology / Representation
+│   │   ├── Topology / Representation (implicit 채택)
 │   │   └── Task space / Workspace
 │   │
 │   └── Ch 3: Rigid-Body Motions
 │       ├── Rotation matrix R ∈ SO(3)
 │       ├── Exponential coordinates
-│       ├── Twist (6D 속도)
-│       ├── Wrench (6D 힘+모멘트)
+│       ├── Twist (6D 속도, spatial velocity)
+│       ├── Wrench (6D 힘+모멘트, spatial force)
 │       └── Homogeneous transform T ∈ SE(3)
 │
 ├── [Kinematics]
 │   ├── Ch 4: Forward Kinematics (Open Chain)
 │   │   ├── PoE (Space frame)
 │   │   ├── PoE (Body frame)
-│   │   └── D-H (Appendix C)
+│   │   └── D-H (Appendix C) - 변환식 포함
 │   │
 │   ├── Ch 5: Velocity Kinematics & Statics
 │   │   ├── Jacobian (Space / Body)
@@ -178,51 +183,59 @@ Modern Robotics
 │   ├── Ch 6: Inverse Kinematics (Open Chain)
 │   │   ├── Analytic (6R PUMA, Stanford)
 │   │   ├── Numerical (Newton-Raphson)
-│   │   └── Redundancy + pseudoinverse
+│   │   └── Redundancy + pseudoinverse + null-space (secondary task)
 │   │
 │   └── Ch 7: Closed Chain Kinematics
 │       ├── 5-bar, Stewart-Gough
 │       ├── 일반 closed chain
+│       ├── Differential kinematics (속도 매핑)
 │       └── Singularity (actuated + passive 결합)
 │
 ├── [Dynamics]
 │   └── Ch 8: Dynamics of Open Chains
-│       ├── Lagrangian
-│       ├── Newton-Euler (recursive)
-│       ├── Forward / Inverse / Task-space
-│       └── Actuator + gearing + friction
+│       ├── Forward dynamics  (τ → a)  : 시뮬레이션
+│       ├── Inverse dynamics  (a → τ)  : 제어·trajectory
+│       ├── Lagrangian (Euler-Lagrange)
+│       ├── Newton-Euler — outward (proximal→distal) + backward (distal→base)
+│       ├── Task-space dynamics
+│       ├── Constrained dynamics (closed chain)
+│       └── Actuator + gearing + friction (8.9)
 │
 ├── [Motion]
 │   ├── Ch 9: Trajectory Generation
-│   │   ├── Point-to-point
+│   │   ├── trajectory = path + time scaling
+│   │   ├── Point-to-point (joint / task space)
 │   │   ├── Via point (polynomial)
-│   │   └── Time-optimal scaling
+│   │   └── Time-optimal scaling (8장 dynamics 와 결합)
 │   │
-│   └── Ch 10: Motion Planning
-│       ├── Grid methods
+│   └── Ch 10: Motion Planning   (Path ⊂ Motion)
+│       ├── Grid methods (A*, multi-resolution)
 │       ├── Sampling (RRT, PRM)
-│       └── Potential fields
+│       ├── Potential fields (local minima 주의)
+│       ├── Nonlinear optimization
+│       └── Path smoothing
 │
 ├── [Control]
 │   └── Ch 11: Robot Control
-│       ├── Motion control
-│       ├── Force control
-│       ├── Hybrid motion-force
-│       ├── Impedance / Admittance
-│       └── Computed torque
+│       ├── Motion control      → pick-and-place, trajectory tracing
+│       ├── Force control       → grinding, polishing
+│       ├── Hybrid motion-force → writing on chalkboard
+│       ├── Impedance/Admittance → haptic display, 협동로봇
+│       └── Computed torque (model + feedback)
 │
 ├── [Interaction]
 │   └── Ch 12: Grasping & Manipulation
-│       ├── Contact modeling
-│       ├── Form closure / Force closure
-│       └── Pushing, dynamic carry
+│       ├── Contact kinematics + friction cone
+│       ├── Form closure  (geometry-only)
+│       ├── Force closure (friction-based)
+│       └── Pushing, dynamic carry, stability test
 │
 └── [Mobility]
     └── Ch 13: Wheeled Mobile Robots
-        ├── Omnidirectional (holonomic)
-        ├── Car-like (nonholonomic)
-        ├── Odometry
-        └── Mobile manipulation
+        ├── Omnidirectional / mecanum (holonomic)
+        ├── Car-like / diff-drive (nonholonomic)
+        ├── Odometry — *두 종류 robot 에 동일*
+        └── Mobile manipulation — *통합 Jacobian, 두 종류에 동일*
 ```
 
 ## 3.2 학습 진도 체크리스트
@@ -235,22 +248,26 @@ Modern Robotics
 - [ ] 평면·공간 자유 강체의 DoF (3 / 6) 와 분해 (위치+자세) 가 자연스럽다
 - [ ] Exponential coordinate 의 직관 (단위 축 ω̂ 주변 θ 회전) 을 안다
 - [ ] τ = Jᵀ F 의 의미와 가상일의 원리 연결을 안다
+- [ ] **Inverse kinematics 와 inverse dynamics 의 차이** (위치 vs 힘·가속도) 를 한 줄로 설명 가능
+- [ ] **Path planning ⊂ Motion planning** 관계와 차이 (기하만 vs 동역학+시간 포함) 를 안다
+- [ ] Newton-Euler 의 **outward + backward pass** 흐름을 설명 가능
 - [ ] Backlash 와 slippage 의 정의·약점 transmission 종류를 구분한다
 - [ ] Holonomic vs nonholonomic 의 차이를 자동차 평행주차로 설명할 수 있다
+- [ ] 위치 제어와 힘 제어가 같은 방향에서 *상호 배타* 라는 사실을 안다
 - [ ] 12 챕터의 문제·도구를 한 줄씩 외울 수 있다
 
 ### 다음 학습 (Ch 2 시작 전 워밍업)
 - [ ] 평면 4-bar linkage 의 DoF 를 Grübler 로 계산해 본다
 - [ ] Spherical (3 DoF) joint 가 부과하는 공간 구속 개수 (3) 의 도출 확인
-- [ ] task space 의 정의를 자기 말로 정리
+- [ ] task space 와 workspace 의 정의를 자기 말로 정리
 
 ## 3.3 연관 학습 흐름
 
 ```
 이전 (선수):
-  선형대수 (행렬·고유값) ──┐
-  미적분 (ODE, 편미분) ───┼── Modern Robotics
-  강체역학 (F=ma, 모멘트) ─┘
+  선형대수 (행렬·고유값·exp) ──┐
+  미적분 (ODE, 편미분) ─────────┼── Modern Robotics
+  강체역학 (F=ma, 가상일 원리) ─┘
 
 현재: Ch 1 Preview  ← 책 전체 thumbnail
 
@@ -274,7 +291,9 @@ Modern Robotics
                        Ch 12 Manipulation ↓
                        Ch 13 Mobile Robots
 
-병행 학습 추천:
-  - Linear algebra refresher (Strang 의 책 또는 3Blue1Brown)
-  - 공식 사이트 http://modernrobotics.org 의 영상·MATLAB·Python 라이브러리
+학습 자원:
+  - 공식 사이트: http://modernrobotics.org (영상·feedback)
+  - 동반 라이브러리: `pip install modern_robotics` (Python·MATLAB·Mathematica)
+    *읽기 쉽게 작성된 reference 구현* → 사용보다 코드 *읽기* 가 학습 효과
+  - 각 챕터 끝 *Summary* + Appendix A *equation reference* 적극 활용
 ```

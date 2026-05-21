@@ -1,6 +1,7 @@
 # Chapter 1: Preview — 퀴즈
 
-> 14문항. 개념·적용·디버그·면접. *Modern Robotics* (Lynch & Park) 1장 (책 p.1~10) 의 핵심 개념 자가 진단.
+> 15문항. 개념·적용·디버그·면접. *Modern Robotics* (Lynch & Park) 1장 (책 p.1~10) 의 핵심 개념 자가 진단.
+> 1장이 책 전체 thumbnail 이라 *구분·혼동* 을 짚는 디버그 비중이 약간 큼.
 
 ---
 
@@ -48,7 +49,7 @@ Brake 를 별도로 꼽기도 하지만 본 1장에서는 transmission 의 일�
 
 ---
 
-### Q4. (개념) **Revolute** joint 와 **Prismatic** joint 의 차이를 운동의 종류로 답하시오. 각각 평면과 공간에서 인접 강체에 부과하는 *구속 개수* 는?
+### Q4. (적용) **Revolute** joint 와 **Prismatic** joint 의 차이를 운동의 종류로 답하시오. 각각 평면과 공간에서 인접 강체에 부과하는 *구속 개수* 는?
 
 <details><summary>정답</summary>
 
@@ -167,7 +168,28 @@ R = exp([ω])    where   ω = ω̂ · θ  in R³
 
 ---
 
-### Q11. (디버그) 다음 코드 흐름의 잘못된 가정을 찾으시오.
+### Q11. (디버그) 다음 진술의 무엇이 틀렸는가?
+> "Inverse dynamics 는 EE 목표 위치로부터 joint 각도를 구하는 문제다."
+
+<details><summary>정답</summary>
+
+이 진술은 **inverse kinematics** 의 정의를 *inverse dynamics* 로 잘못 부른 것.
+
+올바른 분리:
+- **Inverse kinematics** (6장): EE 목표 *위치·자세* → joint *각도·자세*. **기하학** 문제. 답은 각도/위치 (정적).
+- **Inverse dynamics** (8장): 목표 *joint 가속도* → 필요한 *joint 힘·토크*. **동역학** (second-order ODE) 문제. 답은 힘/토크 (동적).
+
+8장의 두 dynamics 짝:
+- **Forward dynamics**: joint 토크 → joint 가속도 (*시뮬레이션·예측*)
+- **Inverse dynamics**: 원하는 joint 가속도 → joint 토크 (*제어·trajectory tracking*)
+
+핵심: inverse kinematics 는 *위치 ↔ 각도*, inverse dynamics 는 *힘·토크 ↔ 가속도*. 두 분야가 만나는 곳이 11장 control (computed torque control 은 inverse dynamics 로 토크를 미리 계산해 feedforward).
+
+</details>
+
+---
+
+### Q12. (디버그) 다음 코드 흐름의 잘못된 가정을 찾으시오.
 ```
 1. 6-DoF arm 의 inverse kinematics 를 구함 (Jacobian inverse).
 2. 7-DoF arm 에 같은 알고리즘을 그대로 적용.
@@ -188,7 +210,7 @@ R = exp([ω])    where   ω = ω̂ · θ  in R³
 
 ---
 
-### Q12. (디버그) 어떤 학습자가 "joint torque τ 와 end-effector force F 는 관계 없는 별개 변수다" 라고 주장한다. 어떻게 반박하나?
+### Q13. (디버그) 어떤 학습자가 "joint torque τ 와 end-effector force F 는 관계 없는 별개 변수다" 라고 주장한다. 어떻게 반박하나?
 
 <details><summary>정답</summary>
 
@@ -208,7 +230,7 @@ R = exp([ω])    where   ω = ω̂ · θ  in R³
 
 ---
 
-### Q13. (면접) "Holonomic 과 nonholonomic 의 차이를 자동차 평행주차로 설명하시오."
+### Q14. (면접) "Holonomic 과 nonholonomic 의 차이를 자동차 평행주차로 설명하시오."
 
 <details><summary>정답</summary>
 
@@ -223,7 +245,7 @@ R = exp([ω])    where   ω = ω̂ · θ  in R³
 
 ---
 
-### Q14. (면접) Modern Robotics 책이 다른 로보틱스 교과서와 차별화되는 "기술적 선택" 하나를 꼽고, 그 이유를 한 줄로 답하시오.
+### Q15. (면접) Modern Robotics 책이 다른 로보틱스 교과서와 차별화되는 "기술적 선택" 하나를 꼽고, 그 이유를 한 줄로 답하시오.
 
 <details><summary>정답</summary>
 

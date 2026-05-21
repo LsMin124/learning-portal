@@ -29,7 +29,15 @@
     {
       "id": "other-eng",
       "title": "기타 공학·이학",
-      "courses": []
+      "courses": [
+        {
+          "id": "modern-robotics",
+          "title": "Modern Robotics",
+          "subtitle": "Mechanics, Planning, and Control (Lynch & Park, 2017)",
+          "path": "courses/modern-robotics",
+          "tags": ["robotics", "kinematics", "dynamics", "control", "motion-planning", "mechanics"]
+        }
+      ]
     },
     {
       "id": "personal",

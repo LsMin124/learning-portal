@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "id": "modern-robotics",
+  "title": "Modern Robotics",
+  "subtitle": "Mechanics, Planning, and Control (Lynch & Park, 2017)",
+  "source": "Kevin M. Lynch & Frank C. Park, Cambridge University Press 2017 (preprint, http://modernrobotics.org)",
+  "language": "ko",
+  "tags": ["robotics", "kinematics", "dynamics", "control", "motion-planning", "mechanics"],
+  "totalCount": 1,
+  "sections": [
+    {
+      "title": "Foundation",
+      "items": [
+        {"stem": "ch01-preview", "pages": 10, "label": "Ch 1. Preview"}
+      ]
+    }
+  ]
+}

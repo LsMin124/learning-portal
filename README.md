@@ -19,28 +19,35 @@ lecture_notes/
 │       ├── CHEATSHEETS/     TL;DR + Quick Ref + Mind Map
 │       └── ROADMAP.md       의존성·추천 학습 순서
 │
-├── tools/                   자동 생성 파이프라인 (Phase 1: 설계 + 골격)
-│   ├── ingest.py            CLI: PDF/URL/YouTube -> STUDY/QUIZ/CHEATSHEETS
-│   ├── source_bundle.py     공통 중간 표현 (dataclass)
-│   ├── adapters/            입력 어댑터 (pdf/url/youtube)
-│   ├── generators/          LLM 생성기 (study/quiz/cheatsheet)
-│   ├── prompts/             LLM 시스템 프롬프트 (정형 규약)
-│   ├── requirements.txt
-│   └── README.md            상세 설계·사용법
+├── tools/                   자동 처리 (Claude Code 자체가 생성, API 키 불필요)
+│   ├── inbox/               드롭 존 (course-id 별 하위 디렉토리)
+│   ├── processed/           처리 완료 (원본 보관)
+│   ├── prompts/             생성 시스템 프롬프트 (study/quiz/cheatsheet)
+│   ├── SCHEDULE.md          자동 처리 절차 (cron + 수동 트리거 공용)
+│   └── README.md            사용법
+│
+├── .claude/commands/        프로젝트 로컬 슬래시 명령
+│   └── process-inbox.md     /process-inbox 진입 프롬프트
 │
 ├── _deploy/                 GitHub Pages 배포본 (별도 git repo, Archive 됨)
 └── _private/                비공개 원본·도구·credential
                              (.gitignore / .vercelignore 로 격리)
 ```
 
-### 자동 생성 (Phase 2 가동 후)
+### 자동 처리
 
 ```bash
-# 새 자료를 자동으로 STUDY/QUIZ/CHEATSHEETS 마크다운으로 변환
-python tools/ingest.py file.pdf --course cs-os --stem chapter-01 --label "01강 개요"
+# 1. 자료 드롭
+cp chapter.pdf tools/inbox/cs-robotics/lesson-01.pdf
+
+# 2. 트리거 (둘 다 지원)
+/process-inbox        # 즉시 (Claude Code 슬래시 명령)
+# 또는 /schedule       # 주기 cron, 세션 켜둔 동안만 fire
 ```
 
-상세는 `tools/README.md`.
+Claude Code 세션이 Read/WebFetch 로 자료를 읽고 `tools/prompts/` 에 따라
+STUDY/QUIZ/CHEATSHEETS 3종을 생성. 별도 API 키·요금 없음.
+상세는 `tools/README.md` / `tools/SCHEDULE.md`.
 
 ## 새 코스 추가 절차
 

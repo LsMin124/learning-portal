@@ -6,7 +6,7 @@
   "source": "SSAFY 15기",
   "language": "ko",
   "tags": ["java", "spring", "mybatis", "vue", "bootcamp"],
-  "totalCount": 28,
+  "totalCount": 29,
   "sections": [
     {
       "title": "Web Backend",
@@ -47,6 +47,12 @@
         {"stem": "Framework(Back)_12_0519_REST_API",                   "pages": 0,  "label": "05/19 REST API"},
         {"stem": "Framework(Back)_13_0520_Spring Batch",               "pages": 47, "label": "05/20 Spring Batch"},
         {"stem": "Framework(Back)_14_0522_Spring CORS Pagnation PJT",  "pages": 36, "label": "05/22 Spring CORS/Pagination"}
+      ]
+    },
+    {
+      "title": "JPA",
+      "items": [
+        {"stem": "JPA_01_0515_개념_Entity",                             "pages": 0,  "label": "05/15 JPA 1: 개념 + Entity 매핑"}
       ]
     },
     {

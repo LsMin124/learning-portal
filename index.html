@@ -479,6 +479,9 @@ async function fetchJson(path){
   } catch { return null; }
 }
 
+// marked - strikethrough 비활성 (한국어 범위 표기 '~' 충돌 방지)
+if (window.marked) window.marked.use({ tokenizer: { del() { return false; } } });
+
 const stripDate = s => (s || '').replace(/^\d{2}\/\d{2}\s+/, '');
 
 const estCache = new Map();
@@ -688,6 +691,7 @@ async function renderMd(mode, subdir, label, emptyMsg){
         { left: '\\(', right: '\\)', display: false }
       ],
       throwOnError: false,
+      strict: false,
       ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
     });
   }

@@ -6,7 +6,7 @@
   "source": "SSAFY 15기",
   "language": "ko",
   "tags": ["java", "spring", "mybatis", "vue", "bootcamp"],
-  "totalCount": 29,
+  "totalCount": 30,
   "sections": [
     {
       "title": "Web Backend",
@@ -52,7 +52,8 @@
     {
       "title": "JPA",
       "items": [
-        {"stem": "JPA_01_0515_개념_Entity",                             "pages": 0,  "label": "05/15 JPA 1: 개념 + Entity 매핑"}
+        {"stem": "JPA_01_0515_개념_Entity",                             "pages": 0,  "label": "05/15 JPA 1: 개념 + Entity 매핑"},
+        {"stem": "JPA_02_0516_영속성컨텍스트",                          "pages": 0,  "label": "05/16 JPA 2: 영속성 컨텍스트"}
       ]
     },
     {

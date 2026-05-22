@@ -700,6 +700,11 @@ async function renderMd(mode, subdir, label, emptyMsg){
     return;
   }
   view.innerHTML = window.marked.parse(md);
+  // marked 12.x 의 GFM strikethrough 가 한국어 범위 표기 '~' 두 개를
+  // <del>...</del> 로 오인지하는 케이스 복구: del 을 unwrap 하고 양 끝에 ~ 복원.
+  view.querySelectorAll('del').forEach(el => {
+    el.replaceWith('~', ...el.childNodes, '~');
+  });
   decorateMarkdownCode(view);
   if (window.renderMathInElement) {
     window.renderMathInElement(view, {
@@ -735,6 +740,11 @@ async function renderRoadmap(){
     return;
   }
   view.innerHTML = window.marked.parse(md);
+  // marked 12.x 의 GFM strikethrough 가 한국어 범위 표기 '~' 두 개를
+  // <del>...</del> 로 오인지하는 케이스 복구: del 을 unwrap 하고 양 끝에 ~ 복원.
+  view.querySelectorAll('del').forEach(el => {
+    el.replaceWith('~', ...el.childNodes, '~');
+  });
   decorateMarkdownCode(view);
   // 로드맵 표의 강의 stem 셀 클릭 → 그 강의 열기
   const stems = new Map();

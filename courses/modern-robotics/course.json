@@ -6,13 +6,14 @@
   "source": "Kevin M. Lynch & Frank C. Park, Cambridge University Press 2017 (preprint, http://modernrobotics.org)",
   "language": "ko",
   "tags": ["robotics", "kinematics", "dynamics", "control", "motion-planning", "mechanics"],
-  "totalCount": 2,
+  "totalCount": 3,
   "sections": [
     {
       "title": "Foundation",
       "items": [
         {"stem": "ch01-preview", "pages": 10, "label": "Ch 1. Preview"},
-        {"stem": "ch02-configuration-space", "pages": 48, "label": "Ch 2. Configuration Space"}
+        {"stem": "ch02-configuration-space", "pages": 48, "label": "Ch 2. Configuration Space"},
+        {"stem": "ch03-rigid-body-motions", "pages": 78, "label": "Ch 3. Rigid-Body Motions"}
       ]
     }
   ]

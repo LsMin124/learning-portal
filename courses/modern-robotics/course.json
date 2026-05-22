@@ -6,7 +6,7 @@
   "source": "Kevin M. Lynch & Frank C. Park, Cambridge University Press 2017 (preprint, http://modernrobotics.org)",
   "language": "ko",
   "tags": ["robotics", "kinematics", "dynamics", "control", "motion-planning", "mechanics"],
-  "totalCount": 10,
+  "totalCount": 13,
   "sections": [
     {
       "title": "Foundation",
@@ -21,7 +21,8 @@
       "items": [
         {"stem": "ch04-forward-kinematics", "pages": 34, "label": "Ch 4. Forward Kinematics"},
         {"stem": "ch05-velocity-kinematics", "pages": 48, "label": "Ch 5. Velocity Kinematics and Statics"},
-        {"stem": "ch06-inverse-kinematics", "pages": 26, "label": "Ch 6. Inverse Kinematics"}
+        {"stem": "ch06-inverse-kinematics", "pages": 26, "label": "Ch 6. Inverse Kinematics"},
+        {"stem": "ch07-closed-chains", "pages": 26, "label": "Ch 7. Kinematics of Closed Chains"}
       ]
     },
     {
@@ -36,6 +37,13 @@
         {"stem": "ch09-trajectory-generation", "pages": 28, "label": "Ch 9. Trajectory Generation"},
         {"stem": "ch10-motion-planning", "pages": 50, "label": "Ch 10. Motion Planning"},
         {"stem": "ch11-robot-control", "pages": 58, "label": "Ch 11. Robot Control"}
+      ]
+    },
+    {
+      "title": "Applications",
+      "items": [
+        {"stem": "ch12-grasping-manipulation", "pages": 52, "label": "Ch 12. Grasping and Manipulation"},
+        {"stem": "ch13-wheeled-mobile-robots", "pages": 53, "label": "Ch 13. Wheeled Mobile Robots"}
       ]
     }
   ]

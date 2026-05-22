@@ -39,13 +39,13 @@
 | 평면 위의 동전 (앞/뒤 가능) | **여전히 3** | + discrete {앞, 뒤} (real-valued 가 아니므로 DoF 에 안 들어감) |
 | 공간 안의 자유 강체 | **6** | 위치 3 + 자세 3 |
 
-![Figure 2.1 — 문(1 DoF) 과 동전(3 DoF) 의 configuration. 교재 p.11](/courses/modern-robotics/figures/ch02/page-29.png)
+![Figure 2.1 — 문(1 DoF) 과 평면 위의 점(2 DoF) 과 동전(3 DoF). 교재 p.12](/courses/modern-robotics/figures/ch02/fig-2-1.png)
 
 > **함정 1**: DoF 는 *real-valued continuous* 좌표만 셈. 동전의 앞/뒤 같은 *이산* 상태는 *별개의 connected component* 를 만들 뿐 DoF 에는 추가 안 됨.
 
 ### 1.3 평면 강체의 DoF = 3 의 도출
 
-![Figure 2.2 — 동전 위 세 점 A, B, C 와 강체 제약. 교재 p.12](/courses/modern-robotics/figures/ch02/page-30.png)
+![Figure 2.2 — 동전 위 세 점 A, B, C 와 강체 제약. 교재 p.13](/courses/modern-robotics/figures/ch02/fig-2-2.png)
 
 동전 위에 세 점 A, B, C 를 표시. 평면에서 각 점은 2 DoF → 합 6 DoF.
 
@@ -74,7 +74,7 @@ $$\text{DoF} = \underbrace{(\text{모든 점의 자유도 합})}_{\text{독립 �
 
 ### 2.1 6 종 표준 joint
 
-![Figure 2.3 — 6 종 표준 joint (R, P, H, C, U, S) 의 기하. 교재 p.16](/courses/modern-robotics/figures/ch02/page-34.png)
+![Figure 2.3 — 6 종 표준 joint (R, P, H, C, U, S) 의 기하. 교재 p.16](/courses/modern-robotics/figures/ch02/fig-2-3.png)
 
 ```
        R               P                H
@@ -147,7 +147,7 @@ $$\text{DoF} = m(N - 1) - \sum_{i=1}^{J} c_i, \quad c_i = m - f_i$$
 
 ### 3.3 예시 1 — 평면 4-bar linkage
 
-![Figure 2.4 — 4-bar linkage. 교재 p.18](/courses/modern-robotics/figures/ch02/page-36.png)
+![Figure 2.4 — (a) 4-bar linkage, (b) slider-crank mechanism. 교재 p.18](/courses/modern-robotics/figures/ch02/fig-2-4.png)
 
 ```
         joint2
@@ -180,7 +180,7 @@ $$\text{DoF} = 6(14 - 1 - 18) + 36 = 6(-5) + 36 = -30 + 36 = \boxed{6}$$
 
 DoF = 6 — Stewart-Gough 는 *6 DoF*. 다리 6 개의 길이를 조절하면 top platform 의 6 DoF (위치 3 + 자세 3) 모두 제어 가능.
 
-![Figure 2.5 — k-link planar serial chain (a), 5-bar planar linkage (b), Stephenson six-bar (c). 교재 p.19](/courses/modern-robotics/figures/ch02/page-37.png)
+![Figure 2.5 — (a) k-link planar serial chain, (b) 5-bar planar linkage, (c) Stephenson six-bar. 교재 p.19](/courses/modern-robotics/figures/ch02/fig-2-5.png)
 
 ### 3.5 함정 — Grübler 는 *lower bound* (overconstrained)
 
@@ -188,7 +188,7 @@ Grübler's formula 가 *항상* 정확한 건 아님. 특수한 기하 (overcons
 
 예: 3개의 평행 revolute joint 만으로 구성된 메커니즘 — Grübler 가 0 (또는 음수) 을 줘도 실제로는 1 DoF 가질 수 있음.
 
-![Figure 2.7 — Parallelogram linkage 와 5-bar 의 overconstrained 상황. 교재 p.21](/courses/modern-robotics/figures/ch02/page-39.png)
+![Figure 2.7 — (a) Parallelogram linkage, (b) 5-bar 의 overconstrained 상황. 교재 p.21](/courses/modern-robotics/figures/ch02/fig-2-7.png)
 
 > **원칙**: Grübler 는 *대부분* 옳지만, *기하학적 특이상황* 에서 lower bound 일 뿐. 의심되면 직접 분석.
 
@@ -220,7 +220,7 @@ Grübler's formula 가 *항상* 정확한 건 아님. 특수한 기하 (overcons
 
 > **Topological equivalence**: 두 공간이 *부드럽게* (cutting / gluing 없이) 서로 변형될 수 있으면 동치. 평면 ≠ 구면 (구면은 *닫혀있어* 무한 연장 불가).
 
-![Figure 2.9 — open interval (a,b) 가 open semicircle 로 부드럽게 변형되는 모습. 교재 p.24](/courses/modern-robotics/figures/ch02/page-42.png)
+![Figure 2.9 — open interval (a,b) ↔ open semicircle ↔ real line 의 topological equivalence. 교재 p.24](/courses/modern-robotics/figures/ch02/fig-2-9.png)
 
 ### 4.2 실제 로봇의 C-space topology
 
@@ -234,9 +234,9 @@ Grübler's formula 가 *항상* 정확한 건 아님. 특수한 기하 (overcons
 
 SO(3) = 3D rotation group (다음 장에서 본격적으로 다룸).
 
-![Figure 2.10 — 2R 로봇의 C-space 가 torus T² 임을 시각화. 교재 p.29](/courses/modern-robotics/figures/ch02/page-47.png)
+![Figure 2.10 — 2R 로봇의 C-space 가 torus T² 임을 시각화. 교재 p.29](/courses/modern-robotics/figures/ch02/fig-2-10.png)
 
-![Figure 2.11 — 추가적인 C-space topology 예시 (구면 S², 원기둥 R×S¹). 교재 p.31](/courses/modern-robotics/figures/ch02/page-49.png)
+![Figure 2.11 — 추가적인 C-space topology 예시 (구면 S², 원기둥 R×S¹). 교재 p.31](/courses/modern-robotics/figures/ch02/fig-2-11.png)
 
 ### 4.3 Representation — explicit vs implicit
 
@@ -350,7 +350,7 @@ Pfaffian 제약 $A(\theta)\dot{\theta} = 0$ 이 적분 가능한지의 수학적
 
 여기서 C-space dim = task space dim = 6. 우연히 같은 차원.
 
-![Figure 2.12 — 다양한 로봇의 workspace 예시 (planar 2R, 3R arm 등). 교재 p.33](/courses/modern-robotics/figures/ch02/page-51.png)
+![Figure 2.12 — 다양한 로봇의 workspace 예시: (a) planar 2R, (b) planar 3R, (c) spherical 2R, (d) 3R orienting. 교재 p.33](/courses/modern-robotics/figures/ch02/fig-2-12.png)
 
 ### 6.3 Redundancy — C-space dim > task space dim
 

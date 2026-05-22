@@ -6,7 +6,7 @@
   "source": "Kevin M. Lynch & Frank C. Park, Cambridge University Press 2017 (preprint, http://modernrobotics.org)",
   "language": "ko",
   "tags": ["robotics", "kinematics", "dynamics", "control", "motion-planning", "mechanics"],
-  "totalCount": 7,
+  "totalCount": 10,
   "sections": [
     {
       "title": "Foundation",
@@ -28,6 +28,14 @@
       "title": "Dynamics",
       "items": [
         {"stem": "ch08-dynamics", "pages": 54, "label": "Ch 8. Dynamics of Open Chains"}
+      ]
+    },
+    {
+      "title": "Planning & Control",
+      "items": [
+        {"stem": "ch09-trajectory-generation", "pages": 28, "label": "Ch 9. Trajectory Generation"},
+        {"stem": "ch10-motion-planning", "pages": 50, "label": "Ch 10. Motion Planning"},
+        {"stem": "ch11-robot-control", "pages": 58, "label": "Ch 11. Robot Control"}
       ]
     }
   ]

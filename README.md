@@ -12,7 +12,7 @@ lecture_notes/
 ├── manifest.json            전체 코스 카탈로그 (5 카테고리)
 │
 ├── courses/                 공개 학습 자료 (2차 가공)
-│   └── ssafy-java/          현재 보유 코스
+│   └── backend-java/          현재 보유 코스
 │       ├── course.json      코스 메타 + 강의 sections
 │       ├── STUDY/           학습 노트 (단독 학습 가능)
 │       ├── QUIZ/            14문항 (개념·적용·디버그·면접)

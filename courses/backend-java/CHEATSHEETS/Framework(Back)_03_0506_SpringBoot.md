@@ -94,7 +94,7 @@ public class MyApp { }
 **주의**: 메인 클래스가 **루트 패키지** 에 있어야 모든 하위 패키지 스캔.
 
 ```
-com.ssafy.app/
+com.study.app/
 ├── MyApp.java           <- 여기 (루트)
 ├── controller/
 ├── service/
@@ -154,7 +154,7 @@ mybatis:
 logging:
   level:
     root: INFO
-    com.ssafy: DEBUG
+    com.study: DEBUG
     org.hibernate.SQL: DEBUG
   file.name: logs/app.log
   pattern.console: "%d{HH:mm:ss} %-5level %logger{30} - %msg%n"

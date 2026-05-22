@@ -263,7 +263,7 @@ mybatis:
 ---
 spring.config.activate.on-profile: dev
 spring.datasource.url: jdbc:mysql://localhost:3306/dev_db
-logging.level.com.ssafy.mapper: DEBUG
+logging.level.com.study.mapper: DEBUG
 
 ---
 spring.config.activate.on-profile: prod

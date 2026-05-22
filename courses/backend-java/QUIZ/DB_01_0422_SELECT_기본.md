@@ -1,6 +1,6 @@
 # SELECT 기본 - 퀴즈
 
-> 14문항. 개념·적용·디버그·면접. SSAFY_CORPORATION (EMP/DEPT) 기준.
+> 14문항. 개념·적용·디버그·면접. HR_CORP (EMP/DEPT) 기준.
 
 ---
 

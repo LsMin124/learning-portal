@@ -98,29 +98,29 @@ public class AdminService {
 
 ```java
 // execution - 메서드 시그니처
-@Pointcut("execution(public * com.ssafy.service..*.*(..))")
-// public · 모든 반환 타입 · com.ssafy.service 하위 모든 패키지 · 모든 클래스 · 모든 메서드 · 모든 파라미터
+@Pointcut("execution(public * com.study.service..*.*(..))")
+// public · 모든 반환 타입 · com.study.service 하위 모든 패키지 · 모든 클래스 · 모든 메서드 · 모든 파라미터
 
-@Pointcut("execution(* com.ssafy.service.BoardService.*(..))")
+@Pointcut("execution(* com.study.service.BoardService.*(..))")
 @Pointcut("execution(* find*(..))")               // find 로 시작
 @Pointcut("execution(* *(*, ..))")                // 1개 이상 파라미터
 
 // within - 클래스/패키지
-@Pointcut("within(com.ssafy.service..*)")
+@Pointcut("within(com.study.service..*)")
 @Pointcut("within(@org.springframework.stereotype.Service *)")
 
 // @within - 클래스 어노테이션
 @Pointcut("@within(org.springframework.stereotype.Service)")
 
 // @annotation - 메서드 어노테이션
-@Pointcut("@annotation(com.ssafy.AdminOnly)")
+@Pointcut("@annotation(com.study.AdminOnly)")
 
 // args - 파라미터
 @Pointcut("execution(* *.find*(Long))")
 @Pointcut("args(java.lang.Long)")
 
 // 조합
-@Pointcut("execution(* com.ssafy.service..*(..)) && !execution(* *.toString())")
+@Pointcut("execution(* com.study.service..*(..)) && !execution(* *.toString())")
 ```
 
 ## @Around 패턴 (가장 강력)
@@ -154,7 +154,7 @@ public class TimingAspect {
 ## JoinPoint API
 
 ```java
-@Before("execution(* com.ssafy.service..*(..))")
+@Before("execution(* com.study.service..*(..))")
 public void log(JoinPoint jp) {
     jp.getSignature();                  // 메서드 시그니처
     jp.getSignature().getName();        // 메서드 이름

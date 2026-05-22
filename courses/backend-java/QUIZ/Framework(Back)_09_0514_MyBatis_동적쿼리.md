@@ -580,6 +580,6 @@ private BooleanExpression keywordContains(String k) {
 - **객체 중심 도메인 + 빠른 개발** → **JPA + QueryDSL**
 - **JPA 만 쓰지 마라** → Criteria 는 너무 장황. QueryDSL 필수 동반.
 
-**SSAFY 커리큘럼**: MyBatis 우선 (한국 SI 시장 현실).
+**BOOTCAMP 커리큘럼**: MyBatis 우선 (한국 SI 시장 현실).
 
 </details>

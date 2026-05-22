@@ -222,7 +222,7 @@ public class MyService {
 ```yaml
 # application.yml
 app:
-  name: SSAFY
+  name: BOOTCAMP
   version: 1.0
   features:
     - login

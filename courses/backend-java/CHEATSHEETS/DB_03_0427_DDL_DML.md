@@ -1,6 +1,6 @@
 # DDL · DML · Transaction — 치트시트
 
-> 29p 슬라이드 · ssafy_user / accounts 스키마.
+> 29p 슬라이드 · member / accounts 스키마.
 > **TL;DR** → **Quick Reference** → **Mind Map** 3 섹션.
 
 ---
@@ -19,7 +19,7 @@
 
 ```sql
 -- (1) 표준 테이블 생성
-CREATE TABLE ssafy_user (
+CREATE TABLE member (
     user_num      INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id       VARCHAR(20)  NOT NULL UNIQUE,
     user_name     VARCHAR(20)  NOT NULL,
@@ -36,7 +36,7 @@ COMMIT;     -- 실패 시 ROLLBACK
 
 -- (3) 안전한 UPDATE
 SET SQL_SAFE_UPDATES = 1;
-UPDATE ssafy_user SET user_password = 'new' WHERE user_num = 3;
+UPDATE member SET user_password = 'new' WHERE user_num = 3;
 ```
 
 ## 면접 한 줄 답변
@@ -90,14 +90,14 @@ ALTER TABLE t DROP INDEX uq_email;
 
 ```sql
 -- (1) 모든 컬럼 (순서대로)
-INSERT INTO ssafy_user VALUES (1, 'kim', '김싸피', '1234', 'a@b.c', NOW());
+INSERT INTO member VALUES (1, 'kim', '김학생', '1234', 'a@b.c', NOW());
 
 -- (2) 원하는 컬럼만
-INSERT INTO ssafy_user (user_id, user_name, user_password)
-VALUES ('kim', '김싸피', '1234');
+INSERT INTO member (user_id, user_name, user_password)
+VALUES ('kim', '김학생', '1234');
 
 -- (3) 여러 행 한 번에 (성능 ↑)
-INSERT INTO ssafy_user (user_id, user_name, user_password) VALUES
+INSERT INTO member (user_id, user_name, user_password) VALUES
     ('a', 'A', '111'),
     ('b', 'B', '222');
 ```
@@ -158,8 +158,8 @@ COMMIT;
 ## 디버깅 명령
 
 ```sql
-DESC ssafy_user;                  -- 스키마 확인
-SHOW CREATE TABLE ssafy_user;     -- 전체 DDL
+DESC member;                  -- 스키마 확인
+SHOW CREATE TABLE member;     -- 전체 DDL
 SHOW TABLES;                       -- DB 의 테이블 목록
 SHOW DATABASES;                    -- 모든 DB
 SELECT @@autocommit;               -- AutoCommit 상태

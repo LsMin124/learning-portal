@@ -66,7 +66,7 @@ JPA 가 내부적으로 `SELECT ... FROM board WHERE id = ?` + (필요 시) `SEL
 | DB 종속 | 높음 (특정 SQL 문법) | 낮음 (Dialect 가 분기) |
 | 학습 곡선 | 낮음 | 가파름 (영속성 컨텍스트 개념) |
 
-JPA 가 무조건 우수한 것이 아니라 **trade-off**. SSAFY 같은 학습 후 실무에서는 *둘 다 알고* 상황 따라 선택하는 게 정답.
+JPA 가 무조건 우수한 것이 아니라 **trade-off**. BOOTCAMP 같은 학습 후 실무에서는 *둘 다 알고* 상황 따라 선택하는 게 정답.
 
 ## 3. JPA 표준 vs Hibernate
 

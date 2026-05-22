@@ -1,6 +1,6 @@
 # SELECT 기본 — 치트시트
 
-> 44p 슬라이드 · SSAFY_CORPORATION (EMP / DEPT) 스키마.
+> 44p 슬라이드 · HR_CORP (EMP / DEPT) 스키마.
 > **TL;DR** → **Quick Reference** → **Mind Map** 3 섹션.
 
 ---

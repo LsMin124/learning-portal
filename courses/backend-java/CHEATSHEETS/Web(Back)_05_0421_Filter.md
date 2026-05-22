@@ -102,7 +102,7 @@ public class EncodingFilter implements Filter { ... }
 // 2. web.xml
 <filter>
     <filter-name>encoding</filter-name>
-    <filter-class>com.ssafy.EncodingFilter</filter-class>
+    <filter-class>com.study.EncodingFilter</filter-class>
 </filter>
 <filter-mapping>
     <filter-name>encoding</filter-name>

@@ -586,6 +586,6 @@ public class BoardController {
 5. 테스트 가능 (`@WebMvcTest`)
 6. JSON API 와 통합 (`@RestController` 로 갈아끼움 쉬움)
 
-**SSAFY 커리큘럼 의도**: JSP 실습으로 Servlet + JSP 의 기본을 익히고, 그 위에 Spring MVC 가 어떻게 추상화하는지 배움. 기초 없이 Spring 부터 시작하면 "마법" 으로 느껴짐.
+**BOOTCAMP 커리큘럼 의도**: JSP 실습으로 Servlet + JSP 의 기본을 익히고, 그 위에 Spring MVC 가 어떻게 추상화하는지 배움. 기초 없이 Spring 부터 시작하면 "마법" 으로 느껴짐.
 
 </details>

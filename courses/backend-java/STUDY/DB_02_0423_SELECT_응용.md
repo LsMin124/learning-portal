@@ -8,7 +8,7 @@
 ## 들어가기 전에
 
 - **선수**: SELECT 기본 (1강 - DB_01).
-- **스키마**: SSAFY_CORPORATION (EMP · DEPT · BONUS · SALGRADE).
+- **스키마**: HR_CORP (EMP · DEPT · BONUS · SALGRADE).
 - **마인드셋**: "여러 행 → 하나의 결과 값" 으로 축소하는 게 집계. 그룹화는 "어떤 기준으로 묶을 것인가".
 
 ---
@@ -293,18 +293,18 @@ FROM   emp WHERE job = 'PRESIDENT';
 -- 이름의 길이가 5인 직원
 SELECT ename FROM emp WHERE LENGTH(ename) = 5;
 
--- '김싸피' 의 길이
-SELECT LENGTH('김싸피'), CHAR_LENGTH('김싸피');
+-- '김학생' 의 길이
+SELECT LENGTH('김학생'), CHAR_LENGTH('김학생');
 --      9 (UTF-8 1글자=3바이트)         3
 
 -- 이름 앞 3글자
 SELECT SUBSTR(ename, 1, 3) FROM emp;
 
--- '*****SSAFY', 'SSAFY*****'
-SELECT LPAD('SSAFY', 10, '*'), RPAD('SSAFY', 10, '*');
+-- '*****BOOTCAMP', 'BOOTCAMP*****'
+SELECT LPAD('BOOTCAMP', 10, '*'), RPAD('BOOTCAMP', 10, '*');
 
 -- '!YFASS OLLEH'
-SELECT REVERSE('HELLO SSAFY!');
+SELECT REVERSE('HELLO BOOTCAMP!');
 ```
 
 ⚠️ **LENGTH vs CHAR_LENGTH**: 한글·이모지 등 multi-byte 문자는 둘이 다름. UTF-8 한글 1글자 = 3바이트.
@@ -439,7 +439,7 @@ DROP VIEW salesman_v;
 2. WHERE 와 HAVING 의 적용 순서·차이는?
 3. `SELECT dept, AVG(salary) FROM emp` 만 쓰면 어떻게 되나?
 4. WITH ROLLUP 결과에서 진짜 NULL 과 ROLLUP NULL 을 어떻게 구분?
-5. `LENGTH('SSAFY 김')` 의 결과는? (UTF-8 가정)
+5. `LENGTH('BOOTCAMP 김')` 의 결과는? (UTF-8 가정)
 6. View 와 일반 테이블의 차이를 3가지 들으시오.
 
 <details><summary>풀이</summary>
@@ -459,8 +459,8 @@ DROP VIEW salesman_v;
    ROLLUP 이 만든 NULL → `GROUPING(col) = 1`
    일반 데이터의 NULL → `GROUPING(col) = 0`
 
-5. `LENGTH('SSAFY 김')` = **9** (S·S·A·F·Y·공백 = 6바이트, 김 = 3바이트).
-   `CHAR_LENGTH('SSAFY 김')` = **7** (글자 수).
+5. `LENGTH('BOOTCAMP 김')` = **9** (S·S·A·F·Y·공백 = 6바이트, 김 = 3바이트).
+   `CHAR_LENGTH('BOOTCAMP 김')` = **7** (글자 수).
 
 6. (1) **데이터 저장 X** - View 는 SELECT 정의만 저장.
    (2) **권한 제어** - View 로 노출 컬럼·행 제한 가능.

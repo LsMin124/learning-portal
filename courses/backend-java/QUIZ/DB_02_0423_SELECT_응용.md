@@ -122,13 +122,13 @@ ROLLUP 의 NULL 과 실제 NULL 구분: `GROUPING(d.deptno) = 1` 이면 ROLLUP N
 
 </details>
 
-### Q7. (디버그) `LENGTH('SSAFY 김')` 결과는? `CHAR_LENGTH` 와 어떻게 다른가?
+### Q7. (디버그) `LENGTH('BOOTCAMP 김')` 결과는? `CHAR_LENGTH` 와 어떻게 다른가?
 
 <details><summary>정답</summary>
 
-- `LENGTH('SSAFY 김')` = **9 바이트**
-  - SSAFY 5바이트 + 공백 1바이트 + 김 3바이트 (UTF-8)
-- `CHAR_LENGTH('SSAFY 김')` = **7 문자**
+- `LENGTH('BOOTCAMP 김')` = **9 바이트**
+  - BOOTCAMP 5바이트 + 공백 1바이트 + 김 3바이트 (UTF-8)
+- `CHAR_LENGTH('BOOTCAMP 김')` = **7 문자**
   - S, S, A, F, Y, ' ', 김 = 7개 문자
 
 **핵심**: UTF-8 한글 1글자 = 3바이트. 한글·이모지 다루는 검색·길이 제한엔 `CHAR_LENGTH` 사용.

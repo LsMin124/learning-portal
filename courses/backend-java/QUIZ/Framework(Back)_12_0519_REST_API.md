@@ -528,7 +528,7 @@ return Optional.ofNullable(boardMapper.findById(id))
 
 **2. 스택트레이스 노출 (보안 사고)**:
 - **위험**: 공격자에게 시스템 정보 제공
-  - 패키지 구조 (`com.ssafy.board.service.BoardService`)
+  - 패키지 구조 (`com.study.board.service.BoardService`)
   - 라이브러리 버전
   - 코드 결함 위치
 - **해결**: 운영 환경에서는 일반 메시지만, 스택트레이스는 로그에만.
@@ -555,7 +555,7 @@ server.error:
 ```
 2026-05-20 14:30:22 ERROR [req-abc-123] Unhandled exception
 java.lang.NullPointerException
-    at com.ssafy.board.service.BoardService.findById(BoardService.java:42)
+    at com.study.board.service.BoardService.findById(BoardService.java:42)
     ...
 ```
 

@@ -9,7 +9,7 @@
 
 - **선수**: SELECT 기본·응용 (1·2강).
 - **마인드셋**: SELECT = 데이터 보기, DDL = 그릇 만들기, DML = 그릇에 데이터 채우기/바꾸기, TCL = 변경을 안전하게 묶기.
-- **실습 스키마**: ssafy_user (교육생 정보 테이블).
+- **실습 스키마**: member (교육생 정보 테이블).
 
 ---
 
@@ -102,8 +102,8 @@
 
 ```sql
 -- 생성
-CREATE DATABASE ssafy_db;
-CREATE DATABASE ssafy_db
+CREATE DATABASE study_db;
+CREATE DATABASE study_db
     DEFAULT CHARACTER SET utf8mb4
     DEFAULT COLLATE utf8mb4_unicode_ci;
 
@@ -111,14 +111,14 @@ CREATE DATABASE ssafy_db
 SHOW DATABASES;
 
 -- 수정 (문자집합·정렬·암호화·읽기전용 등)
-ALTER DATABASE ssafy_db DEFAULT CHARACTER SET utf8mb4;
+ALTER DATABASE study_db DEFAULT CHARACTER SET utf8mb4;
 
 -- 삭제
-DROP DATABASE ssafy_db;
-DROP DATABASE IF EXISTS ssafy_db;   -- 없어도 에러 안 남
+DROP DATABASE study_db;
+DROP DATABASE IF EXISTS study_db;   -- 없어도 에러 안 남
 
 -- 사용 선택
-USE ssafy_db;
+USE study_db;
 ```
 
 **Character Set vs Collation**:
@@ -136,9 +136,9 @@ CREATE TABLE table_name (
 );
 ```
 
-**실습 - ssafy_user 테이블**:
+**실습 - member 테이블**:
 ```sql
-CREATE TABLE ssafy_user (
+CREATE TABLE member (
     user_num      INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id       VARCHAR(20)  NOT NULL,
     user_name     VARCHAR(20)  NOT NULL,
@@ -177,7 +177,7 @@ CREATE TABLE board (
     id         INT AUTO_INCREMENT PRIMARY KEY,
     title      VARCHAR(100) NOT NULL,
     writer_id  INT          NOT NULL,
-    FOREIGN KEY (writer_id) REFERENCES ssafy_user(user_num)
+    FOREIGN KEY (writer_id) REFERENCES member(user_num)
         ON DELETE CASCADE       -- 부모 삭제 시 자식도 삭제
         ON UPDATE CASCADE       -- 부모 갱신 시 자식도 갱신
 );
@@ -191,8 +191,8 @@ ON DELETE / ON UPDATE 옵션:
 ### B-5. 테이블 스키마 확인
 
 ```sql
-DESCRIBE ssafy_user;    -- 또는 DESC ssafy_user;
-SHOW CREATE TABLE ssafy_user;  -- 생성 DDL 전체 확인
+DESCRIBE member;    -- 또는 DESC member;
+SHOW CREATE TABLE member;  -- 생성 DDL 전체 확인
 SHOW TABLES;            -- DB 안 모든 테이블 목록
 ```
 
@@ -211,22 +211,22 @@ DESC 결과:
 
 ```sql
 -- 컬럼 추가
-ALTER TABLE ssafy_user ADD COLUMN age INT;
+ALTER TABLE member ADD COLUMN age INT;
 
 -- 컬럼 타입 변경
-ALTER TABLE ssafy_user MODIFY COLUMN user_email VARCHAR(50);
+ALTER TABLE member MODIFY COLUMN user_email VARCHAR(50);
 
 -- 컬럼 이름 + 타입 변경
-ALTER TABLE ssafy_user CHANGE user_email email VARCHAR(50);
+ALTER TABLE member CHANGE user_email email VARCHAR(50);
 
 -- 컬럼 삭제
-ALTER TABLE ssafy_user DROP COLUMN age;
+ALTER TABLE member DROP COLUMN age;
 
 -- 제약조건 추가
-ALTER TABLE ssafy_user ADD CONSTRAINT uq_email UNIQUE(user_email);
+ALTER TABLE member ADD CONSTRAINT uq_email UNIQUE(user_email);
 
 -- 제약조건 삭제
-ALTER TABLE ssafy_user DROP INDEX uq_email;
+ALTER TABLE member DROP INDEX uq_email;
 ```
 
 ### B-7. DROP vs TRUNCATE vs DELETE
@@ -258,18 +258,18 @@ ALTER TABLE ssafy_user DROP INDEX uq_email;
 
 ```sql
 -- 방법 1: 모든 컬럼 (컬럼명 생략, 순서대로)
-INSERT INTO ssafy_user
+INSERT INTO member
 VALUES (1, 'godqhr', '양명균', '1234', 'godqhr@gmail.com', NOW());
 
 -- 방법 2: 원하는 컬럼만
-INSERT INTO ssafy_user (user_id, user_name, user_password)
-VALUES ('kimssafy', '김싸피', '1q2w3e4r!@');
+INSERT INTO member (user_id, user_name, user_password)
+VALUES ('kimstudent', '김학생', '1q2w3e4r!@');
 
 -- 방법 3: 여러 행 한 번에
-INSERT INTO ssafy_user (user_id, user_name, user_password) VALUES
-    ('leessafy', '이싸피', '0000'),
-    ('parkssafy', '박싸피', '1111'),
-    ('5ssafy', '오싸피', '2222');
+INSERT INTO member (user_id, user_name, user_password) VALUES
+    ('leestudent', '이학생', '0000'),
+    ('parkstudent', '박학생', '1111'),
+    ('5student', '오학생', '2222');
 ```
 
 **자동 처리 컬럼**:
@@ -293,10 +293,10 @@ SET    col1 = value1, col2 = value2, ...
 **예제**:
 ```sql
 -- 모든 레코드의 이름을 'anonymous' 로 수정 (전체!)
-UPDATE ssafy_user SET user_name = 'anonymous';
+UPDATE member SET user_name = 'anonymous';
 
 -- user_num = 3 인 학생 비밀번호만 변경
-UPDATE ssafy_user
+UPDATE member
 SET    user_password = '1234'
 WHERE  user_num = 3;
 
@@ -326,14 +326,14 @@ DELETE FROM tbl_name
 **예제**:
 ```sql
 -- user_num = 4 인 사용자 삭제
-DELETE FROM ssafy_user WHERE user_num = 4;
+DELETE FROM member WHERE user_num = 4;
 
 -- 1년 이상 미접속자 삭제
-DELETE FROM ssafy_user
+DELETE FROM member
 WHERE  last_login < DATE_SUB(NOW(), INTERVAL 1 YEAR);
 
 -- 전체 삭제 (TRUNCATE 가 더 빠름)
-DELETE FROM ssafy_user;
+DELETE FROM member;
 ```
 
 ⚠️ **WHERE 생략 = 모든 행 삭제**. UPDATE 와 동일하게 Safe Mode 가 막아줌.
@@ -376,7 +376,7 @@ DELETE FROM ssafy_user;
 ### D-4. COMMIT 예제
 
 ```sql
-USE ssafy;
+USE study;
 CREATE TABLE test_table (val VARCHAR(20));
 
 START TRANSACTION;
@@ -465,7 +465,7 @@ COMMIT;                  -- 결과: A, D
 ## 자가점검
 
 1. CHAR(10) 과 VARCHAR(10) 의 저장 방식 차이는?
-2. `UPDATE ssafy_user SET user_password = '1234'` 의 결과는?
+2. `UPDATE member SET user_password = '1234'` 의 결과는?
 3. PRIMARY KEY 와 UNIQUE 의 차이를 3가지 들으시오.
 4. TRUNCATE 와 DELETE 의 차이를 트랜잭션·속도·AUTO_INCREMENT 관점에서.
 5. ROLLBACK 이 안 되는 명령 3가지?
@@ -477,7 +477,7 @@ COMMIT;                  -- 결과: A, D
    - VARCHAR(10) "abc" → "abc" + 길이 정보 (3 + 1 바이트). 가변.
    - CHAR: 길이 일정 시 빠름. VARCHAR: 공간 절약.
 
-2. **모든 ssafy_user 의 user_password 가 '1234' 로 변경** (WHERE 생략 = 전체).
+2. **모든 member 의 user_password 가 '1234' 로 변경** (WHERE 생략 = 전체).
    Safe Mode 가 켜져 있으면 에러. 운영에선 절대 안 됨.
 
 3. (1) **개수**: PK 는 테이블당 1개, UNIQUE 는 여러 개 가능

@@ -71,7 +71,7 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c"   uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
-<%@ page import="java.util.*, com.ssafy.dto.*" %>
+<%@ page import="java.util.*, com.study.dto.*" %>
 ```
 
 ## 9 내장 객체
@@ -176,7 +176,7 @@ ${cookie.JSESSIONID.value}
 <jsp:forward page="login.jsp"/>
 
 <%-- JavaBean (옛 스타일) --%>
-<jsp:useBean id="board" class="com.ssafy.Board" scope="request"/>
+<jsp:useBean id="board" class="com.study.Board" scope="request"/>
 <jsp:setProperty name="board" property="*"/>
 ```
 

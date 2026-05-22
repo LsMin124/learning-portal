@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "id": "ssafy-java",
-  "title": "SSAFY 15기 자바비전공",
+  "id": "backend-java",
+  "title": "Java 백엔드 부트캠프",
   "subtitle": "Web Backend + DB + Spring + Vue",
-  "source": "SSAFY 15기",
+  "source": "Java 백엔드 부트캠프",
   "language": "ko",
   "tags": ["java", "spring", "mybatis", "vue", "bootcamp"],
   "totalCount": 33,

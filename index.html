@@ -394,19 +394,33 @@ const getDone = (cid) => {
 };
 const setDone = (cid, s) => localStorage.setItem(lsDoneKey(cid), JSON.stringify([...s]));
 
-// 옛 localStorage 마이그레이션 (study.done -> portal.done.ssafy-java)
+// 옛 localStorage 마이그레이션 (study.done -> portal.done.backend-java)
 function migrateLegacyLs(){
   const legacyDone = localStorage.getItem('study.done');
-  if (legacyDone && !localStorage.getItem(lsDoneKey('ssafy-java'))){
+  if (legacyDone && !localStorage.getItem(lsDoneKey('backend-java'))){
     try {
       const arr = JSON.parse(legacyDone)
         .map(n => n.replace(/\.pdf$/, ''));
-      localStorage.setItem(lsDoneKey('ssafy-java'), JSON.stringify(arr));
+      localStorage.setItem(lsDoneKey('backend-java'), JSON.stringify(arr));
     } catch {}
   }
   const legacyOpen = localStorage.getItem('study.open');
-  if (legacyOpen && !localStorage.getItem(lsOpenKey('ssafy-java'))){
-    localStorage.setItem(lsOpenKey('ssafy-java'), legacyOpen.replace(/\.pdf$/, ''));
+  if (legacyOpen && !localStorage.getItem(lsOpenKey('backend-java'))){
+    localStorage.setItem(lsOpenKey('backend-java'), legacyOpen.replace(/\.pdf$/, ''));
+  }
+  // 코스 id rename: ssafy-java -> backend-java
+  const renamedDone = localStorage.getItem('portal.done.ssafy-java');
+  if (renamedDone && !localStorage.getItem(lsDoneKey('backend-java'))){
+    localStorage.setItem(lsDoneKey('backend-java'), renamedDone);
+  }
+  localStorage.removeItem('portal.done.ssafy-java');
+  const renamedOpen = localStorage.getItem('portal.open.ssafy-java');
+  if (renamedOpen && !localStorage.getItem(lsOpenKey('backend-java'))){
+    localStorage.setItem(lsOpenKey('backend-java'), renamedOpen);
+  }
+  localStorage.removeItem('portal.open.ssafy-java');
+  if (localStorage.getItem(LS_COURSE) === 'ssafy-java'){
+    localStorage.setItem(LS_COURSE, 'backend-java');
   }
   const legacyMode = localStorage.getItem('study.mode');
   if (legacyMode && !localStorage.getItem(LS_MODE)){

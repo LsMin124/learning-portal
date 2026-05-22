@@ -1,7 +1,7 @@
 # JPA 3강: Spring Data JPA
 
 > **이 강의는 무엇인가**: JPA 의 EntityManager 를 직접 다루는 코드를 *인터페이스 선언 한 줄* 로 압축하는 Spring 모듈. `JpaRepository`, 메서드 이름 규칙, `@Query` (JPQL), 페이징, `@Modifying`, Projection.
-> **왜 배우는가**: JPA 의 *진짜 실무 코드 패턴*. 2 강에서 본 영속성 컨텍스트의 마법을 *실제 Repository 코드* 로 어떻게 활용하는가. SSAFY 백엔드의 거의 모든 신규 코드가 이 패턴.
+> **왜 배우는가**: JPA 의 *진짜 실무 코드 패턴*. 2 강에서 본 영속성 컨텍스트의 마법을 *실제 Repository 코드* 로 어떻게 활용하는가. BOOTCAMP 백엔드의 거의 모든 신규 코드가 이 패턴.
 
 ---
 

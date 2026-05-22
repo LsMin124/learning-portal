@@ -8,8 +8,8 @@
 ## 들어가기 전에
 
 - **선수**: 자바 기초 정도면 충분. DB 학습 첫 강의.
-- **환경**: MySQL 8 + Workbench. SSAFY 는 보통 MySQL.
-- **실습 스키마**: SSAFY_CORPORATION (EMP · DEPT · BONUS · SALGRADE).
+- **환경**: MySQL 8 + Workbench. 본 코스 실습 환경은 MySQL.
+- **실습 스키마**: HR_CORP (EMP · DEPT · BONUS · SALGRADE).
 - **마인드셋**: "어떻게(how)" 가 아니라 "무엇(what)" 을 선언. 옵티마이저가 실행 계획 결정.
 
 ---
@@ -123,14 +123,14 @@ DB 안 자료 **구조·표현방법·관계 등 전반적인 명세**.
 +----+----------+--------+------------+
 | id | name     | passwd | join_date  |
 +----+----------+--------+------------+
-| 1  | ssafy    | 1234   | 2019-01-01 |
+| 1  | study    | 1234   | 2019-01-01 |
 | 2  | edu      | abcd   | 2020-06-07 |
-| 3  | ssafy.pro| 1q2w   | 2021-02-26 |
+| 3  | study.pro| 1q2w   | 2021-02-26 |
 | 4  | admin    | admin  | 2022-11-28 |
 +----+----------+--------+------------+
 ```
 
-### B-5. SSAFY_CORPORATION 실습 스키마
+### B-5. HR_CORP 실습 스키마
 
 ```
 EMP                          DEPT
@@ -600,4 +600,4 @@ ORDER BY comm DESC NULLS LAST;
 | p.42 ~ p.43 ORDER BY | §Part F |
 | p.44 마무리 | (생략) |
 
-_44p 슬라이드 전 범위 + SSAFY_CORPORATION 실습 스키마 정확 반영._
+_44p 슬라이드 전 범위 + HR_CORP 실습 스키마 정확 반영._

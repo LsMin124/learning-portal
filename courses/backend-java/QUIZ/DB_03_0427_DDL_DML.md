@@ -1,6 +1,6 @@
 # DDL / DML / Transaction - 퀴즈
 
-> 14문항. 개념·적용·디버그·면접. ssafy_user 스키마 기준.
+> 14문항. 개념·적용·디버그·면접. member 스키마 기준.
 
 ---
 
@@ -47,7 +47,7 @@ CREATE TABLE payment (
 - **CHAR**: 길이가 거의 일정한 코드 - 우편번호 (5자리), 국가코드 ('KR'), 성별 ('M'/'F'), MD5 해시 (32자리)
 - **VARCHAR**: 가변 길이 - 이름, 이메일, URL, 게시글 제목
 
-`ssafy_user` 의 `user_id VARCHAR(20)` 은 사용자 ID 길이가 4 ~ 20 자로 가변이라 VARCHAR 선택.
+`member` 의 `user_id VARCHAR(20)` 은 사용자 ID 길이가 4 ~ 20 자로 가변이라 VARCHAR 선택.
 
 </details>
 
@@ -67,7 +67,7 @@ CREATE TABLE payment (
 **TIMESTAMP 단점**: **2038년 1월 19일 03:14:07 UTC** 에 32-bit 정수 오버플로 발생 (Y2K38 문제).
 
 → 2038 이후의 시간이 필요하면 (예: 50년 만기 적금) **DATETIME 사용**.
-→ ssafy_user 의 `signup_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP` 는 가입 시점이라 2038 이전 사용 가정.
+→ member 의 `signup_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP` 는 가입 시점이라 2038 이전 사용 가정.
 
 </details>
 
@@ -85,7 +85,7 @@ CREATE TABLE payment (
 | **CHECK** | 값 범위 검증 (MySQL 8.0+) | 가능 | 여러 개 |
 
 ```sql
-CREATE TABLE ssafy_user (
+CREATE TABLE member (
     user_num      INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id       VARCHAR(20)  NOT NULL UNIQUE,
     user_name     VARCHAR(20)  NOT NULL,
@@ -114,7 +114,7 @@ CREATE TABLE ssafy_user (
 - MS SQL Server 만 UNIQUE 에 NULL 1개만 허용 (표준에선 여러 개).
 
 ```sql
-CREATE TABLE ssafy_user (
+CREATE TABLE member (
     user_num   INT PRIMARY KEY,         -- 유일 식별자
     user_id    VARCHAR(20) UNIQUE,      -- 로그인 ID (중복 X, NULL 가능)
     user_email VARCHAR(30) UNIQUE       -- 이메일 (중복 X, NULL 가능)
@@ -123,12 +123,12 @@ CREATE TABLE ssafy_user (
 
 </details>
 
-### Q6. (적용) ssafy_user 테이블을 PK·NOT NULL·DEFAULT CURRENT_TIMESTAMP 포함하여 CREATE.
+### Q6. (적용) member 테이블을 PK·NOT NULL·DEFAULT CURRENT_TIMESTAMP 포함하여 CREATE.
 
 <details><summary>정답</summary>
 
 ```sql
-CREATE TABLE ssafy_user (
+CREATE TABLE member (
     user_num      INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id       VARCHAR(20)  NOT NULL,
     user_name     VARCHAR(20)  NOT NULL,
@@ -147,31 +147,31 @@ user_num INT PRIMARY KEY,
 PRIMARY KEY (user_num)
 
 -- (3) ALTER 로 나중에 추가
-ALTER TABLE ssafy_user ADD PRIMARY KEY (user_num);
+ALTER TABLE member ADD PRIMARY KEY (user_num);
 ```
 
 `AUTO_INCREMENT` 는 PK 컬럼에만 사용 (보통 1개 INT/BIGINT).
 
 </details>
 
-### Q7. (적용) INSERT 3가지 방법으로 ssafy_user 에 데이터 입력.
+### Q7. (적용) INSERT 3가지 방법으로 member 에 데이터 입력.
 
 <details><summary>정답</summary>
 
 ```sql
 -- 방법 1: 모든 컬럼 (순서대로, 컬럼명 생략)
-INSERT INTO ssafy_user
+INSERT INTO member
 VALUES (1, 'godqhr', '양명균', '1234', 'godqhr@gmail.com', NOW());
 
 -- 방법 2: 원하는 컬럼만 (AUTO_INCREMENT·DEFAULT 컬럼 생략 가능)
-INSERT INTO ssafy_user (user_id, user_name, user_password)
-VALUES ('kimssafy', '김싸피', '1q2w3e4r!@');
+INSERT INTO member (user_id, user_name, user_password)
+VALUES ('kimstudent', '김학생', '1q2w3e4r!@');
 
 -- 방법 3: 여러 행 한 번에 (성능↑, 트랜잭션 1개)
-INSERT INTO ssafy_user (user_id, user_name, user_password) VALUES
-    ('leessafy',  '이싸피', '0000'),
-    ('parkssafy', '박싸피', '1111'),
-    ('5ssafy',    '오싸피', '2222');
+INSERT INTO member (user_id, user_name, user_password) VALUES
+    ('leestudent',  '이학생', '0000'),
+    ('parkstudent', '박학생', '1111'),
+    ('5student',    '오학생', '2222');
 ```
 
 **자동 처리**:
@@ -189,22 +189,22 @@ INSERT INTO ssafy_user (user_id, user_name, user_password) VALUES
 
 ```sql
 -- 컬럼 추가 (NOT NULL DEFAULT 로 안전하게)
-ALTER TABLE ssafy_user ADD COLUMN age INT NOT NULL DEFAULT 0;
+ALTER TABLE member ADD COLUMN age INT NOT NULL DEFAULT 0;
 
 -- 컬럼 타입 변경 (이름 유지)
-ALTER TABLE ssafy_user MODIFY COLUMN user_email VARCHAR(50);
+ALTER TABLE member MODIFY COLUMN user_email VARCHAR(50);
 
 -- 컬럼 이름 + 타입 변경
-ALTER TABLE ssafy_user CHANGE user_email email VARCHAR(50);
+ALTER TABLE member CHANGE user_email email VARCHAR(50);
 
 -- 컬럼 삭제
-ALTER TABLE ssafy_user DROP COLUMN age;
+ALTER TABLE member DROP COLUMN age;
 
 -- 제약조건 추가
-ALTER TABLE ssafy_user ADD CONSTRAINT uq_email UNIQUE (user_email);
+ALTER TABLE member ADD CONSTRAINT uq_email UNIQUE (user_email);
 
 -- 제약조건 삭제 (UNIQUE 는 INDEX 로)
-ALTER TABLE ssafy_user DROP INDEX uq_email;
+ALTER TABLE member DROP INDEX uq_email;
 ```
 
 ⚠️ **운영 1억 행 테이블의 ALTER TABLE** 은 전체 테이블 락 → 서비스 정지 위험.
@@ -213,7 +213,7 @@ ALTER TABLE ssafy_user DROP INDEX uq_email;
 
 </details>
 
-### Q9. (디버그) `UPDATE ssafy_user SET user_password = '1234';` 실행 시 무슨 일이 일어나는가?
+### Q9. (디버그) `UPDATE member SET user_password = '1234';` 실행 시 무슨 일이 일어나는가?
 
 <details><summary>정답</summary>
 
@@ -248,12 +248,12 @@ CREATE TABLE board (
     id        INT AUTO_INCREMENT PRIMARY KEY,
     title     VARCHAR(100),
     writer_id INT NOT NULL,
-    FOREIGN KEY (writer_id) REFERENCES ssafy_user(user_num)
+    FOREIGN KEY (writer_id) REFERENCES member(user_num)
         ON DELETE CASCADE
 );
 ```
 
-| 옵션 | 부모 (ssafy_user) 삭제 시 자식 (board) 동작 |
+| 옵션 | 부모 (member) 삭제 시 자식 (board) 동작 |
 |--|--|
 | **CASCADE** | 같이 삭제 |
 | **SET NULL** | writer_id 를 NULL 로 (단 컬럼 NULL 허용해야) |
@@ -290,8 +290,8 @@ CREATE TABLE board (
 - 조건 행만 삭제 / 롤백 가능성 필요 → `DELETE`
 
 ```sql
-DELETE FROM ssafy_user;          -- 행은 다 지웠지만 다음 가입 user_num = 100
-TRUNCATE TABLE ssafy_user;       -- 행 다 지우고 다음 가입 user_num = 1
+DELETE FROM member;          -- 행은 다 지웠지만 다음 가입 user_num = 100
+TRUNCATE TABLE member;       -- 행 다 지우고 다음 가입 user_num = 1
 ```
 
 </details>

@@ -126,8 +126,8 @@ MOD(10, 3)               -- 1
 CONCAT('A', 'B', 'C')                    -- ABC (MySQL 은 || X)
 SUBSTR(ename, 1, 3)                      -- 1-base
 LEFT(ename, 3) / RIGHT(ename, 3)
-LENGTH('SSAFY 김')                       -- 9 byte (UTF-8 한글 3B)
-CHAR_LENGTH('SSAFY 김')                  -- 7 자
+LENGTH('BOOTCAMP 김')                       -- 9 byte (UTF-8 한글 3B)
+CHAR_LENGTH('BOOTCAMP 김')                  -- 7 자
 UPPER(ename) / LOWER(ename)
 TRIM(' x ')                               -- 'x'
 REPLACE(ename, 'A', 'X')

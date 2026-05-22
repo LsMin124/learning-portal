@@ -68,7 +68,7 @@ public class HelloServlet extends HttpServlet { ... }
 // 2. web.xml
 <servlet>
     <servlet-name>hello</servlet-name>
-    <servlet-class>com.ssafy.HelloServlet</servlet-class>
+    <servlet-class>com.study.HelloServlet</servlet-class>
 </servlet>
 <servlet-mapping>
     <servlet-name>hello</servlet-name>

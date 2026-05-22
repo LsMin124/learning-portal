@@ -40,7 +40,7 @@ public interface BoardMapper {
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ssafy.mapper.BoardMapper">
+<mapper namespace="com.study.mapper.BoardMapper">
 
     <select id="search" parameterType="BoardSearchCond" resultType="Board">
         SELECT id, title, content, user_id AS userId, created_at AS createdAt
@@ -61,7 +61,7 @@ public interface BoardMapper {
 # (3) application.yml
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.ssafy.dto
+  type-aliases-package: com.study.dto
   configuration:
     map-underscore-to-camel-case: true       # user_id -> userId
     default-fetch-size: 100
@@ -93,7 +93,7 @@ mybatis:
 # application.yml
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.ssafy.dto
+  type-aliases-package: com.study.dto
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: false
@@ -132,7 +132,7 @@ public interface BoardMapper {
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ssafy.mapper.BoardMapper">
+<mapper namespace="com.study.mapper.BoardMapper">
 
     <!-- SELECT -->
     <select id="findById" parameterType="long" resultType="Board">
@@ -281,7 +281,7 @@ public class BatchService {
 
 ```yaml
 logging.level:
-  com.ssafy.mapper: DEBUG          # Mapper 인터페이스 경로
+  com.study.mapper: DEBUG          # Mapper 인터페이스 경로
   org.mybatis: DEBUG
 ```
 

@@ -91,7 +91,7 @@ watch(userId, async (newId) => {
 - **Vue 의 반응성?** → Proxy 로 `ref/reactive` 변수를 감싸 변경 감지 → DOM 자동 갱신. 선언형 UI.
 - **`ref` vs `reactive`?** → 단일 값 ref (`.value`), 객체 reactive. 일관성 위해 ref 통일도 OK.
 - **`v-for :key` 안 주면?** → 위치 기반 매칭 → 정렬 시 input 값이 다른 행으로 옮겨짐.
-- **Vue vs React?** → Vue: Proxy 반응성 (자연스러움), React: 명시적 setState. SSAFY 는 Vue (한국 인기 + Spring 조합).
+- **Vue vs React?** → Vue: Proxy 반응성 (자연스러움), React: 명시적 setState. BOOTCAMP 는 Vue (한국 인기 + Spring 조합).
 
 ---
 

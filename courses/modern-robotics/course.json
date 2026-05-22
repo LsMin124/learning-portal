@@ -6,7 +6,7 @@
   "source": "Kevin M. Lynch & Frank C. Park, Cambridge University Press 2017 (preprint, http://modernrobotics.org)",
   "language": "ko",
   "tags": ["robotics", "kinematics", "dynamics", "control", "motion-planning", "mechanics"],
-  "totalCount": 4,
+  "totalCount": 5,
   "sections": [
     {
       "title": "Foundation",
@@ -19,7 +19,8 @@
     {
       "title": "Kinematics",
       "items": [
-        {"stem": "ch04-forward-kinematics", "pages": 34, "label": "Ch 4. Forward Kinematics"}
+        {"stem": "ch04-forward-kinematics", "pages": 34, "label": "Ch 4. Forward Kinematics"},
+        {"stem": "ch05-velocity-kinematics", "pages": 48, "label": "Ch 5. Velocity Kinematics and Statics"}
       ]
     }
   ]

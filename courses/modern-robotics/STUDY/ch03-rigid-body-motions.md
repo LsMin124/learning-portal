@@ -181,7 +181,7 @@ $$e^A = I + A + \frac{A^2}{2!} + \frac{A^3}{3!} + \cdots$$
 
 ### 5.1 정의
 
-$$SE(3) = \left\{ T = \begin{bmatrix} R & p \\ 0 & 1 \end{bmatrix} \ \bigg|\ R \in SO(3), p \in \mathbb{R}^3 \right\}$$
+$$SE(3) = \left\{ T = \begin{bmatrix} R & p \\ 0 & 1 \end{bmatrix} \,\middle|\, R \in SO(3),\ p \in \mathbb{R}^3 \right\}$$
 
 4×4 행렬, **6 DoF** (회전 3 + 병진 3).
 

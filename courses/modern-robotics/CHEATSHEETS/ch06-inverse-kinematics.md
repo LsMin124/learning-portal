@@ -35,6 +35,37 @@
 
 총 2³ = 8.
 
+### 표 2-bis. PUMA 6R IK 단계별 식
+
+```
+Step 1  p_w = p_d - d_6 R_d [0,0,1]ᵀ           # wrist center
+
+Step 2  θ_1 = atan2(p_wy, p_wx)                 # 또는 + π (back)
+
+Step 3  L_3 = √(a_3² + d_4²),  φ = atan2(d_4, a_3)
+        r   = √(p_wx² + p_wy²),  s = p_wz - d_1
+        D   = (r² + s² - L_2² - L_3²) / (2 L_2 L_3)
+        θ_3 = atan2(±√(1 - D²), D) - φ          # elbow up/down
+        θ_2 = atan2(s, r) - atan2(L_3 sin(θ_3+φ), L_2 + L_3 cos(θ_3+φ))
+
+Step 4  R_03 = R_z(θ_1) R_y(θ_2) R_y(θ_3)
+
+Step 5  R_36 = R_03ᵀ R_d
+
+Step 6  θ_5 = atan2(±√(r_13² + r_23²), r_33)    # wrist flip
+        θ_4 = atan2(r_23, r_13)
+        θ_6 = atan2(r_32, -r_31)
+```
+
+### 표 2-ter. PUMA 의 *Singularity* 종류
+
+| Singularity | 조건 | 검출 변수 |
+|--|--|--|
+| Workspace boundary | wrist center 가 reach 한계 | `|D| → 1` (Step 3) |
+| Shoulder | wrist center 가 base z-axis 위 | `r = √(p_wx² + p_wy²) → 0` (Step 2) |
+| Elbow | 팔이 완전히 펴짐 | `D = 1` (Step 3) |
+| Wrist | joint 4 와 6 의 축 공선 | `sin θ_5 → 0` (Step 6) |
+
 ### 표 3. Numerical IK 알고리즘
 
 ```

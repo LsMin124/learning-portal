@@ -1,6 +1,6 @@
 # Ch 8 Dynamics — 퀴즈
 
-> 14 문항 (개념 4 / 계산 4 / 디버그 3 / 면접 3).
+> 16 문항 (개념 4 / 계산 4 / 디버그 3 / 면접 3 / ABA 2).
 
 ## 개념
 
@@ -244,5 +244,49 @@ Modern Robotics (2017) 이후 발전.
 6. **Body schema for humanoids** — 50+ DoF, articulated body algorithm 의 generalized 확장.
 
 8장의 *고전적 framework* 위에 이 모두가 쌓임.
+
+</details>
+
+## ABA
+
+### Q15. ABA 의 3-pass 알고리즘 핵심 변수
+
+ABA 의 backward pass 에서 갱신되는 *세 가지 핵심 양* `U_i`, `D_i`, `u_i` 의 의미와, 그 중 *forward pass 3* 에서 `θ̈_i` 계산에 쓰이는 식을 적어라.
+
+<details><summary>답</summary>
+
+- $U_i = \mathcal{I}^A_i A_i$ — joint i 의 *articulated-body 가 unit joint motion 에 대해 만드는 wrench*. 6-vector.
+- $D_i = A_i^T U_i$ — joint i 의 *articulated-body inertia*. *스칼라*. M 행렬의 i 번째 대각 원소에 대응.
+- $u_i = \tau_i - A_i^T p^A_i$ — joint i 의 *force residual*. 외부 토크 `τ_i` 에서 articulated-body bias 의 i 방향 성분을 뺀 것.
+
+Pass 3 식:
+
+$$\ddot\theta_i = \frac{u_i - U_i^T \dot{\mathcal{V}}_i^{prior}}{D_i}$$
+
+여기서 $\dot{\mathcal{V}}_i^{prior} = [\mathrm{Ad}_{T_{i,i-1}}] \dot{\mathcal{V}}_{i-1} + c_i$ 는 *부모 가속도가 전파된 prior*.
+
+`M⁻¹` 가 명시적으로 나오지 않고 *각 joint 의 스칼라 `D_i`* 의 역수만 필요한 점이 ABA 의 핵심 — `O(n)`.
+
+</details>
+
+### Q16. 7-DoF arm 의 forward dynamics 선택
+
+7-DoF Franka Panda 의 1kHz simulation loop 에서 `M⁻¹ (τ − c − g)` 대비 ABA 의 *예상 성능 비율* 과, 그럼에도 *naive* 가 *나쁘지 않은 경우*.
+
+<details><summary>답</summary>
+
+**성능 비율** (전형값, n=7):
+- Naive (M, c, g 따로 + M⁻¹ via LU): ~24,000 FLOPs
+- CRBA + Cholesky: ~6,000 FLOPs
+- **ABA: ~1,500 FLOPs**
+
+ABA 가 *16x* 빠름. 1kHz 에서 ABA = 1.5M FLOPs/s ≈ 단일 CPU core 의 ~0.1% 이내. naive 는 ~1.6%.
+
+**naive 가 나쁘지 않은 경우**:
+1. n ≤ 6 의 *작은* arm — `O(n³)` 의 절대 상수가 작음. n=2 (2R arm) 은 직접 행렬 inverse 가 *더 빠름*.
+2. 같은 step 안에서 `M⁻¹` 외에 `M`, `c`, `g` 도 *별도로 필요* 한 경우 — RNEA + CRBA 가 자연스러움 (impedance control, OSC 의 task-space inertia `Λ = (J M⁻¹ Jᵀ)⁻¹`).
+3. *Differentiable* simulation — ABA 의 backward pass 에서 articulated-body inertia 의 gradient 가 *복잡*. CRBA + 단순 inverse 가 자동미분 친화적.
+
+실용: Pinocchio 는 `pin.aba(model, data, q, qdot, tau)` 와 `pin.crba(model, data, q)` 두 함수를 *모두* 제공. 상황에 맞는 호출이 표준.
 
 </details>

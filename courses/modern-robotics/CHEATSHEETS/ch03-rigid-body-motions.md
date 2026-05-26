@@ -10,6 +10,7 @@
 - **Adjoint** `[Ad_T] = [R, 0; [p]R, R]`. twist 변환.
 - **Screw axis** `S = (ω, v)` with normalization. `T = e^{[S]θ}`.
 - **Wrench** `F = (m, f)`. `F_b = [Ad_T]ᵀ F_a` (dual).
+- **Quaternion** `q = (cos(θ/2), sin(θ/2) ω̂) ∈ S³`. `q` 와 `-q` 같은 회전. SLERP 보간. IK 안정성.
 
 ---
 
@@ -96,6 +97,30 @@
 | Frame 변환 | `F_b = [Ad_T]ᵀ F_a` (T = T_{ab}) |
 | Equilibrium | 적용된 모든 F 의 합 = 0 |
 
+### 표 9. Quaternion `q = (q_w, q_v)`
+
+| 항목 | 형태 |
+|--|--|
+| 4-vector | `q = (q_w, q_x, q_y, q_z)`, `‖q‖ = 1` |
+| Axis-angle → q | `q = (cos(θ/2), sin(θ/2) ω̂)` |
+| q → axis-angle | `θ = 2 arccos(q_w)`, `ω̂ = q_v / ‖q_v‖` |
+| q → R | `R = I + 2 q_w [q_v] + 2 [q_v]²` |
+| q 곱 | `q_1 ⊗ q_2 = (q_{1w}q_{2w} − q_{1v}·q_{2v}, q_{1w}q_{2v} + q_{2w}q_{1v} + q_{1v} × q_{2v})` |
+| 역원 (unit) | `q⁻¹ = (q_w, −q_v)` |
+| 점 회전 | `p' = q ⊗ (0, p) ⊗ q⁻¹` |
+| Double cover | `q` 와 `-q` 같은 회전 → 보간 전 `q_0·q_1 ≥ 0` 통일 |
+| 작은 각 근사 | `ω ≈ 2 q_v` (`q_w ≈ 1` 일 때) |
+
+### 표 10. SLERP / LERP
+
+```
+cos Ω = q_0 · q_1                    # 4D 내적
+if cos Ω < 0:  q_1 ← -q_1            # 짧은 경로
+if cos Ω > 1 - 1e-3:                 # 거의 평행
+    return normalize((1-t) q_0 + t q_1)   # LERP fallback
+slerp = sin((1-t)Ω)/sin Ω · q_0 + sin(tΩ)/sin Ω · q_1
+```
+
 ---
 
 ## Mind Map
@@ -111,7 +136,8 @@
 │            └─ Spatial ω_s vs Body ω_b
 ├─ 4. SO(3) 지수 좌표 ─┬─ Rodrigues' formula
 │                     ├─ matrix exp 일반론
-│                     └─ log (θ=π 특수)
+│                     ├─ log (θ=π 특수)
+│                     └─ 4.5 Quaternion (S³, double cover, SLERP, IK 안정성)
 ├─ 5. SE(3) ─┬─ [R, p; 0, 1]
 │            ├─ T⁻¹ = [Rᵀ, −Rᵀp; 0, 1]
 │            └─ subscript cancel (T_ab T_bc = T_ac)
@@ -186,3 +212,4 @@ G(θ) = Iθ + (1 − cos θ) [ω] + (θ − sin θ) [ω]²
 | 6 | Twist V = (ω, v). V_s = [Ad_T] V_b. |
 | 7 | Screw S = (ω, v) normalized. T = e^{[S]θ}. Chasles. |
 | 8 | Wrench F = (m, f). F_b = [Ad_T]ᵀ F_a. Power = FᵀV. |
+| 4.5 | Quaternion q = (cos(θ/2), sin(θ/2)ω̂). Double cover. SLERP. ω≈2q_v 작은각 근사. |

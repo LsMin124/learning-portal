@@ -60,18 +60,125 @@
 
 PUMA, KUKA KR, ABB 대부분 산업용 6R arm 이 이 구조.
 
-### 2.2 6R PUMA IK 단계
+### 2.2 6R PUMA IK 단계 — 개요
 
 ![Figure 6.4 — PUMA arm 의 IK geometric decomposition. 교재 p.223](/courses/modern-robotics/figures/ch06/fig-6-4.png)
 
-1. **Wrist center 계산**: `p_w = p_d − d_6 · ẑ_b` (마지막 link 의 z 축 따라 d_6 만큼 후퇴)
+1. **Wrist center 계산**: `p_w = p_d − d_6 · ẑ_b`
 2. **First 3 joints** (position): `p_w` 의 위치에서 `θ_1, θ_2, θ_3` 분석
-   - `θ_1 = atan2(p_{wy}, p_{wx})` (또는 + π 의 두 케이스)
-   - `θ_2, θ_3`: law of cosines (elbow up/down 두 케이스)
-3. **Last 3 joints** (orientation): `R_{36}` (마지막 3 joint 의 누적 회전) = `R_{03}⁻¹ R_d` 에서 Euler-angle 추출
-   - `θ_4, θ_5, θ_6` (3 회전축의 종류에 따라 ZYZ 또는 ZYX 등 Euler convention)
+3. **Last 3 joints** (orientation): `R_{36} = R_{03}⁻¹ R_d` 에서 Euler-angle 추출
 
-### 2.3 *최대 8 개* 의 IK 해
+이하 §2.3 ~ §2.10 에서 각 단계의 *해석적 식* 을 직접 유도한다.
+
+### 2.3 좌표계 설정 (DH 표준)
+
+PUMA-560 의 link 파라미터 (단위: m, 책의 예제 값):
+
+| Link `i` | `α_{i-1}` | `a_{i-1}` | `d_i` | `θ_i` |
+|--|--|--|--|--|
+| 1 | 0 | 0 | 0 | `θ_1` |
+| 2 | −π/2 | 0 | 0 | `θ_2` |
+| 3 | 0 | `a_2 = 0.4318` | 0 | `θ_3` |
+| 4 | −π/2 | `a_3 = 0.0203` | `d_4 = 0.4331` | `θ_4` |
+| 5 | π/2 | 0 | 0 | `θ_5` |
+| 6 | −π/2 | 0 | 0 | `θ_6` |
+
+핵심 기하 — **joints 4, 5, 6 의 축이 한 점 (wrist center)** 에서 만난다. 끝 EE 와 wrist center 사이는 `d_6 = 0.0565` 의 오프셋.
+
+목표:
+- desired EE pose $T_d = \begin{bmatrix} R_d & p_d \\ 0 & 1 \end{bmatrix}$
+- 미지수: `θ = (θ_1, θ_2, θ_3, θ_4, θ_5, θ_6)`
+
+### 2.4 Step 1: Wrist center 계산
+
+EE 의 z 축 (`R_d` 의 3 번째 열 `r_3`) 따라 `d_6` 만큼 후퇴:
+
+$$p_w = p_d - d_6 \, r_3 = p_d - d_6 R_d \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}$$
+
+`p_w = (p_{wx}, p_{wy}, p_{wz})` 는 *오로지 θ_1, θ_2, θ_3 의 함수* — Pieper 의 핵심 결과.
+
+### 2.5 Step 2: θ_1 결정 (base 회전)
+
+`p_w` 를 base xy-평면에 투영. base 의 z 축 (`θ_1`) 회전은 단순 `atan2`:
+
+$$\theta_1 = \mathrm{atan2}(p_{wy}, p_{wx})$$
+
+또는 *뒤쪽 reach* (left-handed):
+
+$$\theta_1' = \mathrm{atan2}(p_{wy}, p_{wx}) + \pi$$
+
+→ `θ_1` 의 **2 케이스** (front / back).
+
+> 코드에선 두 케이스 모두 다음 단계로 보내고 마지막에 joint limit + heuristic 으로 선택.
+
+### 2.6 Step 3: θ_2, θ_3 결정 (어깨·팔꿈치)
+
+`θ_1` 이 정해진 후, link 2-3 의 *평면 2R 부분문제* 가 남는다.
+
+**변수 정의**:
+
+- $r = \sqrt{p_{wx}^2 + p_{wy}^2}$ — base xy-평면의 반경
+- $s = p_{wz} - d_1$ — 어깨 높이 보정 (책 PUMA 모델은 `d_1 = 0`)
+
+평면 2R 의 link 길이: `L_2 = a_2`, $L_3 = \sqrt{a_3^2 + d_4^2}$ (link 3 + link 4 offset 의 *기하 합성*).
+
+`L_3` 의 *bias angle*: $\varphi = \mathrm{atan2}(d_4, a_3)$.
+
+**Law of cosines** — `θ_3` (팔꿈치):
+
+$$D = \frac{r^2 + s^2 - L_2^2 - L_3^2}{2 L_2 L_3}$$
+
+$$\theta_3 = \mathrm{atan2}\big( \pm\sqrt{1 - D^2}, \ D \big) - \varphi$$
+
+→ `±` 가 **elbow up/down 2 케이스**. `1 - D² < 0` 이면 *해 없음* (reach 밖).
+
+**`θ_2`** — `θ_3` 정해진 후:
+
+$$\theta_2 = \mathrm{atan2}(s, r) - \mathrm{atan2}\big( L_3 \sin(\theta_3 + \varphi), \ L_2 + L_3 \cos(\theta_3 + \varphi) \big)$$
+
+여기까지 `(θ_1, θ_2, θ_3)` 의 *최대 4 조합*: front/back × elbow up/down.
+
+### 2.7 Step 4: `R_{03}` 계산 (FK 의 일부)
+
+`θ_1, θ_2, θ_3` 가 정해졌으니 각 joint 의 회전을 누적:
+
+$$R_{03} = R_z(\theta_1) \, R_y(\theta_2) \, R_y(\theta_3)$$
+
+(PUMA 의 첫 3 joint 가 *base z* + *어깨 y* + *팔꿈치 y* 인 일반적 경우 — 책 DH 표에 맞춰 축 부호 조정 필요.)
+
+### 2.8 Step 5: `R_{36}` 추출 (wrist 자세)
+
+전체 EE 회전이 `R_d = R_{06} = R_{03} R_{36}` 이므로:
+
+$$R_{36} = R_{03}^T R_d$$
+
+`R_{36}` 은 *spherical wrist* 의 누적 회전. joint 4, 5, 6 의 회전축이 PUMA 에선 **ZYZ** Euler 형태:
+
+$$R_{36} = R_z(\theta_4) \, R_y(\theta_5) \, R_z(\theta_6)$$
+
+### 2.9 Step 6: θ_4, θ_5, θ_6 추출 (ZYZ Euler)
+
+$R_{36} = \begin{bmatrix} r_{11} & r_{12} & r_{13} \\ r_{21} & r_{22} & r_{23} \\ r_{31} & r_{32} & r_{33} \end{bmatrix}$ 에 대해:
+
+$$\theta_5 = \mathrm{atan2}\big( \pm\sqrt{r_{13}^2 + r_{23}^2}, \ r_{33} \big)$$
+
+→ `±` 가 **wrist flip 2 케이스**. `sin θ_5 > 0` 이면:
+
+$$\theta_4 = \mathrm{atan2}(r_{23}, \, r_{13}), \quad \theta_6 = \mathrm{atan2}(r_{32}, \, -r_{31})$$
+
+`sin θ_5 < 0` (flip) 케이스에서는 부호 반전. `θ_5 = 0` 또는 `π` 면 **wrist singularity** — `θ_4 + θ_6` 만 정해지고 *개별 분해 불가*.
+
+### 2.10 종합 — 해의 수 = 2 × 2 × 2 = 8
+
+| 결정 단계 | binary choice |
+|--|--|
+| `θ_1` | front / back |
+| `θ_3` | elbow up / down |
+| `θ_5` | wrist up / flip |
+
+총 **8 후보 해**. 각각 joint limits + 충돌 검사 + 현재 pose 와의 거리로 *후처리 필터링*. 산업 controller 의 표준 패턴은 *현재 `θ` 와의 L1 거리 최소* 해 선택.
+
+### 2.11 *최대 8 개* 의 IK 해
 
 각 단계에서 binary choice:
 - `θ_1`: front / back (2)

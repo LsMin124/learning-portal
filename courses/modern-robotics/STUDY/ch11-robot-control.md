@@ -235,6 +235,176 @@ $$\dot{X} = Y(s) \mathcal{F}_{ext}$$
 
 ---
 
+## 9. Model Predictive Control (MPC)
+
+> **동기** — §1~§7 의 controller 는 *모두 즉시 응답* (one-step feedback). 미래의 *제약·constraint* 를 사전에 고려하지 못함. MPC 는 *finite horizon* 의 trajectory 를 매 step 다시 풀어 *constraint-aware* 제어를 한다.
+
+### 9.1 Receding horizon 의 개념
+
+매 control step `t_k` 에서:
+
+1. 현재 상태 `x(t_k)` 측정
+2. 미래 `[t_k, t_k + N \Delta t]` 의 *최적* control trajectory `u(t_k), \ldots, u(t_k + (N-1)\Delta t)` 계산 (cost 최소화 + constraint 만족)
+3. **첫 step `u(t_k)` 만 실제 robot 에 적용**
+4. 다음 step `t_{k+1}` 에서 (1) 부터 반복 (*sliding window*)
+
+이게 *receding horizon* — 매 번 새 horizon 으로 최적화.
+
+### 9.2 수식 형태
+
+매 step 의 최적화 문제:
+
+$$\begin{aligned}
+\min_{u_0, \ldots, u_{N-1}} \quad & \sum_{k=0}^{N-1} \ell(x_k, u_k) + \ell_f(x_N) \\
+\text{s.t.} \quad & x_{k+1} = f(x_k, u_k) \quad \text{(dynamics)} \\
+& x_k \in \mathcal{X}, \ u_k \in \mathcal{U} \quad \text{(state / input constraints)} \\
+& x_0 = x(t_k) \quad \text{(initial condition)}
+\end{aligned}$$
+
+- $\ell$ — *stage cost* (예: tracking + control effort): $\|x_k - x_d\|^2_Q + \|u_k\|^2_R$
+- $\ell_f$ — *terminal cost*: $\|x_N - x_d\|^2_{Q_f}$
+- $\mathcal{X}, \mathcal{U}$ — 안전 box, torque limit, joint limit, obstacle avoidance halfspace 등
+- $f$ — robot dynamics (8장 manipulator equation)
+
+### 9.3 Linear vs Nonlinear MPC
+
+| 종류 | dynamics | cost | solver | 응용 |
+|--|--|--|--|--|
+| **Linear MPC (LMPC)** | `x_{k+1} = A x_k + B u_k` | quadratic | **QP** (OSQP, qpOASES) | linearized humanoid, quad-rotor hover |
+| **Nonlinear MPC (NMPC)** | `x_{k+1} = f(x_k, u_k)` (`f` 비선형) | quadratic/일반 | SQP, IPOPT, ALTRO | manipulator full dynamics, locomotion |
+| **MPPI** (sampling) | `f` 임의 | 임의 (rollout 평가) | parallel rollout + softmax | contact-rich, GPU 친화 |
+
+### 9.4 manipulator MPC — 예제 cost 형태
+
+7-DoF arm 의 *tracking + collision avoidance* MPC:
+
+$$\ell(x_k, u_k) = \underbrace{\|p(x_k) - p_d(t_k)\|^2_{Q_p}}_{\text{EE 위치}} + \underbrace{\|R(x_k) - R_d(t_k)\|^2_{Q_R}}_{\text{EE 자세}} + \underbrace{\|u_k\|^2_R}_{\text{torque 절약}} + \underbrace{\sigma(d_{obs}(x_k))}_{\text{barrier}}$$
+
+여기서 `x_k = (θ_k, θ̇_k)`, `u_k = τ_k`. `d_{obs}` 는 가장 가까운 obstacle 의 signed distance, `σ` 는 *log barrier* (`-log d` 형태).
+
+constraint:
+- joint limit: $\theta_{\min} \leq \theta_k \leq \theta_{\max}$
+- torque limit: $|\tau_k| \leq \tau_{\max}$
+- velocity limit: $|\dot\theta_k| \leq \dot\theta_{\max}$
+
+### 9.5 MPC vs computed-torque
+
+| 측면 | Computed-torque (§3) | MPC |
+|--|--|--|
+| Horizon | 1 step | N step (수십~수백) |
+| Constraint | 직접 처리 X (saturation 후 hand-tuned) | optimization 안에서 명시적 |
+| Real-time | ✓ (단순 식) | borderline (NMPC ~ ms, LMPC ~ μs) |
+| Trajectory | 외부에서 주어짐 | 내부에서 동시 생성 가능 |
+| Model error | tracking error 직접 | predictive cost 통해 부드럽게 흡수 |
+
+### 9.6 실용 — 산업 채용
+
+- **ANYmal, Spirit, Spot quadruped locomotion**: convex MPC for body trajectory + Whole-Body QP (WB-QP) for joint torque. 100~400 Hz.
+- **Boston Dynamics Atlas humanoid**: model-predictive control for ZMP trajectory.
+- **MuJoCo MPC (Howell et al. 2022)**: differentiable simulator + iLQR / Cross-Entropy / PI² — 노트북 1 대로 manipulation·locomotion.
+- **OCS2** (ETH): C++ NMPC framework. quadruped, mobile manipulator 표준.
+
+### 9.7 한계
+
+1. **연산 비용** — n=7 arm, N=20 horizon, 1kHz 가 borderline. GPU 또는 model simplification.
+2. **Terminal cost design** — finite horizon 의 *과거 효과* 무시 → terminal cost 가 *infinite horizon value function* 근사 필요. 이론적·실용적으로 어려움.
+3. **Local minima** — nonconvex problem 에서 초기값 의존성.
+4. **Robustness** — model mismatch 가 누적되면 horizon 끝에서 prediction 발산.
+
+> **함정 MPC**: NMPC 가 *수렴 안 함* 또는 *previous solution 부근에 갇힘* — 이를 *warm-starting* 으로 거의 해결. 첫 firing 부터 *steady-state solution + 작은 perturbation* 으로 init 필수.
+
+---
+
+## 10. Reinforcement Learning-based Control
+
+> **동기** — §3 (computed-torque) 가 좋은 모델을 요구, §9 (MPC) 가 매 step 비싼 optimization. **RL 은 *데이터* 로 policy $\pi(u|x)$ 를 학습** → online 비용은 forward pass 만. model-free + complex dynamics 친화.
+
+### 10.1 MDP formulation
+
+Robot control 을 *Markov Decision Process* 로:
+
+| 요소 | 정의 |
+|--|--|
+| State `s_t` | `(θ_t, θ̇_t)` + sensor (vision, force) |
+| Action `a_t` | `τ_t` 또는 desired `θ_t` (low-level controller 가 wrap) |
+| Reward `r_t` | task 보상 + control penalty + safety |
+| Transition `P` | robot dynamics (8장) |
+| Policy `π(a|s)` | learned (neural network, $\sim 10^6$ parameters) |
+
+목표 — *expected discounted return* 최대화:
+
+$$J(\pi) = \mathbb{E}_{\tau \sim \pi}\left[ \sum_{t=0}^{T} \gamma^t r_t \right]$$
+
+### 10.2 주요 알고리즘
+
+| 알고리즘 | 종류 | 특징 |
+|--|--|--|
+| **PPO** (Schulman 2017) | on-policy | 안정·tuning 쉬움, 대부분의 quadruped/humanoid 표준 |
+| **SAC** (Haarnoja 2018) | off-policy + entropy | sample efficient, manipulation 흔히 |
+| **TD3** (Fujimoto 2018) | off-policy + twin critic | DDPG 의 안정화 |
+| **DreamerV3** (Hafner 2023) | world model | latent dynamics 학습 + planning |
+| **PPO + Asymmetric actor-critic** | privileged info | sim 학습 시 ground truth, deploy 시 sensor only |
+
+### 10.3 학습 파이프라인
+
+```
+1. Simulator 구축 (MuJoCo / Isaac Sim / Brax)
+2. Domain randomization — friction, mass, sensor noise 등 변동
+3. Curriculum — 쉬운 task → 점진적 어려움
+4. Reward shaping — task + smooth + safety penalty
+5. Policy training (수억 시뮬 step, GPU 1~16 시간~수일)
+6. Sim-to-real deployment — fine-tuning or direct
+7. Safety monitor — torque limit, joint limit, fallback controller
+```
+
+### 10.4 Sim-to-Real Gap
+
+학습은 *sim* 에서, deploy 는 *real* 에서. 두 환경의 차이가 *Sim-to-Real Gap*. 대처:
+
+- **Domain randomization**: 시뮬 parameter (friction, motor delay, sensor noise) 을 random 변동 → policy 가 *불변* 학습.
+- **System identification**: 실제 robot 의 friction·delay·gear backlash 를 측정 → simulator 보정.
+- **Adaptive policy**: 처음 N step 에서 환경 *latent* 추정 → policy 가 그것 입력.
+- **Real-world fine-tuning**: PPO continues with safer hyperparameters in real.
+
+### 10.5 산업 채용 사례
+
+- **ANYmal / Spot / Solo quadruped** (ETH Hutter, Boston Dynamics): blind locomotion + perceptive locomotion 모두 PPO + privileged learning. *전 지형 robust*.
+- **OpenAI Dactyl** (2018): single-handed Rubik's cube. PPO + domain randomization. *완전 model-free*.
+- **DeepMind RoboCat / Gato**: foundation model — 수백 manipulation task 학습 후 few-shot adaptation.
+- **Tesla Optimus / Figure 02 humanoid**: end-to-end RL + IL (imitation learning) hybrid.
+
+### 10.6 RL vs Classical control
+
+| 측면 | Classical (PID, computed-torque, MPC) | RL |
+|--|--|--|
+| Model | 필요 (정확할수록 ↑) | 불필요 (또는 simulator 만) |
+| Sample | 수십~수백 trajectory | 수억 step |
+| Interpretability | 높음 | *블랙박스* |
+| Generalization | 새 task → 재설계 | fine-tuning |
+| Real-time | μs~ms | μs (inference) |
+| Safety | 분석 가능 | 학습 시 보장 어려움 |
+
+### 10.7 한계
+
+1. **Sample efficiency** — 수억 sim step 필요. real robot 학습은 거의 불가능 (시간·마모).
+2. **Reward design** — reward sparse 면 학습 안 됨. shaping 이 *art*.
+3. **Safety during exploration** — random action 이 robot 망가뜨림. sim 우선.
+4. **Distribution shift** — 학습 분포 벗어나면 unpredictable.
+5. **Interpretability** — 왜 그렇게 행동하는지 *증명 안 됨*. 의료·항공 등 certification 어려움.
+
+### 10.8 Hybrid — Classical + RL
+
+실용 트렌드:
+
+- **RL high-level + classical low-level**: PPO 가 footstep / waypoint 선택, MPC 가 추적.
+- **Residual RL**: classical controller `u_c` + 학습된 residual `u_r` → `u = u_c + u_r`. 안정성 + 적응성 모두.
+- **Diffusion Policy** (Chi 2023): RL 대신 diffusion model 로 demonstration 학습.
+- **Learning-to-control** (Lyapunov NN, Control Barrier Functions w/ NN): stability *증명* 가능한 NN controller.
+
+> **함정 RL**: 학습 잘 된 policy 가 *현장 deploy* 후 *느린 drift* → robot 의 friction·wear 가 누적되며 simulator 와 격차 ↑. 정기 re-train 또는 online adaptation 필수.
+
+---
+
 ## 자주 빠지는 함정
 
 | # | 함정 | 정정 |

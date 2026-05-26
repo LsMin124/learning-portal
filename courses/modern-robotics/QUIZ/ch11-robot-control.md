@@ -1,6 +1,6 @@
 # Ch 11 Robot Control — 퀴즈
 
-> 10 문항.
+> 12 문항.
 
 ### Q1. PID 3 항
 
@@ -186,5 +186,51 @@ simulation 에서 *완벽한* controller 가 real robot 에서 *작동 안 함*.
 4. **Fine-tuning on real** — sim policy → real 에서 추가 학습
 
 산업 표준: Isaac Gym (sim) + domain randomization + small real-robot fine-tune.
+
+</details>
+
+### Q11. MPC 의 *receding horizon* 가 왜 *one-step* feedback 보다 좋은가
+
+§3 의 computed-torque control 은 *현재 상태* 만 기반으로 한 step torque 결정. MPC 의 N-step horizon 이 *구체적으로* 어떤 상황에서 우월한가? 단순한 motion regulation 에서도 우월한가?
+
+<details><summary>답</summary>
+
+**MPC 가 명확히 우월한 상황**:
+
+1. **Constraint 가 *현재* 위반 안 했지만 *미래* 위반 예상** — joint limit / torque limit / obstacle. computed-torque 는 reactive (위반 후 saturation), MPC 는 proactive (미리 회피).
+2. **Non-minimum-phase dynamics** — 잠시 *반대 방향* 으로 가야 하는 시스템 (예: 자전거, rear-steered car). one-step feedback 은 local greedy → 발산. MPC 는 미래까지 plan.
+3. **Time-varying reference** — desired trajectory 가 *미리 알려진* 경우 horizon 안에서 *미리 가속/감속*. computed-torque 는 현재 desired 만 본다.
+4. **Conflicting objectives** — tracking + collision avoidance + smoothness. weighted sum 이 *시간에 따라* 다르게 최적 → MPC 가 동적 분배.
+
+**단순 regulation 에선 *덜* 우월**:
+
+setpoint regulation `θ_d = const`, no constraints, no obstacles → MPC 의 receding horizon 이 *과한 cost*. computed-torque 가 수배 빠르고 같은 결과. 1kHz inner loop 에 MPC 채택할 이유 적음.
+
+실용: **MPC 는 outer loop (10~100 Hz), inner loop 은 computed-torque/PID (1kHz)** 의 hierarchical 구조가 산업 표준.
+
+</details>
+
+### Q12. RL policy 가 sim 에서 *완벽* 한데 real 에선 *실패* — 진단 4 단계
+
+신규 RL-trained 7-DoF arm policy 가 Isaac Sim 에서 reach 성공률 99%. 실제 Franka 로 옮겼더니 25%. 가능 원인과 진단 순서.
+
+<details><summary>답</summary>
+
+**진단 4 단계** (저비용 → 고비용):
+
+1. **Observation distribution 검사** — sim 의 joint encoder 값과 real 의 값 분포가 *같은가*? (e.g., sim 은 0-noise, real 은 1° noise.) 단순히 sim 에 sensor noise 추가하면 해결되는 경우 다수.
+2. **Action delay 측정** — sim 은 zero delay, real 은 motor controller + network ≈ 5-20 ms. policy 의 *action* 이 *delayed* state 에 적용됨. domain randomization 에 delay 추가.
+3. **Dynamics mismatch** — real friction (특히 harmonic drive backlash), motor torque-saturation curve, gear ratio. system identification (joint-by-joint sine sweep) 후 simulator 보정.
+4. **Reward / termination 정의 차이** — real 에선 collision detection / safety stop 이 sim 보다 빨리 trigger → episode 가 짧음 → policy 가 *학습 시 보지 못한* short-horizon state 마주침. simulator 에서 safety constraint 도 모사.
+
+**산업 패턴**:
+
+```
+real 실패 → 진단 1 (obs) → 안 됨 → 진단 2 (delay) → 안 됨
+         → 진단 3 (sysid) → 95% real 회복
+         → 진단 4 (reward) → 99% real
+```
+
+OpenAI Dactyl 의 *Memory-Augmented Policy* 가 이 패턴 — 처음 N step 의 obs sequence 로 환경 latent (friction, mass) 추정 후 policy 가 그것 입력. 진단 1+2+3 을 *학습된 estimator* 가 자동 처리.
 
 </details>

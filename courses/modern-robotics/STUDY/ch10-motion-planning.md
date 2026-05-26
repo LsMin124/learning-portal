@@ -122,7 +122,151 @@ return None
 - path 가 *jaggy*, 후처리 *shortcutting* 필요
 - 변형: RRT-Connect (양쪽 tree), RRT* (asymptotically optimal)
 
-### 3.3 PRM (Probabilistic Roadmap)
+### 3.3 RRT* — asymptotically optimal
+
+Karaman & Frazzoli (2011). basic RRT 의 결정적 결함 — *path 가 어떤 길이로 수렴하지 않음* — 을 두 단계로 해결.
+
+**핵심 아이디어**
+
+1. **ChooseParent** — `θ_new` 를 단순히 `θ_near` 의 자식으로 붙이지 않고, *근방* `B(θ_new, r_n)` 안의 *모든 node* 중 `g(θ_k) + c(θ_k, θ_new)` 가 *최소* 인 `θ_k` 를 부모로 선택. (`g`: tree 의 root 부터의 누적 cost, `c`: 두 점의 line cost.)
+2. **Rewire** — `θ_new` 가 tree 에 추가된 *후*, 같은 근방 안의 다른 node `θ_k` 에 대해 *`θ_new` 를 경유* 가 더 짧으면 `θ_k` 의 부모를 `θ_new` 로 재연결.
+
+이 두 단계가 매 iter 의 *local re-optimization* 을 만든다.
+
+**ball radius `r_n`**
+
+$$r_n = \gamma \left( \frac{\log n}{n} \right)^{1/d}$$
+
+- `n`: 현재 tree 의 node 수
+- `d`: C-space 차원
+- `γ`: `γ > 2 (1 + 1/d)^{1/d} \cdot (\mu(C_{free}) / \zeta_d)^{1/d}` 의 조건을 만족 (`μ` Lebesgue, `ζ_d` d-차원 단위구 부피). 보통 *상수* 로 두고 실험적으로 tuning.
+
+`r_n` 의 *log/n* 꼴이 핵심 — *너무 빠르게 줄지 않게* 하여 connectivity 유지, *너무 느리게 줄지 않게* 하여 수렴 보장.
+
+**의사코드**
+
+```
+T = {root = θ_start}
+g(θ_start) = 0
+for iter = 1 to N:
+    θ_rand = sample(C-space)
+    θ_near = nearest(T, θ_rand)
+    θ_new  = step(θ_near, θ_rand, Δ)
+    if not collision_free(θ_near, θ_new): continue
+
+    # --- ChooseParent ---
+    Q_near = {θ_k ∈ T : ‖θ_k - θ_new‖ ≤ r_n}   # neighborhood
+    θ_parent = θ_near
+    g_min    = g(θ_near) + c(θ_near, θ_new)
+    for θ_k in Q_near:
+        if collision_free(θ_k, θ_new):
+            g_cand = g(θ_k) + c(θ_k, θ_new)
+            if g_cand < g_min:
+                g_min    = g_cand
+                θ_parent = θ_k
+    add θ_new to T with parent θ_parent
+    g(θ_new) = g_min
+
+    # --- Rewire ---
+    for θ_k in Q_near, θ_k ≠ θ_parent:
+        if collision_free(θ_new, θ_k):
+            g_alt = g(θ_new) + c(θ_new, θ_k)
+            if g_alt < g(θ_k):
+                parent(θ_k) = θ_new
+                g(θ_k) = g_alt
+                propagate_cost_decrease(θ_k)   # 자식까지 g 재계산
+
+    if dist(θ_new, θ_goal) < ε:
+        # 종료 X — 계속 진행하면서 best goal node 의 cost 갱신
+        update_best_goal(θ_new)
+
+return reconstruct_path(best_goal)
+```
+
+basic RRT 와의 차이는 **두 줄** — 종료 조건이 *first hit* 이 아니라 *budget 소진 후 best*, 그리고 `propagate_cost_decrease` 가 rewire 시 모든 자식까지 `g` 를 새로 계산해야 한다는 점.
+
+**연산량**
+
+- iter 당 nearest + ball range query → `O(log n)` (k-d tree)
+- ChooseParent / Rewire → `O(|Q_near|)` ≈ `O(log n)` (expected, RGG 이론)
+- 전체 `O(N log N)` — basic RRT 의 `O(N log N)` 과 동일 *order*. 상수만 ~3x.
+
+**Python 의사코드**
+
+```python
+import math, random
+
+def rrt_star(start, goal, sample, step, collision_free, dist,
+             N=10000, eps=0.5, gamma=2.0, dim=6):
+    T = {start: None}
+    g = {start: 0.0}
+    best_goal, best_cost = None, float("inf")
+
+    for n in range(2, N + 1):
+        q_rand = sample()
+        q_near = min(T.keys(), key=lambda q: dist(q, q_rand))
+        q_new  = step(q_near, q_rand)
+        if not collision_free(q_near, q_new):
+            continue
+
+        r_n = gamma * (math.log(n) / n) ** (1.0 / dim)
+        Q_near = [q for q in T if dist(q, q_new) <= r_n]
+
+        # ChooseParent
+        q_parent, g_min = q_near, g[q_near] + dist(q_near, q_new)
+        for q_k in Q_near:
+            if collision_free(q_k, q_new):
+                c = g[q_k] + dist(q_k, q_new)
+                if c < g_min:
+                    q_parent, g_min = q_k, c
+        T[q_new] = q_parent
+        g[q_new] = g_min
+
+        # Rewire
+        for q_k in Q_near:
+            if q_k == q_parent: continue
+            if collision_free(q_new, q_k):
+                c = g[q_new] + dist(q_new, q_k)
+                if c < g[q_k]:
+                    T[q_k] = q_new
+                    g[q_k] = c
+                    propagate(T, g, q_k, dist)
+
+        # Goal bookkeeping
+        if dist(q_new, goal) < eps and g[q_new] < best_cost:
+            best_goal, best_cost = q_new, g[q_new]
+
+    return reconstruct(T, best_goal) if best_goal else None
+
+
+def propagate(T, g, root, dist):
+    """root 의 자식들 모두 g 를 새로 계산 (rewire 의 cascade)."""
+    children = [q for q, p in T.items() if p == root]
+    for c in children:
+        g[c] = g[root] + dist(root, c)
+        propagate(T, g, c, dist)
+```
+
+**RRT vs RRT\* 의 cost 수렴 (정성적)**
+
+| iter | basic RRT | RRT\* |
+|--|--|--|
+| 1k | first hit ~ 12 m | 12 m |
+| 10k | 동일 (~12 m) | 9 m |
+| 100k | 동일 (~12 m) | 7.5 m |
+| ∞ | 12 m (수렴 X) | optimal ~7.2 m |
+
+핵심 차이 — basic RRT 는 *처음 찾은 path 를 평생 안 고침*. RRT\* 는 *매 iter 마다 주변을 재배선* 해서 cost 가 *단조 감소* (수학적 보장).
+
+**변형들**
+
+- **Informed RRT\*** (Gammell 2014) — 일단 goal 발견 후, *현재 best cost 의 ellipsoid* 안에서만 sample → exploration 효율 ↑.
+- **BIT\*** (Batch Informed Trees, Gammell 2015) — sample 을 *batch* 로 뽑고 *implicit graph* 위에서 batch-wise re-search.
+- **AIT\*** (Adaptively Informed Trees) — heuristic 도 *학습 기반* 으로 갱신.
+
+산업 채용: MoveIt 의 OMPL plugin 이 RRT\*, Informed RRT\* 모두 표준 지원.
+
+### 3.4 PRM (Probabilistic Roadmap)
 
 Kavraki 1996. *multi-query* 용도.
 
@@ -143,7 +287,7 @@ Query phase:
 - *graph reuse* (multi-query 효율적)
 - *narrow passage* 문제 — sample 가 *좁은 영역* 안에 잘 안 들어감
 
-### 3.4 비교
+### 3.5 비교
 
 | 측면 | RRT | PRM |
 |--|--|--|

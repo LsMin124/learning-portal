@@ -158,6 +158,42 @@ def shortcut(path, collision_free, iters=100):
     return path
 ```
 
+### RRT* (ChooseParent + Rewire)
+
+```
+each iter:
+  q_rand <- sample
+  q_near <- nearest(T, q_rand)
+  q_new  <- step(q_near, q_rand, Δ)
+  Q_near <- {q ∈ T : dist(q, q_new) ≤ r_n}    # r_n = γ(log n / n)^{1/d}
+
+  # ChooseParent: q_new 의 부모를 최저 g 후보로
+  q_parent <- argmin_{q ∈ Q_near, free(q, q_new)} g(q) + c(q, q_new)
+  add q_new to T with parent q_parent
+
+  # Rewire: 근방 node 의 부모를 q_new 로 바꿔 개선
+  for q in Q_near \ {q_parent}:
+    if free(q_new, q) and g(q_new) + c(q_new, q) < g(q):
+      reparent q -> q_new
+      propagate_cost_decrease(q)
+
+  if dist(q_new, goal) < ε: update_best_goal(q_new)
+
+return path(best_goal)
+```
+
+### 표 8. basic RRT vs RRT*
+
+| 항목 | basic RRT | RRT* |
+|--|--|--|
+| 부모 선택 | `θ_near` 고정 | `Q_near` 중 최저 `g` |
+| 후처리 | 없음 | Rewire (자식 cost 전파) |
+| 종료 | first hit | iter budget 소진 후 best |
+| Optimality | ✗ | asymptotic (∞ 에서 optimal) |
+| Cost 곡선 | 일정 (수렴 X) | 단조 감소 |
+| 복잡도 | `O(N log N)` | `O(N log N)` (상수 ~3x) |
+| 변형 | RRT-Connect | Informed RRT\*, BIT\*, AIT\* |
+
 ---
 
 ## 1-line summary per section

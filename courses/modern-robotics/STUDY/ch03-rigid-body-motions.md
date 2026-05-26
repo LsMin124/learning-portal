@@ -175,6 +175,101 @@ $$e^A = I + A + \frac{A^2}{2!} + \frac{A^3}{3!} + \cdots$$
 
 > **함정 3**: `θ = π` 부근에서 분모 `sin θ → 0` 으로 수치 불안정. 알고리즘에서 별도 처리 필요.
 
+### 4.5 Quaternion — 회전의 *4번째* 표현
+
+**동기 — 왜 또 하나의 표현?**
+
+지금까지 SO(3) 의 표현:
+
+| 표현 | 원소 수 | 단점 |
+|--|--|--|
+| 회전 행렬 `R` | 9 (+ 6 constraint) | 메모리·연산 redundant, 행렬 곱 누적 시 *직교성 drift* |
+| Euler angles (`α, β, γ`) | 3 | *gimbal lock* (특정 자세에서 1 DoF 손실) |
+| Axis-angle `ω̂θ` | 3 | `θ = π` 부근 `log` *singular* (위 함정 3) |
+
+문제 — IK 의 Newton 반복, SLAM 의 sensor fusion, animation interpolation 에서 *singular 없이 연속·미분 가능* 한 회전 표현이 필요.
+
+**Unit quaternion** $q = (q_w, \mathbf{q}_v) = (q_w, q_x, q_y, q_z) \in S^3 \subset \mathbb{R}^4$:
+
+- 4 원소 + 1 norm constraint $\|q\| = 1$ → effective *3 DoF*
+- *non-singular* (S³ 위 매끄러움, `log` 안정)
+- composition 16 mul (R 의 27 mul 대비 적음) + 누적 직교성 유지가 *재정규화 1 단계*
+
+**Axis-angle ↔ Quaternion (핵심 공식)**
+
+회전축 `ω̂` 와 각도 `θ` 에서:
+
+$$q = \left( \cos\frac{\theta}{2}, \ \sin\frac{\theta}{2} \, \hat{\omega} \right)$$
+
+`θ/2` 가 핵심 — `θ = 2π` 회전 (원 위치 복귀) 시 `q → (-1, 0, 0, 0) = -q`. 즉 **`q` 와 `-q` 는 같은 회전**. $S^3 \to SO(3)$ 가 *double cover*.
+
+**Quaternion ↔ Rotation matrix**
+
+$$R(q) = I + 2 q_w [\mathbf{q}_v] + 2 [\mathbf{q}_v]^2$$
+
+`q_v = (q_x, q_y, q_z)` 는 vector part, `[\mathbf{q}_v]` 는 skew-symmetric.
+
+역방향 ($R \to q$):
+
+$$q_w = \tfrac{1}{2}\sqrt{1 + \mathrm{tr}(R)}, \quad \mathbf{q}_v = \frac{1}{4 q_w} \begin{bmatrix} R_{32} - R_{23} \\ R_{13} - R_{31} \\ R_{21} - R_{12} \end{bmatrix}$$
+
+`q_w ≈ 0` (`θ ≈ π`) 케이스에선 *대각합 trace* 중 가장 큰 항목을 기준으로 분기 (Shepperd 1978 알고리즘).
+
+**Quaternion 곱 (회전의 합성)**
+
+$$q_1 \otimes q_2 = \big(\, q_{1w} q_{2w} - \mathbf{q}_{1v} \cdot \mathbf{q}_{2v}, \ q_{1w} \mathbf{q}_{2v} + q_{2w} \mathbf{q}_{1v} + \mathbf{q}_{1v} \times \mathbf{q}_{2v} \,\big)$$
+
+비가환 — SO(3) 비가환성 그대로 반영. $R(q_1) R(q_2) = R(q_1 \otimes q_2)$ 가 성립.
+
+**점의 회전**
+
+3-vector `p` 를 *pure quaternion* `(0, p)` 로 augment:
+
+$$p' = q \otimes (0, p) \otimes q^{-1}, \quad q^{-1} = (q_w, -\mathbf{q}_v) \ \ (\text{unit } q)$$
+
+**SLERP — Spherical Linear Interpolation**
+
+두 quaternion 사이 *최단 측지선* 보간:
+
+$$\mathrm{slerp}(q_0, q_1; t) = \frac{\sin((1-t)\Omega)}{\sin\Omega} q_0 + \frac{\sin(t\Omega)}{\sin\Omega} q_1$$
+
+$\cos\Omega = q_0 \cdot q_1$ (4D 내적). 보간 전 `q_0 · q_1 < 0` 이면 `q_1 ← -q_1` 로 *짧은 경로* 보장.
+
+`Ω → 0` 에선 `sin Ω` 분모 위험 → fallback `lerp(q_0, q_1; t) = (1-t) q_0 + t q_1`, then normalize.
+
+animation, motion blending, IK 의 *desired pose interpolation* 표준.
+
+**IK 안정성 관점 — 핵심 응용**
+
+6 장 (IK) Newton 반복의 일반 형태:
+
+```
+error = log(T_desired · T_current^{-1})     # SE(3) → twist
+θ_{k+1} = θ_k + J† · error
+```
+
+`log` 가 `θ ≈ π` (회전 반전) 부근에서 *불연속·발산* — Rodrigues log 의 `sin θ → 0`. quaternion 으로 회전 부분을 별도 추적하면 이 singular 우회 가능.
+
+**Quaternion-based IK error twist**:
+
+1. 회전 부분: `q_d` (desired), `q_c` (current) 으로 추적
+2. error quaternion $q_e = q_d \otimes q_c^{-1}$
+3. *짧은 경로*: `q_{e,w} < 0` 이면 `q_e ← -q_e`
+4. small-angle approx: $\omega_e \approx 2 \mathbf{q}_{e,v}$ (`θ_e ≈ 0` 에서 $\mathbf{q}_v \approx (\theta/2) \hat{\omega}$)
+5. Newton 갱신에 `ω_e` 직접 투입
+
+이 *quaternion-based IK* 가 ROS MoveIt, KDL, Bullet, OpenRAVE 등 모든 산업 IK 의 기본 — 책의 PoE 기반 SE(3) log 가 가르치는 우아함과는 별개로, *실전 코드*는 quaternion path 가 표준.
+
+**Quaternion 전용 함정**
+
+| # | 함정 | 정정 |
+|--|--|--|
+| q1 | `q` 와 `-q` 가 다른 회전 | 같은 회전 (double cover). 보간 전 부호 통일 (`q_0 · q_1 ≥ 0`). |
+| q2 | quaternion 곱 = 원소별 곱 | 아님. Hamilton 곱 (scalar−dot + cross). 행렬 곱과 같이 비가환. |
+| q3 | 단위 norm 이 자동 유지 | 누적 곱 시 *수치 drift*. 매 iter `q ← q/‖q‖` 정규화. |
+| q4 | SLERP 가 항상 안정 | `Ω → 0` 위험. LERP+normalize 로 fallback. |
+| q5 | quaternion 원소 순서 표준 | 라이브러리마다 다름 — Eigen `(x,y,z,w)` vs ROS/책 `(w,x,y,z)`. 데이터 교환 시 확인. |
+
 ---
 
 ## 5. SE(3) — 강체변환의 homogeneous form
@@ -351,6 +446,9 @@ twist 는 `[Ad_T]` 로 변환, wrench 는 `[Ad_T]ᵀ` 로 변환 — *dual* 관�
 10. `tr R = −1` 인 회전 행렬의 회전 각도는?
 11. Twist `V_s` 와 `V_b` 의 변환식.
 12. Wrench frame 변환식 — `F_b = ? · F_a`.
+13. Unit quaternion `q` 의 *axis-angle* 형태 (`ω̂`, `θ` 주어졌을 때).
+14. 같은 회전을 표현하는 두 quaternion 사이의 관계 (`q` 와 누구가 같음?).
+15. SLERP 가 LERP 와 다른 점, 그리고 LERP 로 *fallback* 되는 조건.
 
 ### 해답 (간략)
 
@@ -366,6 +464,9 @@ twist 는 `[Ad_T]` 로 변환, wrench 는 `[Ad_T]ᵀ` 로 변환 — *dual* 관�
 10. `cos θ = (tr R − 1)/2 = −1` → `θ = π`.
 11. `V_s = [Ad_T] V_b` (`T = T_{sb}`), `V_b = [Ad_{T⁻¹}] V_s`.
 12. `F_b = [Ad_T]ᵀ F_a` (dual; transpose 위치 주의).
+13. $q = (\cos(\theta/2), \sin(\theta/2)\hat{\omega})$.
+14. `q` 와 `-q` 가 같은 회전 (S³ → SO(3) double cover).
+15. SLERP 는 4D 단위 구의 *측지선* (각속도 일정). LERP 는 4D *직선*. `Ω → 0` (두 quaternion 이 거의 같음) 일 때 SLERP 의 `sin Ω` 분모 위험 → LERP + normalize 로 fallback.
 
 ---
 

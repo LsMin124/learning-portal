@@ -227,6 +227,100 @@ $$\ddot\theta = M^{-1}(\theta) (\tau - c(\theta, \dot\theta) - g(\theta) - J^T(\
 
 > **함정 2**: `M⁻¹` 직접 계산은 `O(n³)`. 효율적 방법: *Articulated-Body Algorithm (ABA)* — Featherstone, `O(n)` 으로 forward dynamics 자체 해결. 7-DoF 이상 arm 에서 큰 차이.
 
+### 7.5 Articulated-Body Algorithm (ABA)
+
+Featherstone (1983) 의 핵심 결과 — *naive forward dynamics 가 `O(n³)`* (M⁻¹ 비용 지배) 인 반면 **ABA 는 `O(n)`**. n=20 이상에선 100배 차이.
+
+**핵심 아이디어 — Articulated-body inertia**
+
+link i 부터 EE 까지의 *전체 체인* 을 *하나의 가상 강체* 로 본 *articulated-body inertia* $\mathcal{I}^A_i$ 와 *bias force* $p^A_i$ 를 정의한다.
+
+> 핵심 통찰 — *link i 의 가속도 `V̇_i` 가 결정되면, 그 후 모든 자식 link 의 dynamics 는 이미 알려진 형태로 따라온다.* 이 *외부에서 본* dynamics 가 articulated-body inertia.
+
+$$\mathcal{F}^A_i = \mathcal{I}^A_i \dot{\mathcal{V}}_i + p^A_i$$
+
+여기서 `F^A_i` 는 link i 가 *전체 하위 체인* 에 가하는 wrench. 단일 강체일 땐 `I^A_i = G_i`, `p^A_i = -[ad_{V_i}]^T G_i V_i` (앞 §4.2 와 동일). 하위에 link 가 붙으면 *재귀적* 으로 갱신.
+
+**3-pass 알고리즘**
+
+ABA 는 **forward → backward → forward** 의 3 패스로 진행:
+
+```
+Pass 1 (forward, base→EE): 각 link 의 V_i 와 zero-accel bias 계산
+    V_0 = 0
+    for i = 1 to n:
+        T_{i,i-1} = M_{i,i-1} · e^{-[A_i]θ_i}
+        V_i = A_i · θ̇_i + [Ad_{T_{i,i-1}}] V_{i-1}
+        c_i = [ad_{V_i}](A_i · θ̇_i)               # bias velocity-product
+
+Pass 2 (backward, EE→base): articulated-body inertia 와 bias force 갱신
+    I^A_n = G_n                                    # tip: 단일 강체
+    p^A_n = -[ad_{V_n}]^T G_n V_n - F_tip
+    for i = n downto 1:
+        # i 의 articulated-body inertia 가 부모로 전파
+        U_i = I^A_i · A_i                           # 6-vector
+        D_i = A_i^T U_i                             # scalar (joint inertia)
+        u_i = τ_i - A_i^T p^A_i                     # scalar (joint force residual)
+
+        # i-1 로 전파될 articulated-body 양:
+        I^a_par = I^A_i - U_i U_i^T / D_i
+        p^a_par = p^A_i + I^a_par · c_i + U_i · u_i / D_i
+
+        # 부모 frame 으로 변환
+        I^A_{i-1} += [Ad_{T_{i-1,i}}]^T · I^a_par · [Ad_{T_{i-1,i}}]
+        p^A_{i-1} += [Ad_{T_{i-1,i}}]^T · p^a_par
+
+Pass 3 (forward, base→EE): 실제 가속도 계산
+    V̇_0 = (0, 0, 0, 0, 0, g)                       # gravity 트릭
+    for i = 1 to n:
+        V̇_i^prior = [Ad_{T_{i,i-1}}] V̇_{i-1} + c_i  # 부모 가속 + bias
+        θ̈_i = (u_i - U_i^T · V̇_i^prior) / D_i      # ← 핵심: 한 스칼라 나눗셈
+        V̇_i = V̇_i^prior + A_i · θ̈_i
+```
+
+각 패스가 *O(n)* 시간, *상수 6×6 행렬* 연산만 → 전체 **O(n)**.
+
+`M⁻¹` 가 *어디에도 명시적으로 나오지 않음* 이 핵심. 대신 *각 joint 의 articulated-body inertia* `D_i` (스칼라) 의 *역수* 만 필요.
+
+**7-DoF arm 의 예제 — 연산량 비교**
+
+전형적 7-DoF (Franka Panda, Kuka iiwa) 에서:
+
+| 방법 | 연산 (≈ FLOPs) | 1kHz simulation 비용 |
+|--|--|--|
+| Naive: M, c, g 따로 + `M⁻¹` (`O(n³)`) | ~24,000 | 24M FLOPs/sec |
+| RNEA + `M` (CRBA) + `M⁻¹` | ~6,000 | 6M FLOPs/sec |
+| **ABA** | ~1,500 | 1.5M FLOPs/sec |
+
+ABA 가 *16x 빠름* (naive 대비). MuJoCo, RBDL, Pinocchio 등 모든 메이저 simulator 의 forward dynamics 핵심.
+
+**Pinocchio 구현 한 줄 비교**
+
+```python
+import pinocchio as pin
+# data = pin.Data(model)
+# inverse dynamics (RNEA)
+tau = pin.rnea(model, data, q, qdot, qddot)
+# forward dynamics (ABA)
+qddot = pin.aba(model, data, q, qdot, tau)
+```
+
+Pinocchio 는 ABA 를 *spatial algebra* 표기로 구현. C++ 백엔드에서 Franka 7-DoF 1 콜 ~ **1 μs** (수치 미분 자동 포함).
+
+**언제 ABA 가 *오히려 느린가* — n 가 작을 때**
+
+`O(n) vs O(n³)` 의 *상수* 차이 — ABA 는 패스가 3개, 각 link 의 articulated-body 갱신이 6×6 행렬 곱 다수 포함. 약 **n ≤ 6** 에선 naive `M⁻¹` 이 비슷하거나 *조금 빠름*. n ≥ 7 부터 ABA 우세, n = 20 (humanoid) 에선 *압도적*.
+
+> **함정 ABA**: `M⁻¹` 가 fully dense 가 아닌 *factor* 만 필요할 때 — 예: `M⁻¹ b` 형태의 *벡터 곱* — Cholesky factorization 도 `O(n²)` 으로 빠르다. 항상 ABA 가 답은 아니며, *control loop 의 산식 형태* 에 따라 선택.
+
+**Featherstone 의 reference**
+
+```
+Featherstone, R. (2008). Rigid Body Dynamics Algorithms. Springer.
+```
+
+§7 (Recursive Newton-Euler) 와 §7.5 (ABA) 가 위 책에 정밀하게 유도되어 있음. 산업 코드 구현 시 이 책의 표기를 따르는 것이 표준.
+
 ---
 
 ## 8. Task-Space Dynamics

@@ -73,6 +73,65 @@
 | Polishing | `v_z` (constant force) | `v_x, v_y` (pattern) |
 | Free motion | none | all 6 |
 
+### 표 7. MPC (Model Predictive Control)
+
+```
+매 step t_k:
+  1. 측정 x(t_k)
+  2. 풀기:
+       min Σ ℓ(x_k, u_k) + ℓ_f(x_N)
+       s.t. x_{k+1} = f(x_k, u_k)
+            x_k ∈ X,  u_k ∈ U
+            x_0 = x(t_k)
+  3. u(t_k) 만 적용 (첫 step)
+  4. warm-start 후 다음 step 반복
+```
+
+| 변종 | dynamics | solver | 주 응용 |
+|--|--|--|--|
+| LMPC | linear | QP (OSQP) | drone hover, linearized humanoid |
+| NMPC | nonlinear | SQP/IPOPT/ALTRO | manipulator, quadruped |
+| MPPI | 임의 | parallel rollout | contact-rich, GPU |
+
+핵심: outer-loop MPC (10~100Hz) + inner-loop computed-torque (1kHz) hierarchical 구조 표준.
+
+### 표 8. RL-based Control (MDP)
+
+| 요소 | 정의 |
+|--|--|
+| State `s` | `(θ, θ̇)` + sensor (vision, force) |
+| Action `a` | `τ` 또는 desired `θ` |
+| Reward `r` | task + smooth + safety |
+| Policy `π(a|s)` | NN, 학습됨 |
+| Objective | `J = E[Σ γ^t r_t]` |
+
+| 알고리즘 | 종류 | 주 응용 |
+|--|--|--|
+| PPO | on-policy | quadruped/humanoid locomotion |
+| SAC | off-policy entropy | manipulation |
+| TD3 | off-policy twin critic | continuous control |
+| DreamerV3 | world model | sample-efficient |
+
+### 표 9. MPC vs RL vs Computed-Torque
+
+| 측면 | Computed-torque | MPC | RL |
+|--|--|--|--|
+| Horizon | 1 step | N step | trained over many |
+| Model | 필요 | 필요 | sim 만 (또는 model-free) |
+| Online cost | μs | ms (NMPC) ~ μs (LMPC) | μs (NN inference) |
+| Constraint | hand-tuned | explicit | implicit (reward) |
+| Sample | 0 | 0 | 1e8~1e9 sim steps |
+| Interpretability | high | high | low (black box) |
+
+### 표 10. Sim-to-Real 핵심 4 기법
+
+```
+1. Domain randomization — friction, mass, delay, noise 의 random 변동
+2. System identification   — real sysid → simulator 보정
+3. Adaptive policy         — 초기 N step 으로 latent 추정
+4. Real fine-tuning        — sim policy → real 에서 PPO 보강
+```
+
 ---
 
 ## Mind Map

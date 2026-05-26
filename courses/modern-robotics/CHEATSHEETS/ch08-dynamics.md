@@ -87,6 +87,38 @@ F_i = [Ad_{T_{i+1,i}}]ᵀ F_{i+1} + G_i V̇_i − [ad_{V_i}]ᵀ G_i V_i
 | Task-space inertia | `Λ(θ) = (J M⁻¹ Jᵀ)⁻¹` |
 | Task-space dynamics | `F_tip = Λ V̇ + η + ρ` |
 
+### 표 8. Articulated-Body Algorithm (ABA, Featherstone)
+
+```
+Pass 1 (forward V):  V_i  = A_i θ̇_i + [Ad] V_{i-1}
+                     c_i  = [ad_{V_i}](A_i θ̇_i)
+
+Pass 2 (backward I^A, p^A):
+        U_i = I^A_i · A_i              # 6-vector
+        D_i = A_i^T · U_i              # scalar
+        u_i = τ_i - A_i^T · p^A_i      # scalar
+        I^a_par = I^A_i - U_i U_i^T / D_i
+        p^a_par = p^A_i + I^a_par·c_i + U_i·u_i/D_i
+        부모로 [Ad]^T 변환하여 누적
+
+Pass 3 (forward V̇, θ̈):
+        V̇_prior = [Ad] V̇_{i-1} + c_i
+        θ̈_i    = (u_i - U_i^T V̇_prior) / D_i
+        V̇_i    = V̇_prior + A_i θ̈_i
+```
+
+`M⁻¹` 명시적으로 안 나옴 → O(n).
+
+### 표 9. Forward dynamics 알고리즘 비교 (n=7)
+
+| 방법 | 복잡도 | FLOPs (n=7) | 비고 |
+|--|--|--|--|
+| Naive: RNEA × 2 + M⁻¹ (LU) | O(n³) | ~24,000 | M⁻¹ 직접 |
+| CRBA + Cholesky | O(n²) | ~6,000 | M SPD 활용 |
+| **ABA** | **O(n)** | **~1,500** | spatial algebra |
+
+n ≤ 6 에선 상수 차이로 naive 와 비슷, n ≥ 7 부터 ABA 우세.
+
 ---
 
 ## Mind Map

@@ -1,6 +1,6 @@
 # Ch 10 Motion Planning — 퀴즈
 
-> 10 문항.
+> 12 문항.
 
 ### Q1. C-space obstacle
 
@@ -102,6 +102,34 @@ RRT 와 RRT* 의 차이.
 **RRT*** (Karaman & Frazzoli 2011): *re-wiring* 추가 — 새 node 추가 시 *주변 node 들의 부모* 를 재평가하여 cost 감소 시 갱신. *asymptotically optimal* — 시간 ↑ 에 따라 *optimal path 에 수렴*.
 
 trade-off: re-wiring 비용으로 iteration 당 느림. 그러나 결과 path 품질 ↑.
+
+</details>
+
+### Q7-bis. RRT* 의 ChooseParent vs Rewire
+
+같은 *neighborhood* `Q_near` 를 두 번 훑는데, ChooseParent 와 Rewire 가 *각각* 무엇을 보장하는지 한 문장씩.
+
+<details><summary>답</summary>
+
+- **ChooseParent**: *새 node `θ_new` 자체의* `g` 가 *근방 안에서 가능한 최소* 가 되도록 부모를 고른다. → `θ_new` 의 *진입 경로* 최적.
+- **Rewire**: *근방의 기존 node 들* 의 `g` 가 `θ_new` 를 경유하면 더 짧을 때 부모를 `θ_new` 로 바꾼다. → `θ_new` 가 *주변의 진입 경로* 개선.
+
+두 단계가 묶여야 *전체 tree* 의 cost 가 단조 감소.
+
+ChooseParent 만 하면 *과거에 비효율적으로 붙은 node* 가 영원히 남음. Rewire 만 하면 새 node 자체가 *낭비된 부모* 로 들어옴.
+
+</details>
+
+### Q7-ter. Ball radius `r_n` 의 두 조건
+
+`r_n = γ (log n / n)^{1/d}` 의 *log n* 과 *1/d* 가 각각 *어떤 조건* 을 보장하나?
+
+<details><summary>답</summary>
+
+- **`log n` (numerator)**: `r_n → 0` 의 *수렴 속도가 너무 빠르지 않게* 함 → tree 가 *connected* 인 상태로 남을 수 있다 (RGG 의 connectivity threshold).
+- **`(1/n)^{1/d}` (denominator/지수)**: `n` 점이 *d 차원* 에 균등 분포되었을 때 nearest neighbor 간 평균 거리의 *order*. *너무 느리게 줄지도 않게* — i.e., neighborhood 안 후보 수가 *expected O(log n)* 으로 유한.
+
+두 조건이 동시에 만족돼야 RRT\* 의 *probability-1 asymptotic optimality* 정리 (Karaman 2011, Thm 38) 가 성립. `γ` 는 *상수* 라 영향 없음 (단 너무 작으면 sparse, 너무 크면 매 iter 가 비싸짐).
 
 </details>
 

@@ -1,6 +1,6 @@
 # Ch 3 Rigid-Body Motions — 퀴즈
 
-> 14 문항 (개념 4 / 계산 5 / 디버그 3 / 면접 2). 답은 펼치기 — 먼저 풀어볼 것.
+> 17 문항 (개념 4 / 계산 5 / 디버그 3 / 면접 2 / quaternion 3). 답은 펼치기 — 먼저 풀어볼 것.
 
 ---
 
@@ -322,5 +322,77 @@ Ch 3 의 직접 적용:
 - Jacobian 도출이 자연스러움
 
 이 패턴이 4장 전체의 핵심.
+
+</details>
+
+---
+
+## Quaternion
+
+### Q15. Axis-angle → Quaternion
+
+축 `ω̂ = (1, 0, 0)`, 각도 `θ = π/2` 의 unit quaternion `q` 를 구하라. `q` 의 norm 도 검증.
+
+<details><summary>답</summary>
+
+$$q = \left( \cos\frac{\theta}{2}, \ \sin\frac{\theta}{2} \, \hat{\omega} \right) = \left( \cos\frac{\pi}{4}, \sin\frac{\pi}{4}, 0, 0 \right) = \left( \frac{\sqrt 2}{2}, \frac{\sqrt 2}{2}, 0, 0 \right)$$
+
+norm: $\sqrt{(\sqrt 2/2)^2 + (\sqrt 2/2)^2 + 0 + 0} = \sqrt{1/2 + 1/2} = 1$. ✓
+
+함정: $\theta/2$ 가 들어가는 점. `θ = π` 회전이 `q = (0, ω̂)`, `θ = 2π` 가 `q = (-1, 0)`. 후자가 *원위치 + sign flip* 이라는 사실이 double cover.
+
+</details>
+
+---
+
+### Q16. Quaternion-based IK error
+
+desired orientation `q_d = (1, 0, 0, 0)` (identity), current `q_c = (-0.9, 0.1, 0.4, 0.2)` 일 때 *error twist* `ω_e` 의 small-angle 근사값을 구하라. *짧은 경로* 처리 포함.
+
+<details><summary>답</summary>
+
+먼저 *짧은 경로* 체크: $q_d \cdot q_c = 1 \cdot (-0.9) + 0 + 0 + 0 = -0.9 < 0$. → `q_c ← -q_c = (0.9, -0.1, -0.4, -0.2)`.
+
+error quaternion: $q_e = q_d \otimes q_c^{-1}$. `q_d = (1, 0, 0, 0)` 이므로 `q_e = q_c^{-1} = (0.9, 0.1, 0.4, 0.2)` (unit quaternion 의 conjugate). (norm 가정 위해 결과는 작은 오차 무시.)
+
+small-angle 근사: `ω_e ≈ 2 q_{e,v} = (0.2, 0.8, 0.4)`.
+
+검증: `q_{e,w} = 0.9 > 0` 이므로 sign flip 불필요. small angle 영역 확인 — `θ_e ≈ 2 arccos(0.9) ≈ 0.9 rad ≈ 52°` — 약간 큰 편이라 정확도가 떨어지지만 Newton 반복이라 수렴 OK.
+
+핵심: *짧은 경로 처리 없이* 그냥 했다면 `q_e` 가 *큰 회전* (180° + 잔여) 로 표현되어 *역방향* 으로 reaching → joint 가 한 바퀴 도는 버그.
+
+</details>
+
+---
+
+### Q17. SLERP vs LERP
+
+두 quaternion `q_0`, `q_1` 의 보간에서 SLERP 가 LERP 와 *언제 동일하게 거동* 하나? 그리고 코드에서 어떤 *수치 임계값* 으로 분기하는 게 표준인가?
+
+<details><summary>답</summary>
+
+`q_0, q_1` 이 *거의 평행* 일 때 (즉 4D 내적 `q_0 · q_1` 이 1 에 가까움) SLERP 와 LERP 모두 거의 직선 보간으로 수렴. 차이가 무시 가능.
+
+수치적으로는 `cos Ω = q_0 · q_1` 가 1 에 너무 가까우면 `Ω → 0`, `sin Ω → 0` → SLERP 의 두 분모 모두 0 분에 fragile.
+
+**표준 코드 패턴**:
+
+```python
+def slerp(q0, q1, t, eps=1e-3):
+    d = np.dot(q0, q1)
+    if d < 0:                  # 짧은 경로
+        q1, d = -q1, -d
+    if d > 1.0 - eps:          # 거의 평행 → LERP fallback
+        q = q0 + t * (q1 - q0)
+        return q / np.linalg.norm(q)
+    Omega = np.arccos(d)
+    s0 = np.sin((1 - t) * Omega) / np.sin(Omega)
+    s1 = np.sin(t * Omega)       / np.sin(Omega)
+    return s0 * q0 + s1 * q1
+```
+
+`eps = 1e-3` 이 NVIDIA / Unreal 등 다수 그래픽 엔진의 표준값. `1e-6` 까지 낮추면 SLERP 정확도는 ↑ 이지만 분모 underflow 위험.
+
+게임/animation: 보통 *LERP + normalize* 만으로도 충분 (대부분 *각도 차 < 30°*). robot trajectory generation 에선 SLERP 권장 (각속도 일정 보장).
 
 </details>

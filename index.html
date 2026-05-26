@@ -499,7 +499,35 @@ async function fetchJson(path){
 }
 
 // marked - strikethrough 비활성 (한국어 범위 표기 '~' 충돌 방지)
-if (window.marked) window.marked.use({ tokenizer: { del() { return false; } } });
+//        + math 보호: $$...$$ / $...$ 안의 \\, \{, \,, _ 등이 marked 의
+//          기본 inline escape 처리로 망가지지 않게 별도 토큰으로 흡수.
+if (window.marked) {
+  window.marked.use({ tokenizer: { del() { return false; } } });
+  window.marked.use({
+    extensions: [
+      {
+        name: 'mathBlock',
+        level: 'block',
+        start(src) { const i = src.indexOf('$$'); return i < 0 ? undefined : i; },
+        tokenizer(src) {
+          const m = /^\$\$([\s\S]+?)\$\$/.exec(src);
+          if (m) return { type: 'mathBlock', raw: m[0], text: m[1] };
+        },
+        renderer(t) { return `<p>$$${t.text}$$</p>\n`; }
+      },
+      {
+        name: 'mathInline',
+        level: 'inline',
+        start(src) { const i = src.indexOf('$'); return i < 0 ? undefined : i; },
+        tokenizer(src) {
+          const m = /^\$(?!\s)([^\$\n]+?)(?<!\s)\$/.exec(src);
+          if (m) return { type: 'mathInline', raw: m[0], text: m[1] };
+        },
+        renderer(t) { return `$${t.text}$`; }
+      }
+    ]
+  });
+}
 
 const stripDate = s => (s || '').replace(/^\d{2}\/\d{2}\s+/, '');
 

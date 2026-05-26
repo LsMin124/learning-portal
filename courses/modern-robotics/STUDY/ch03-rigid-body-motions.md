@@ -207,7 +207,7 @@ $$q = \left( \cos\frac{\theta}{2}, \ \sin\frac{\theta}{2} \, \hat{\omega} \right
 
 $$R(q) = I + 2 q_w [\mathbf{q}_v] + 2 [\mathbf{q}_v]^2$$
 
-`q_v = (q_x, q_y, q_z)` 는 vector part, `[\mathbf{q}_v]` 는 skew-symmetric.
+`q_v = (q_x, q_y, q_z)` 는 vector part, $[\mathbf{q}_v]$ 는 skew-symmetric.
 
 역방향 ($R \to q$):
 

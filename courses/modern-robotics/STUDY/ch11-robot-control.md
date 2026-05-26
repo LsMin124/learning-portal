@@ -244,7 +244,7 @@ $$\dot{X} = Y(s) \mathcal{F}_{ext}$$
 매 control step `t_k` 에서:
 
 1. 현재 상태 `x(t_k)` 측정
-2. 미래 `[t_k, t_k + N \Delta t]` 의 *최적* control trajectory `u(t_k), \ldots, u(t_k + (N-1)\Delta t)` 계산 (cost 최소화 + constraint 만족)
+2. 미래 $[t_k, t_k + N \Delta t]$ 의 *최적* control trajectory $u(t_k), \ldots, u(t_k + (N-1)\Delta t)$ 계산 (cost 최소화 + constraint 만족)
 3. **첫 step `u(t_k)` 만 실제 robot 에 적용**
 4. 다음 step `t_{k+1}` 에서 (1) 부터 반복 (*sliding window*)
 
@@ -329,7 +329,7 @@ Robot control 을 *Markov Decision Process* 로:
 | Action `a_t` | `τ_t` 또는 desired `θ_t` (low-level controller 가 wrap) |
 | Reward `r_t` | task 보상 + control penalty + safety |
 | Transition `P` | robot dynamics (8장) |
-| Policy `π(a|s)` | learned (neural network, $\sim 10^6$ parameters) |
+| Policy `π(a\|s)` | learned (neural network, $\sim 10^6$ parameters) |
 
 목표 — *expected discounted return* 최대화:
 

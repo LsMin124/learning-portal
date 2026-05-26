@@ -139,7 +139,7 @@ $$r_n = \gamma \left( \frac{\log n}{n} \right)^{1/d}$$
 
 - `n`: 현재 tree 의 node 수
 - `d`: C-space 차원
-- `γ`: `γ > 2 (1 + 1/d)^{1/d} \cdot (\mu(C_{free}) / \zeta_d)^{1/d}` 의 조건을 만족 (`μ` Lebesgue, `ζ_d` d-차원 단위구 부피). 보통 *상수* 로 두고 실험적으로 tuning.
+- `γ`: $\gamma > 2 (1 + 1/d)^{1/d} \cdot (\mu(C_{free}) / \zeta_d)^{1/d}$ 의 조건을 만족 (`μ` Lebesgue, `ζ_d` d-차원 단위구 부피). 보통 *상수* 로 두고 실험적으로 tuning.
 
 `r_n` 의 *log/n* 꼴이 핵심 — *너무 빠르게 줄지 않게* 하여 connectivity 유지, *너무 느리게 줄지 않게* 하여 수렴 보장.
 

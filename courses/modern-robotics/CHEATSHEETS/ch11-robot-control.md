@@ -102,7 +102,7 @@
 | State `s` | `(θ, θ̇)` + sensor (vision, force) |
 | Action `a` | `τ` 또는 desired `θ` |
 | Reward `r` | task + smooth + safety |
-| Policy `π(a|s)` | NN, 학습됨 |
+| Policy `π(a\|s)` | NN, 학습됨 |
 | Objective | `J = E[Σ γ^t r_t]` |
 
 | 알고리즘 | 종류 | 주 응용 |

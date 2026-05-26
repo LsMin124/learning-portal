@@ -123,7 +123,7 @@ PUMA 의 `(θ_2, θ_3)` 단계에서 *해 없음* 이 발견되는 식별자는?
 
 $$D = \frac{r^2 + s^2 - L_2^2 - L_3^2}{2 L_2 L_3}$$
 
-이 `D` 가 `|D| > 1` 이면 `arccos D` 미정의 — 즉 *wrist center 가 reach 밖* (`L_2 + L_3 < \sqrt{r^2 + s^2}` 또는 `|L_2 - L_3| > \sqrt{r^2 + s^2}`).
+이 `D` 가 `|D| > 1` 이면 `arccos D` 미정의 — 즉 *wrist center 가 reach 밖* ($L_2 + L_3 < \sqrt{r^2 + s^2}$ 또는 $|L_2 - L_3| > \sqrt{r^2 + s^2}$).
 
 코드 패턴:
 ```python
@@ -150,7 +150,7 @@ PUMA Step 6 의 ZYZ 분해에서 *wrist singularity* 가 어떻게 식별되며,
 
 $$\sin\theta_5 = \sqrt{r_{13}^2 + r_{23}^2}$$
 
-이 값이 0 에 가까우면 (즉 `r_{13} ≈ r_{23} ≈ 0`) singularity. → `r_{33} = \pm 1` (joint 4 와 6 의 축이 *평행* 또는 *반대*).
+이 값이 0 에 가까우면 (즉 `r_{13} ≈ r_{23} ≈ 0`) singularity. → $r_{33} = \pm 1$ (joint 4 와 6 의 축이 *평행* 또는 *반대*).
 
 **물리** — joint 4 와 joint 6 의 회전축이 *공선* 이 되어 한 자유도가 *손실*. EE 가 그 축 방향으로 *추가 회전 불가능*. (5-DoF instantaneous mobility.)
 

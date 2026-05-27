@@ -40,11 +40,19 @@ except ImportError:
 
 
 def _find_caption(page, caption_prefix):
-    """페이지 안에서 caption_prefix 로 시작하는 line 의 (bbox, block_rect) 반환."""
+    """페이지 안에서 caption_prefix 로 시작하는 line 의 (bbox, block_rect) 반환.
+
+    공백 변동 (단일/복수 space, tab) 에 관용. 예: caption_prefix="Figure 1.1 ♦"
+    가 실제 line "Figure 1.1  ♦" 또는 "Figure\t1.4 ♦" 와도 매치.
+    """
+    import re
+    # caption_prefix 를 word 단위로 split 후 \s+ 로 join → 공백 정규화 regex
+    parts = re.split(r'\s+', caption_prefix.strip())
+    pat = re.compile(r'^' + r'\s+'.join(re.escape(p) for p in parts))
     for blk in page.get_text("dict")["blocks"]:
         for line in blk.get("lines", []):
             txt = "".join(s["text"] for s in line["spans"])
-            if txt.startswith(caption_prefix):
+            if pat.match(txt):
                 return line["bbox"], fitz.Rect(blk["bbox"])
     return None, None
 

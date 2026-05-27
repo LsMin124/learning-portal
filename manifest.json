@@ -26,6 +26,13 @@
           "subtitle": "데이터 중심 애플리케이션 설계 (Martin Kleppmann, 2017)",
           "path": "courses/ddia",
           "tags": ["distributed-systems", "databases", "data-engineering", "scalability", "consistency", "replication"]
+        },
+        {
+          "id": "networking",
+          "title": "Computer Networking: A Top-Down Approach",
+          "subtitle": "컴퓨터 네트워킹: 하향식 접근 (Kurose & Ross, 2021)",
+          "path": "courses/networking",
+          "tags": ["networking", "internet", "tcp-ip", "http", "routing", "wireless", "security"]
         }
       ]
     },

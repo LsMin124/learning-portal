@@ -42,38 +42,102 @@ def _find_caption(page, caption_prefix):
     return None, None
 
 
-def _figure_bbox(page, cap_bbox, cap_block_rect, margin_top=60, margin_bottom=50):
-    """캡션 위쪽의 drawing 합집합 + 캡션 자체를 포함하는 figure bbox 추정."""
-    page_h = page.rect.y1
-    valid = []
+def _find_all_caption_blocks(page, caption_marker="Figure "):
+    """페이지의 모든 figure caption block rect 를 위→아래 순으로 반환.
+
+    같은 페이지에 figure 가 여러 개일 때 각 figure 의 영역을 *상하 분리* 하기 위함.
+    """
+    blocks = []
+    for blk in page.get_text("dict")["blocks"]:
+        for line in blk.get("lines", []):
+            txt = "".join(s["text"] for s in line["spans"])
+            if txt.startswith(caption_marker) and "." in txt[:20]:
+                blocks.append(fitz.Rect(blk["bbox"]))
+                break
+    blocks.sort(key=lambda r: r.y0)
+    return blocks
+
+
+def _content_in_band(page, y_top, y_bot, x_inset=10):
+    """[y_top, y_bot] 세로 band 안의 vector drawing + text block bbox 들 반환.
+
+    figure 의 vector 본체뿐 아니라 *축 라벨·legend* 같은 text block 도 포함하여
+    under-crop 을 막는다.
+    """
+    rects = []
+    page_w = page.rect.x1
+    min_dim = 0.5
     for d in page.get_drawings():
         r = d["rect"]
-        if r.y0 < margin_top or r.y1 > page_h - margin_bottom:
+        if r.width < min_dim or r.height < min_dim:
             continue
-        if r.width < 0.5 or r.height < 0.5:
+        if r.y0 < y_top - 1 or r.y1 > y_bot + 1:
             continue
-        # 캡션 아래의 drawing 은 제외 (figure 는 캡션 위 가정)
-        if r.y0 > cap_bbox[3] + 2:
+        # 페이지 가로 전체에 걸친 *얇은* 선 (header/footer rule, separator) 제외
+        if r.height < 1.0 and r.width > page_w * 0.7:
             continue
-        valid.append(r)
+        rects.append(r)
 
-    if not valid:
+    for blk in page.get_text("dict")["blocks"]:
+        if blk.get("type") != 0:
+            continue
+        br = fitz.Rect(blk["bbox"])
+        if br.width < 1 or br.height < 1:
+            continue
+        if br.y0 < y_top - 1 or br.y1 > y_bot + 1:
+            continue
+        # caption 이외의 *큰 본문 paragraph* 는 제외 — 너무 폭이 넓고 키도 크면 본문 가능성
+        if br.width > page_w - 2 * x_inset - 5 and br.height > 30:
+            continue
+        rects.append(br)
+    return rects
+
+
+def _figure_bbox(page, cap_bbox, cap_block_rect, page_top_margin=60, page_bot_margin=50):
+    """캡션 위의 figure 영역 bbox 추정.
+
+    페이지 내 *모든 caption* 을 찾아, 현재 caption 의 figure region 을
+    (이전 caption block 의 bottom, 현재 caption block 의 top) 사이로 제한.
+    이 영역 안의 vector drawing + text block 의 합집합 + caption block 자체.
+    """
+    page_h = page.rect.y1
+    all_caps = _find_all_caption_blocks(page)
+    cur_idx = None
+    for i, r in enumerate(all_caps):
+        if abs(r.y0 - cap_block_rect.y0) < 1 and abs(r.y1 - cap_block_rect.y1) < 1:
+            cur_idx = i
+            break
+
+    if cur_idx is not None and cur_idx > 0:
+        region_top = all_caps[cur_idx - 1].y1 + 2
+    else:
+        region_top = page_top_margin
+    region_bot = cap_block_rect.y0 - 1
+
+    if region_bot - region_top < 10:
+        region_top = max(page_top_margin, cap_bbox[1] - 350)
+        region_bot = cap_block_rect.y0 - 1
+
+    rects = _content_in_band(page, region_top, region_bot)
+
+    if not rects:
         return fitz.Rect(
             page.rect.x0 + 30,
-            cap_bbox[1] - 200,
+            max(page_top_margin, cap_bbox[1] - 300),
             page.rect.x1 - 30,
             cap_block_rect.y1 + 10,
         )
 
-    fig_rect = valid[0]
-    for r in valid[1:]:
+    fig_rect = rects[0]
+    for r in rects[1:]:
         fig_rect = fig_rect | r
     fig_rect = fig_rect | cap_block_rect
+
     return fitz.Rect(
-        fig_rect.x0 - 5,
-        fig_rect.y0 - 5,
-        fig_rect.x1 + 5,
-        fig_rect.y1 + 10,
+        max(page.rect.x0 + 2, fig_rect.x0 - 6),
+        max(page_top_margin - 5, fig_rect.y0 - 6),
+        min(page.rect.x1 - 2, fig_rect.x1 + 6),
+        min(page_h - page_bot_margin + 5, fig_rect.y1 + 10),
     )
 
 

@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "id": "ddia",
+  "title": "Designing Data-Intensive Applications",
+  "subtitle": "데이터 중심 애플리케이션 설계 (Martin Kleppmann, 2017)",
+  "source": "Martin Kleppmann, O'Reilly Media 2017 (원서 영문판, 한국어 학습 노트)",
+  "language": "ko",
+  "tags": ["distributed-systems", "databases", "data-engineering", "scalability", "consistency", "replication", "partitioning", "transactions", "batch", "stream"],
+  "totalCount": 12,
+  "sections": [
+    {
+      "title": "Part I — Foundations of Data Systems",
+      "items": [
+        {"stem": "ch01-reliable-scalable-maintainable", "pages": 24, "label": "Ch 1. Reliable, Scalable, and Maintainable Applications"},
+        {"stem": "ch02-data-models", "pages": 42, "label": "Ch 2. Data Models and Query Languages"},
+        {"stem": "ch03-storage-retrieval", "pages": 42, "label": "Ch 3. Storage and Retrieval"},
+        {"stem": "ch04-encoding-evolution", "pages": 40, "label": "Ch 4. Encoding and Evolution"}
+      ]
+    },
+    {
+      "title": "Part II — Distributed Data",
+      "items": [
+        {"stem": "ch05-replication", "pages": 48, "label": "Ch 5. Replication"},
+        {"stem": "ch06-partitioning", "pages": 22, "label": "Ch 6. Partitioning"},
+        {"stem": "ch07-transactions", "pages": 52, "label": "Ch 7. Transactions"},
+        {"stem": "ch08-distributed-trouble", "pages": 48, "label": "Ch 8. The Trouble with Distributed Systems"},
+        {"stem": "ch09-consistency-consensus", "pages": 64, "label": "Ch 9. Consistency and Consensus"}
+      ]
+    },
+    {
+      "title": "Part III — Derived Data",
+      "items": [
+        {"stem": "ch10-batch-processing", "pages": 50, "label": "Ch 10. Batch Processing"},
+        {"stem": "ch11-stream-processing", "pages": 50, "label": "Ch 11. Stream Processing"},
+        {"stem": "ch12-future-of-data-systems", "pages": 100, "label": "Ch 12. The Future of Data Systems"}
+      ]
+    }
+  ]
+}

@@ -19,7 +19,15 @@
     {
       "id": "cs-major",
       "title": "CS 전공",
-      "courses": []
+      "courses": [
+        {
+          "id": "ddia",
+          "title": "Designing Data-Intensive Applications",
+          "subtitle": "데이터 중심 애플리케이션 설계 (Martin Kleppmann, 2017)",
+          "path": "courses/ddia",
+          "tags": ["distributed-systems", "databases", "data-engineering", "scalability", "consistency", "replication"]
+        }
+      ]
     },
     {
       "id": "tutorial",

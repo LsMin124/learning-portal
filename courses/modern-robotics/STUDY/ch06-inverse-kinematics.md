@@ -319,7 +319,64 @@ $$\dot\theta = J^+ \mathcal{V}_d + (I - J^+ J) \dot\theta_0$$
 
 ## 다음 학습으로
 
-- **8장 (Dynamics)** — `M(θ) θ̈ + C(θ, θ̇) θ̇ + g(θ) = τ`. IK 의 *동적* 확장.
-- **9장 (Trajectory Generation)** — IK 의 *시간 sequence*. via points + smooth trajectory.
-- **11장 (Control)** — feedback control 의 *inner loop* 에 IK 가 들어감.
-- **MoveIt / pinocchio**: 실제 software 에서 분석 IK + 수치 IK 의 *하이브리드* 가 표준.
+- **8장 (Dynamics)** — IK 의 동적 확장.
+- **9장 (Trajectory Generation)** — IK 의 시간 sequence.
+- **11장 (Control)** — feedback inner loop.
+- **MoveIt / pinocchio**: 분석 + 수치 IK 하이브리드.
+
+---
+
+## §X Modern IK 라이브러리
+
+### Solver 라이브러리
+
+| | 언어 | 특징 |
+|--|--|--|
+| IKFast | C++ | OpenRAVE, symbolic + closed-form |
+| KDL (Orocos) | C++ | ROS 표준, Newton-Raphson |
+| TRAC-IK | C++ | KDL + nonlinear opt, robust |
+| MoveIt! | C++/ROS | manipulator planning 통합 |
+| Pinocchio | C++/Python | INRIA, auto-diff |
+| Drake | C++/Python | MIT, optimization-based |
+
+### Iterative methods 비교
+
+| Method | 수렴 | Singularity |
+|--|--|--|
+| Jacobian transpose | 느림 | 안정 |
+| Pseudoinverse | 빠름 | 불안정 |
+| DLS | 적당 | 안정 |
+| Levenberg-Marquardt | 빠름 | 안정 |
+| SQP | 다목적 | 안정 |
+
+**TRAC-IK**: KDL + SQP 동시, 빠른 것 선택. ROS 표준.
+
+**Learning-based IK**:
+- Neural network (MLP, transformer)
+- Diffusion model — multi-modal 해
+- Training data 부담
+
+### SVD-based regularization
+
+$$J = U \Sigma V^T$$
+
+- 작은 $\sigma_i$ 가 singularity 신호
+- Truncated SVD — accuracy sacrifice
+
+### Whole-body IK (humanoid)
+
+여러 task 동시:
+- End-effector pose
+- Center of mass
+- Posture
+- Joint limit, self-collision
+
+도구: Drake InverseKinematics, RBDL + HQP, Pinocchio task-priority.
+
+### Industry pitfalls
+
+- Singularity proximity — DLS λ tuning
+- Workspace boundary — IK fail
+- Multiple solutions — branch 선택
+- Joint limit — soft vs hard
+- Cable wrap — 누적 angle

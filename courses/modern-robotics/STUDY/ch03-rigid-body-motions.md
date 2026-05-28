@@ -479,3 +479,34 @@ twist 는 `[Ad_T]` 로 변환, wrench 는 `[Ad_T]ᵀ` 로 변환 — *dual* 관�
 - **11장 (Control)** — body wrench 와 desired twist trajectory tracking.
 
 본 장의 표기 (`[ω̂]θ`, `S`, `[Ad_T]`, `V_b`, `F_s`) 가 책 나머지 모든 장의 *언어* 다. 외울 게 많아도 표기에 익숙해지면 이후 장이 *기계적으로* 풀린다.
+
+---
+
+## §X Modern Lie Group Library
+
+### 라이브러리
+
+| | 언어 | 특징 |
+|--|--|--|
+| Sophus | C++ | SLAM 표준, header-only |
+| manif | C++/Python | modern Lie group + auto-diff |
+| modern_robotics | Python | 책의 ref |
+| Pinocchio | C++/Python | rigid body + Lie group |
+| Eigen + Geometry | C++ | basic SO(3), SE(3) |
+
+### Quaternion 산업 응용
+
+- Game engine — Unity, Unreal
+- Aerospace — IMU, attitude estimation
+- VR/AR — head tracking (Oculus, Apple Vision Pro)
+- Robotics — SLAM, sensor fusion
+
+### Dual quaternion
+
+$q_{dual} = q_r + \epsilon q_d, \epsilon^2 = 0$. Rotation + translation 통합, SE(3) 의 8-parameter, screw motion 직접 표현.
+
+### Numerical stability
+
+- Quaternion: renormalization 필요 (drift 방지)
+- Rotation matrix: re-orthogonalization (SVD)
+- SE(3) log: identity 근처 Taylor expansion

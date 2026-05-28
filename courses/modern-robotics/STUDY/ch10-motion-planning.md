@@ -407,5 +407,43 @@ obstacle 의 *오목한 형태* 에서 robot 이 *local minimum* 에 빠짐. goa
 
 - **11장 (Control)** — 본 장의 path 를 9장 time scaling 으로 trajectory 화 → 11장 controller 의 reference.
 - **MoveIt / OMPL** — 산업 robot 의 motion planning 라이브러리. RRT / PRM / CHOMP 모두 포함.
-- **Optimization-based**: TrajOpt, CHOMP, GPMP — collision + dynamics + smoothness 통합.
-- **RL-based motion planning** — recent trend. neural network policy → planning.
+- **Optimization-based**: TrajOpt, CHOMP, GPMP.
+- **RL-based motion planning** — neural network policy.
+
+---
+
+## §X Modern Motion Planning Library
+
+### 라이브러리
+
+| | 언어 | 특징 |
+|--|--|--|
+| OMPL | C++ | 표준 sampling-based |
+| MoveIt! | C++/ROS | manipulator planning |
+| Drake | C++/Python | optimization-based |
+| HPP-FCL | C++ | collision check |
+| CHOMP | C++/Python | trajectory optimization |
+| TrajOpt | C++ | sequential QP |
+| CuRobo | Python/CUDA | GPU planning, NVIDIA |
+
+### Algorithm 의 산업
+
+**RRT*** (asymptotic optimal, Karaman & Frazzoli 2011): MoveIt default.
+
+**Hybrid A*** (자동차): A* + Reeds-Shepp curve. Stanford DARPA, Tesla.
+
+**Diffusion-based planning** (2023~): Diffusion Policy, MotionDiffuser. Multi-modal.
+
+### Modern AI integration
+
+**Foundation models**: VOX-WP, PaLM-E (vision-language → plan), LLM task decomposition, Code as policies.
+
+**RL**: Sim-to-real, Tesla Optimus, Atlas (RL + model-based hybrid).
+
+### Industry use cases
+
+- Warehouse — Amazon Robotics, Locus
+- Autonomous driving — Waymo, Cruise
+- Surgical — Da Vinci, MAKO
+- Drone — DJI, Skydio
+- Quadruped — Boston Dynamics, ANYbotics

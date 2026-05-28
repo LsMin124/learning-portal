@@ -459,6 +459,34 @@ C-space 가 더 크지만 nonholonomic 제약으로 *경로* 가 제약됨. 13 �
 
 - **Chapter 3: Rigid-Body Motions** — 본격적으로 *회전 행렬* (R ∈ SO(3)), *exponential coordinate* (`R = exp([ω̂]θ)`), *homogeneous transformation matrix* (T ∈ SE(3)), **twist** (6D 속도), **wrench** (6D 힘+모멘트). 2장의 *추상적 C-space* 가 *구체적 수학 표현* 으로 변환됨.
 - 보강:
-  - **Frobenius theorem** — Pfaffian constraint 의 적분 가능성 판별. 본 책 외 별도 학습 (미분기하·제어이론 교재).
-  - **Topology 기초** — *manifold*, *homeomorphism*, *atlas* 등의 개념. 깊이 가려면 differential topology.
+  - **Frobenius theorem** — Pfaffian constraint 의 적분 가능성 판별.
+  - **Topology 기초** — manifold, homeomorphism, atlas.
   - 실습: 평면 5-bar linkage, Delta robot, SCARA arm 의 DoF 를 Grübler 로 계산해보기.
+
+---
+
+## §X Modern Configuration Space 의 응용
+
+### High-DoF systems
+
+| Robot | DoF | 특징 |
+|--|--|--|
+| 6-axis arm | 6 | 산업 표준 (PUMA, UR) |
+| 7-axis arm | 7 | redundancy (KUKA iiwa) |
+| Humanoid | 30+ | Atlas, Optimus |
+| Robotic hand | 20+ | Shadow Hand, Allegro |
+| Quadruped | 12-18 | Spot, ANYmal |
+
+### Manifold-aware learning
+
+- Sphere: orientation (unit quaternion on $S^3$)
+- SE(3): pose
+- Riemannian optimization — manifold gradient descent
+- Lie group — robot config 의 자연 framework
+
+### Industry tools
+
+- modern_robotics library — Python
+- Drake — C++/Python, contact-rich
+- MoveIt! — planning + collision
+- OpenRAVE — IK + planning

@@ -454,5 +454,57 @@ $$J(\pi) = \mathbb{E}_{\tau \sim \pi}\left[ \sum_{t=0}^{T} \gamma^t r_t \right]$
 
 - **12장 (Grasping)** — contact 분석과 *force closure*. 본 장의 hybrid / impedance control 응용.
 - **13장 (Mobile Robots)** — nonholonomic constraint 의 controller.
-- **MPC** — finite horizon 의 *trajectory optimization* + control 통합. 본 장의 computed-torque 를 매 step 재계획.
-- **RL-based control** — neural network policy 가 PID / model-based 대체. Sim2Real 의 핵심.
+- **MPC** — finite horizon trajectory optimization + control.
+- **RL-based control** — neural network policy. Sim2Real 핵심.
+
+---
+
+## §X Modern Control Frameworks
+
+### ROS Control
+
+**ros_control** stack:
+- Hardware abstraction
+- Controllers (joint position, velocity, effort)
+- Real-time loop (rt_preempt or Xenomai)
+- ros2_control (ROS 2 latest)
+
+### MPC frameworks
+
+| | 언어 | 특징 |
+|--|--|--|
+| acados | C/Python | Real-time NMPC, autonomous driving |
+| CasADi | C++/Python | Optimization + auto-diff |
+| OCS2 | C++ | optimal control |
+| MPC.pytorch | Python | differentiable MPC |
+| Crocoddyl | C++/Python | rigid body MPC |
+
+### RL frameworks
+
+**Sim**:
+- Isaac Gym (NVIDIA) — massive parallel
+- Brax (Google) — JAX-based, differentiable
+- MuJoCo MJX — JAX bindings
+
+**Algorithm**: PPO, SAC, TD3, DDPG, Diffusion Policy (2023~).
+
+**Sim-to-real**: domain randomization, privileged learning (teacher-student), real-world fine-tuning.
+
+### Industry deployment
+
+**Whole-body control**:
+- Boston Dynamics Atlas — task-prioritized QP
+- ANYmal — model-based whole-body
+- Optimus — RL-based
+
+**Cooperative**:
+- Dual-arm manipulation
+- Swarm robotics
+- Human-robot collaboration (cobot)
+
+### Safety-critical
+
+- Force limit (cobot, ISO 10218)
+- Speed monitoring
+- Emergency stop (E-stop)
+- Safety-rated PLC

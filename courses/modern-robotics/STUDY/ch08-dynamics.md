@@ -406,3 +406,46 @@ $$A(\theta) \dot\theta = 0 \quad \text{(constraint)}$$
 - **13장 (Mobile Robots)** — nonholonomic constraint 가 더해진 dynamics.
 
 8장은 *어렵지만* 그 위의 9~12장 control / planning 의 *언어*. 한 번 정리해두면 후속 장이 *공식의 조합* 으로 풀린다.
+
+---
+
+## §X Modern Dynamics Simulator
+
+### Simulator 비교
+
+| | 언어 | 특징 |
+|--|--|--|
+| MuJoCo | C++/Python | DeepMind, 빠른 contact-rich, free since 2021 |
+| Drake | C++/Python | MIT, model-based + optimization |
+| PyBullet | Python | 학습 + RL |
+| NVIDIA Isaac Sim | C++/Python | GPU, photorealistic |
+| Gazebo | C++ | ROS 표준 |
+| CoppeliaSim (V-REP) | Lua/C++ | 교육 + 산업 |
+| Pinocchio | C++/Python | rigid body algorithms |
+
+### Articulated Body Algorithm (ABA)
+
+Featherstone (1987) — O(n) forward dynamics. Pinocchio, RBDL.
+
+### RNEA
+
+본 장 §8.3 의 두 sweep — O(n) inverse dynamics. Real-time control 표준.
+
+### Contact + friction
+
+- LCP (Linear Complementarity Problem) — contact force
+- MLCP — multi-contact
+- Anitescu-Potra time-stepping
+- Featherstone hybrid dynamics
+
+### GPU acceleration
+
+- Isaac Gym, IsaacLab — 수천 robot 동시 simulation
+- RL 의 massive parallel
+- Sim-to-real 향상
+
+### Modern challenges
+
+- Soft body + rigid contact (clothing, fluid)
+- Differentiable simulation (Brax, MJX)
+- Real2sim2real — calibration 자동화

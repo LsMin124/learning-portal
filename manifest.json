@@ -55,6 +55,19 @@
       ]
     },
     {
+      "id": "finance",
+      "title": "금융·재무",
+      "courses": [
+        {
+          "id": "financial-management",
+          "title": "재무관리",
+          "subtitle": "교재 TBD — 기업재무 + 가치평가 (다모다란 스타일)",
+          "path": "courses/financial-management",
+          "tags": ["finance", "corporate-finance", "valuation", "dcf", "wacc"]
+        }
+      ]
+    },
+    {
       "id": "personal",
       "title": "프로젝트·블로그",
       "courses": []

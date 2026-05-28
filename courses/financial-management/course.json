@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "id": "financial-management",
+  "title": "재무관리",
+  "subtitle": "교재 TBD — 기업재무 + 가치평가 (다모다란 스타일)",
+  "source": "PDF 업로드 후 명시 — 예: Damodaran 'Investment Valuation' / 'Corporate Finance'",
+  "language": "ko",
+  "tags": ["finance", "corporate-finance", "valuation", "dcf", "wacc", "capm"],
+  "totalCount": 0,
+  "sections": [
+    {
+      "title": "Part I — TBD (교재 도착 후 채움)",
+      "items": []
+    }
+  ]
+}

@@ -182,7 +182,10 @@ contact task 의 일부 방향은 *motion control* (constrained), 다른 방향�
 
 $$\tau = J^T \left[ S \mathcal{F}_d + (I - S) \Lambda(\theta) \dot{V}_d + \ldots \right]$$
 
-`S = diag(0, 0, 1, 0, 0, 0)` 같은 *diagonal selection matrix*. 1 = force control, 0 = motion control.
+**예 — 책상 닦기** (z-축 force, 나머지 motion). Twist 순서 `V = (ω_x, ω_y, ω_z, v_x, v_y, v_z)` 일 때:
+- `S = diag(0, 0, 0, 0, 0, 1)` — *6번째 entry* `v_z` (z-축 선형 속도/힘) 가 force control, 나머지 5 자유도는 motion.
+
+선택 의미 — 1 = force control, 0 = motion control. (frame 명시 필수: *task frame 의 어느 축* 인지.)
 
 > **함정 2**: Motion 과 force 방향이 *orthogonal* (mutually exclusive) 해야 함. 같은 방향에 둘 다 시도하면 *constraint inconsistency*.
 
@@ -369,7 +372,7 @@ $$J(\pi) = \mathbb{E}_{\tau \sim \pi}\left[ \sum_{t=0}^{T} \gamma^t r_t \right]$
 ### 10.5 산업 채용 사례
 
 - **ANYmal / Spot / Solo quadruped** (ETH Hutter, Boston Dynamics): blind locomotion + perceptive locomotion 모두 PPO + privileged learning. *전 지형 robust*.
-- **OpenAI Dactyl** (2018): single-handed Rubik's cube. PPO + domain randomization. *완전 model-free*.
+- **OpenAI Dactyl** (Rubik's cube 2019; in-hand cube reorientation 2018): single-handed manipulation. PPO + domain randomization. *완전 model-free*.
 - **DeepMind RoboCat / Gato**: foundation model — 수백 manipulation task 학습 후 few-shot adaptation.
 - **Tesla Optimus / Figure 02 humanoid**: end-to-end RL + IL (imitation learning) hybrid.
 

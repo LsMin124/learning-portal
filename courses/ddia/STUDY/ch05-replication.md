@@ -210,12 +210,7 @@ Mr. Poons: "How far into the future..."
 
 **해결**: *인과 관련 write 를 같은 partition* (6장).
 
-#### 추가 anomaly — *Update 손실* + *Phantom*
-
-- *Update 손실* — 동시 update 가 *덮어쓰기* (LWW 문제)
-- *Phantom* — *복잡한 multi-step* read 의 일관성 부재
-
-→ 7장 transaction 에서 본격 처리.
+> **참고 — DDIA Ch5 는 *3 가지 anomaly* 만 정의** (Reading Your Own Writes, Monotonic Reads, Consistent Prefix Reads). *Lost Update* 와 *Phantom* 은 *7장 Transactions* 의 *Race Conditions in Concurrency Control* 의 영역 — *replication lag 의 직접 결과 아닌* transaction isolation 의 문제. Multi-leader / Leaderless 에선 함께 등장 가능하나 원인이 분리.
 
 ### §3.3 *Solution* — 강한 consistency 모델
 

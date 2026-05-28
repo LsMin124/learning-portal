@@ -189,15 +189,15 @@ stop-and-wait 의 *최소 필요 sequence number = 2* (0, 1 alternating).
 
 매 packet 마다 *RTT + transmission* 대기. *link 활용률 매우 낮음*.
 
-**예제 계산** (책 p.246):
-- L = 1500 bytes (12000 bits)
+**예제 계산** (책 Kurose 8e p.246):
+- L = 1000 bytes (8000 bits)
 - R = 1 Gbps
 - RTT = 30 ms
 
-$d_{trans} = 12000 / 10^9 = 12$ μs.
+$d_{trans} = 8000 / 10^9 = 8$ μs.
 
 Utilization:
-$$U_{sender} = \frac{d_{trans}}{RTT + d_{trans}} = \frac{12 \text{ μs}}{30 \text{ ms} + 12 \text{ μs}} \approx 0.00027 = 0.027\%$$
+$$U_{sender} = \frac{d_{trans}}{RTT + d_{trans}} = \frac{8 \text{ μs}}{30 \text{ ms} + 8 \text{ μs}} \approx 0.000267 = 0.027\%$$
 
 1 Gbps link 의 *0.03% 만 활용*. 매우 낭비.
 

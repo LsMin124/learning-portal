@@ -166,8 +166,9 @@ log segment 안의 key 들을 *정렬* 해서 저장:
 | **HBase** | Hadoop 의 KV store |
 | **ScyllaDB** | C++ Cassandra, ~10x 빠름 |
 | **Lucene** (Elasticsearch) | 검색 인덱스 |
-| **MongoDB WiredTiger** | LSM 옵션 |
 | **TiKV** | CockroachDB, RocksDB 기반 |
+
+> *MongoDB 의 default storage engine 은 WiredTiger 의 B-tree* (3.2+). LSM 옵션도 있으나 *주류 아님*.
 
 ### §3.5 LSM-tree 의 trade-off
 

@@ -2,15 +2,82 @@
   "version": 1,
   "id": "financial-management",
   "title": "재무관리",
-  "subtitle": "교재 TBD — 기업재무 + 가치평가 (다모다란 스타일)",
-  "source": "PDF 업로드 후 명시 — 예: Damodaran 'Investment Valuation' / 'Corporate Finance'",
+  "subtitle": "Corporate Finance, 12th Edition (Ross, Westerfield, Jaffe, Jordan, 2019)",
+  "source": "McGraw-Hill Education 2019, ISBN 978-1-259-91894-0",
   "language": "ko",
-  "tags": ["finance", "corporate-finance", "valuation", "dcf", "wacc", "capm"],
-  "totalCount": 0,
+  "tags": ["finance", "corporate-finance", "valuation", "capital-budgeting", "capm", "wacc", "capital-structure", "options", "ross-westerfield"],
+  "totalCount": 31,
   "sections": [
     {
-      "title": "Part I — TBD (교재 도착 후 채움)",
-      "items": []
+      "title": "Part I — Overview",
+      "items": [
+        {"stem": "ch01-introduction", "pages": 19, "label": "Ch 1. Introduction to Corporate Finance"},
+        {"stem": "ch02-financial-statements", "pages": 22, "label": "Ch 2. Financial Statements and Cash Flow"},
+        {"stem": "ch03-financial-analysis", "pages": 43, "label": "Ch 3. Financial Statements Analysis and Financial Models"}
+      ]
+    },
+    {
+      "title": "Part II — Valuation and Capital Budgeting",
+      "items": [
+        {"stem": "ch04-dcf-valuation", "pages": 48, "label": "Ch 4. Discounted Cash Flow Valuation"},
+        {"stem": "ch05-npv-rules", "pages": 36, "label": "Ch 5. Net Present Value and Other Investment Rules"},
+        {"stem": "ch06-capital-investment", "pages": 36, "label": "Ch 6. Making Capital Investment Decisions"},
+        {"stem": "ch07-risk-analysis", "pages": 30, "label": "Ch 7. Risk Analysis, Real Options, and Capital Budgeting"},
+        {"stem": "ch08-bond-valuation", "pages": 35, "label": "Ch 8. Interest Rates and Bond Valuation"},
+        {"stem": "ch09-stock-valuation", "pages": 29, "label": "Ch 9. Stock Valuation"}
+      ]
+    },
+    {
+      "title": "Part III — Risk",
+      "items": [
+        {"stem": "ch10-market-history", "pages": 29, "label": "Ch 10. Lessons from Market History"},
+        {"stem": "ch11-capm", "pages": 43, "label": "Ch 11. Return, Risk, and the Capital Asset Pricing Model"},
+        {"stem": "ch12-apt", "pages": 22, "label": "Ch 12. An Alternative View of Risk and Return"},
+        {"stem": "ch13-cost-of-capital", "pages": 35, "label": "Ch 13. Risk, Cost of Capital, and Valuation"}
+      ]
+    },
+    {
+      "title": "Part IV — Capital Structure and Dividend Policy",
+      "items": [
+        {"stem": "ch14-efficient-markets", "pages": 40, "label": "Ch 14. Efficient Capital Markets and Behavioral Challenges"},
+        {"stem": "ch15-long-term-financing", "pages": 19, "label": "Ch 15. Long-Term Financing"},
+        {"stem": "ch16-capital-structure-basic", "pages": 32, "label": "Ch 16. Capital Structure: Basic Concepts"},
+        {"stem": "ch17-capital-structure-limits", "pages": 32, "label": "Ch 17. Capital Structure: Limits to the Use of Debt"},
+        {"stem": "ch18-levered-firm-valuation", "pages": 22, "label": "Ch 18. Valuation and Capital Budgeting for the Levered Firm"},
+        {"stem": "ch19-dividends", "pages": 39, "label": "Ch 19. Dividends and Other Payouts"}
+      ]
+    },
+    {
+      "title": "Part V — Long-Term Financing",
+      "items": [
+        {"stem": "ch20-raising-capital", "pages": 37, "label": "Ch 20. Raising Capital"},
+        {"stem": "ch21-leasing", "pages": 24, "label": "Ch 21. Leasing"}
+      ]
+    },
+    {
+      "title": "Part VI — Options, Futures, and Corporate Finance",
+      "items": [
+        {"stem": "ch22-options", "pages": 45, "label": "Ch 22. Options and Corporate Finance"},
+        {"stem": "ch23-options-extensions", "pages": 24, "label": "Ch 23. Options and Corporate Finance: Extensions and Applications"},
+        {"stem": "ch24-warrants-convertibles", "pages": 21, "label": "Ch 24. Warrants and Convertibles"},
+        {"stem": "ch25-derivatives-hedging", "pages": 32, "label": "Ch 25. Derivatives and Hedging Risk"}
+      ]
+    },
+    {
+      "title": "Part VII — Short-Term Finance",
+      "items": [
+        {"stem": "ch26-short-term-finance", "pages": 30, "label": "Ch 26. Short-Term Finance and Planning"},
+        {"stem": "ch27-cash-management", "pages": 22, "label": "Ch 27. Cash Management"},
+        {"stem": "ch28-credit-inventory", "pages": 29, "label": "Ch 28. Credit and Inventory Management"}
+      ]
+    },
+    {
+      "title": "Part VIII — Special Topics",
+      "items": [
+        {"stem": "ch29-mergers-acquisitions", "pages": 43, "label": "Ch 29. Mergers, Acquisitions, and Divestitures"},
+        {"stem": "ch30-financial-distress", "pages": 16, "label": "Ch 30. Financial Distress"},
+        {"stem": "ch31-international-finance", "pages": 28, "label": "Ch 31. International Corporate Finance"}
+      ]
     }
   ]
 }

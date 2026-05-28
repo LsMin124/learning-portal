@@ -33,8 +33,8 @@
 
 | 방법 | 조건 | 적용 |
 |--|--|--|
-| `det J` | `\|det J\| < ε` | n = 6 only |
-| `det(J Jᵀ)` | `\|det(J Jᵀ)\| < ε` | n ≥ 6 |
+| $\det J$ | $\lvert \det J \rvert < \epsilon$ | n = 6 only |
+| $\det(J J^T)$ | $\lvert \det(J J^T) \rvert < \epsilon$ | n ≥ 6 |
 | Rank | `rank J < min(6, n)` | 일반 |
 | SVD | `σ_min < ε` | 가장 robust |
 

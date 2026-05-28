@@ -329,7 +329,7 @@ Robot control 을 *Markov Decision Process* 로:
 | Action `a_t` | `τ_t` 또는 desired `θ_t` (low-level controller 가 wrap) |
 | Reward `r_t` | task 보상 + control penalty + safety |
 | Transition `P` | robot dynamics (8장) |
-| Policy `π(a\|s)` | learned (neural network, $\sim 10^6$ parameters) |
+| Policy $\pi(a \mid s)$ | learned (neural network, $\sim 10^6$ parameters) |
 
 목표 — *expected discounted return* 최대화:
 

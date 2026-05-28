@@ -390,7 +390,7 @@ MyBatis 의 `test` 속성은 **OGNL (Object Graph Navigation Language)** 사용.
 | 자바 | OGNL |
 |--|--|
 | `&&` | `and` (또는 `&amp;&amp;` XML escape) |
-| `||` | `or` |
+| `&#124;&#124;` | `or` |
 | `==` | `==` 또는 `eq` |
 | `!=` | `!=` 또는 `neq` |
 | `null` | `null` |

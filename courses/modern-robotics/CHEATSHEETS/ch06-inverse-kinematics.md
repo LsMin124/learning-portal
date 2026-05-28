@@ -61,7 +61,7 @@ Step 6  θ_5 = atan2(±√(r_13² + r_23²), r_33)    # wrist flip
 
 | Singularity | 조건 | 검출 변수 |
 |--|--|--|
-| Workspace boundary | wrist center 가 reach 한계 | `|D| → 1` (Step 3) |
+| Workspace boundary | wrist center 가 reach 한계 | $\lvert D \rvert \to 1$ (Step 3) |
 | Shoulder | wrist center 가 base z-axis 위 | `r = √(p_wx² + p_wy²) → 0` (Step 2) |
 | Elbow | 팔이 완전히 펴짐 | `D = 1` (Step 3) |
 | Wrist | joint 4 와 6 의 축 공선 | `sin θ_5 → 0` (Step 6) |

@@ -255,10 +255,12 @@ public Board getBoard(Long id) {
 }
 ```
 
-효과:
-- **스냅샷 생성 X** → Dirty Checking 비활성 → 메모리 절약
-- **flush mode 변경** (`MANUAL`/`COMMIT`) → 불필요 flush 생략
+효과 (*정정 — JPA_02 의 함정 참고*):
+- **JDBC connection `setReadOnly(true)`** — driver 가 무시 가능
+- **Hibernate FlushMode → `MANUAL`/`COMMIT`** — *commit 시 자동 flush 안 함* → Dirty Checking 효과 *결과적으로* 없어짐 (snapshot 자체는 여전히 생성)
 - 일부 DB 는 `read-only` 트랜잭션을 *별도 최적화* (예: PostgreSQL)
+
+> **주의**: "snapshot 자체를 안 만든다" 는 *흔한 오해*. 실제는 *flush 안 일어남* 으로 변경이 DB 반영 안 됨.
 
 **원칙**: SELECT 만 하는 모든 메서드에 `readOnly = true`. 클래스 레벨로:
 
@@ -280,6 +282,42 @@ public Report heavyReport() { ... }
 ```
 
 긴 보고서·배치성 트랜잭션에 안전장치. 초과 시 `TransactionTimedOutException`.
+
+## 5a. 동시성 제어 — @Version + @Lock
+
+**Optimistic Locking** (`@Version`) — version 컬럼 기반:
+```java
+@Entity
+public class Account {
+    @Id Long id;
+    int balance;
+
+    @Version
+    Long version;   // commit 시 자동 증가 + 비교
+}
+```
+
+- Read 시점의 version → update 시점에 *다르면* `OptimisticLockException`
+- *retry 책임 application* — `@Retryable` 또는 manual catch
+
+**Pessimistic Locking** (`@Lock`) — DB 단위 잠금:
+```java
+@Lock(LockModeType.PESSIMISTIC_WRITE)
+@Query("select a from Account a where a.id = :id")
+Account findForUpdate(@Param("id") Long id);
+```
+
+- `LockModeType`:
+  - `PESSIMISTIC_READ` — 공유 lock (SELECT ... FOR SHARE)
+  - `PESSIMISTIC_WRITE` — 배타 lock (SELECT ... FOR UPDATE)
+  - `OPTIMISTIC` — version check (@Version 필수)
+  - `OPTIMISTIC_FORCE_INCREMENT` — version 강제 증가
+  - `PESSIMISTIC_FORCE_INCREMENT` — 배타 + version 증가
+
+**선택**:
+- 충돌 *드묾* → optimistic (성능 우수)
+- 충돌 *빈번* → pessimistic (deadlock 위험 ↑)
+- *재고 차감, 송금* 등 critical → pessimistic 또는 optimistic + retry
 
 ## 6. AOP 프록시 함정 (2강 복습)
 
@@ -423,13 +461,9 @@ private BooleanExpression writerEq(String w) {
 
 ## 2. 설정 한 줄 요약
 
-Gradle 의 `build.gradle.kts` 예:
+Gradle 의 `build.gradle.kts` 예 (*modern 방식 — Gradle 7+ 호환*):
 
 ```kotlin
-plugins {
-    id("com.ewerk.gradle.plugins.querydsl") version "1.0.10"
-}
-
 dependencies {
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
     annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")
@@ -437,6 +471,8 @@ dependencies {
     annotationProcessor("jakarta.annotation:jakarta.annotation-api")
 }
 ```
+
+> **주의 — `com.ewerk.gradle.plugins.querydsl` plugin 은 deprecated** (Gradle 7+ 비호환). 위 처럼 *annotationProcessor 만으로* QClass 자동 생성. 생성 위치는 `build/generated/sources/annotationProcessor/java/main` (Gradle 5+ 기본).
 
 빌드 시 `@Entity` 마다 `QXxx` 클래스 자동 생성 (`build/generated/...`).
 

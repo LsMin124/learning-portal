@@ -341,7 +341,7 @@ Components: key exchange + auth + encryption + MAC.
 
 | 표준 | 발표 | 보안 |
 |--|--|--|
-| WEP | 1997 | *Broken* (5s) |
+| WEP | 1997 | *Broken* (Aircrack-ng PTW 2007: 수 분 ~ 1 시간, IV 충분 시) |
 | WPA | 2003 | TKIP 임시 |
 | WPA2 | 2004 | AES, KRACK 2017 |
 | WPA3 | 2018 | SAE, forward secrecy |

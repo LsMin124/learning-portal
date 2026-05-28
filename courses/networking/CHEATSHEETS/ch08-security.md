@@ -215,7 +215,7 @@ Client                       Server
 
 | 표준 | 발표 | 보안 |
 |--|--|--|
-| WEP | 1997 | Broken (5s) |
+| WEP | 1997 | Broken (수 분, IV 충분 시) |
 | WPA | 2003 | TKIP 임시 |
 | WPA2 | 2004 | AES, KRACK 2017 |
 | WPA3 | 2018 | SAE, forward secrecy |
@@ -276,11 +276,11 @@ Rotation: 90 day 또는 event-based.
 
 **Quantum (Shor)**: RSA, ECC, DH 깨짐.
 
-**NIST PQ 2024**:
-- CRYSTALS-Kyber — key exchange
-- CRYSTALS-Dilithium — signature
-- FALCON — smaller signature
-- SPHINCS+ — hash-based
+**NIST PQ FIPS 표준 (2024-08)**:
+- **CRYSTALS-Kyber → ML-KEM (FIPS 203)** — key encapsulation
+- **CRYSTALS-Dilithium → ML-DSA (FIPS 204)** — signature
+- **SPHINCS+ → SLH-DSA (FIPS 205)** — hash-based signature
+- FALCON — FN-DSA (예정, FIPS 206 draft)
 
 **Symmetric (Grover)**: key 2x (AES-256).
 **Hash**: SHA-384 / SHA-512.

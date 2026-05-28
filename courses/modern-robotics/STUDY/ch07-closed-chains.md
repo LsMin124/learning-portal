@@ -221,8 +221,53 @@ actuator + configuration + end-effector singularity 모두 *Jacobian rank* 로 �
 ## 다음 학습으로
 
 - **Stewart-Gough simulation** — V-REP, Gazebo 에서 6-UPS model 학습.
-- **Delta robot industrial** — ABB IRB 360, FANUC M-1iA 의 picking applications.
-- **Parallel robot 연구** — 6-DoF haptics (Force Dimension), VR simulator.
-- **Cooperative manipulation** — 다중 robot 의 closed chain control.
+- **Delta robot industrial** — ABB IRB 360, FANUC M-1iA picking.
+- **Parallel robot 연구** — 6-DoF haptics, VR simulator.
+- **Cooperative manipulation** — 다중 robot closed chain control.
 
-7장은 short 하지만 *parallel mechanism* 의 *분석 framework*. 산업·연구 모두에서 closed-chain robot 비중 증가 (특히 picking, flight simulator, haptics).
+---
+
+## §X 산업의 Closed-chain Robots
+
+### Pick-and-place
+
+| Robot | 회사 | 특징 |
+|--|--|--|
+| ABB IRB 360 FlexPicker | ABB | Delta, 최대 300 picks/min |
+| FANUC M-1iA / M-3iA | FANUC | Delta, 다양한 페이로드 |
+| Adept Quattro | Omron | 4-leg Delta variant |
+
+### Flight simulator + VR
+
+- Stewart-Gough platform — 항공기 cockpit motion
+- 6 DoF, 수 톤 페이로드
+- 회사: CAE, Moog, FAAC
+
+### Haptics
+
+- Force Dimension Omega/Sigma — 6-DoF haptic
+- 3D Systems Phantom — desktop
+- Surgery training, teleoperation
+
+### Walking robots
+
+- Stance phase = closed chain (다리 + 지면)
+- Swing phase = open chain
+- *Hybrid system* — phase 마다 dynamics
+- Atlas (Boston Dynamics), Cassie (Agility Robotics)
+
+### Cable-driven parallel robots (CDPR)
+
+- Leg = cable
+- Tension only — force-closure
+- Sky-cam (스타디움), 큰 작업공간
+
+### Soft + continuum
+
+- Rigid 가정 깨짐
+- Continuum (snake-like), soft (octopus-inspired)
+- Modern research frontier
+
+---
+
+7장은 short 하지만 *parallel mechanism* 의 분석 framework. 산업·연구 모두에서 closed-chain robot 비중 증가.

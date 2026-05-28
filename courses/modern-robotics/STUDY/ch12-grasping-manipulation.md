@@ -228,7 +228,50 @@ robot 이 *contact force 에 부드럽게 양보* → 정렬 보정.
 
 ## 다음 학습으로
 
-- **13장 (Mobile Robots)** — 차량형 robot 의 nonholonomic constraint 와 contact.
-- **Robotic Hands** — Allegro Hand, Shadow Hand 등 multi-fingered manipulation.
-- **Learning-based grasping** — GraspNet, DexNet — neural network 으로 grasp pose 예측.
-- **Dexterous manipulation** — in-hand reorientation, Shadow Hand 의 Cube rotation 등.
+- **13장 (Mobile Robots)** — nonholonomic + contact.
+- **Robotic Hands** — Allegro, Shadow Hand.
+- **Learning-based grasping** — GraspNet, DexNet.
+- **Dexterous manipulation** — Shadow Hand Cube rotation.
+
+---
+
+## §X 산업의 Manipulation (2025)
+
+### Robotic grippers
+
+| | 회사 | 특징 |
+|--|--|--|
+| Parallel jaw | 표준 산업 | 단순, 강력 |
+| Suction cup | Schmalz, Piab | 평평한 표면, e-commerce |
+| Soft gripper | Soft Robotics | 부드러운 물체 (food) |
+| Allegro Hand | Wonik | 4-finger, 16-DoF |
+| Shadow Hand | Shadow Robot | 5-finger, 24-DoF |
+
+### Learning-based grasping
+
+**GraspNet** (2020): RGB-D → grasp pose, ~95% success.
+**Dex-Net** (Berkeley, 2017~): synthetic + sim2real.
+**ACRONYM** (NVIDIA): million-scale grasp dataset.
+
+### Recent advances
+
+**Foundation models**:
+- RT-1, RT-2 (Google) — vision-language-action
+- Octo — open foundation policy
+- RDT-1B — diffusion-based
+
+**Dexterous manipulation**:
+- OpenAI Dactyl (2018) — Rubik's cube
+- DeepMind RGB-Stacking (2022)
+- TRI cooking robot (2024)
+
+### Non-prehensile
+
+- Pushing, throwing (TossingBot), pivoting
+
+### Industry applications
+
+- Amazon Picking Challenge — warehouse
+- Tesla FSD — autonomous
+- Da Vinci — surgical
+- Fruit picking — Soft Robotics + AI

@@ -252,6 +252,50 @@ trajectory 를 `(s, ṡ)` 평면의 곡선으로 표현. 각 점에서:
 
 ## 다음 학습으로
 
-- **10장 (Motion Planning)** — path 의 *기하* 결정. 본 장은 path 가 *주어진* 상태 가정.
-- **11장 (Robot Control)** — 본 장의 `θ_d(t), θ̇_d(t), θ̈_d(t)` 가 control 의 *reference signal*.
-- **MPC / optimal control**: 본 장은 *offline* trajectory. real-time MPC 가 같은 trajectory 를 *closed-loop* 으로 풀이.
+- **10장 (Motion Planning)** — path 의 기하 결정.
+- **11장 (Robot Control)** — reference signal.
+- **MPC / optimal control**: real-time closed-loop.
+
+---
+
+## §X 산업의 Trajectory Generation
+
+### 산업 표준 도구
+
+| | 언어 | 특징 |
+|--|--|--|
+| Ruckig | C++/Python | online jerk-limited (real-time) |
+| Reflexxes | C++ | Stäubli, real-time |
+| TOTG (time-optimal) | C++ | Hauser-Ng 2010, ROS MoveIt |
+| OMPL | C++ | path planning |
+| CHOMP / STOMP | C++/Python | optimization-based |
+| trajopt | C++ | sequential QP |
+
+### Cartesian trajectory 산업
+
+**Welding / painting**: continuous path, ABB/KUKA 내장.
+**3D printing**: layer-by-layer, speed + accel limit.
+**Surgical robot**: sub-mm precision, tremor filtering (Da Vinci, MAKO).
+
+### Modern alternatives
+
+**Optimization-based**:
+- CHOMP, TrajOpt, KOMO
+- Cost = jerk + obstacle distance
+
+**Learning-based**:
+- Imitation learning (demonstration)
+- Reinforcement learning
+- Diffusion policy (2023~) — generative
+
+### Real-time constraints
+
+- Hard real-time — joint cmd 매 1~10 ms
+- Latency budget — sensing + compute + actuation < 1 ms
+
+### Practical pitfalls
+
+- Joint speed/accel limit (datasheet)
+- Power current spike
+- Cable wrap 의 angle continuity
+- Workspace boundary, singularity 통과

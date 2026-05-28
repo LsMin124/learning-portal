@@ -239,7 +239,59 @@ $$\mathcal{V}_e = J_{base}(\theta_{base}) \dot\theta_{base} + J_{arm}(\theta_{ar
 
 ## 다음 학습으로
 
-- **SLAM** — Simultaneous Localization And Mapping. odometry + camera/LiDAR.
-- **Autonomous driving** — Ackermann 의 정밀 control, perception, planning 통합.
-- **Humanoid locomotion** — bipedal walking 의 nonholonomic-like constraints.
-- **RL for mobile robots** — autonomous navigation 의 end-to-end learning.
+- **SLAM** — odometry + camera/LiDAR.
+- **Autonomous driving** — Ackermann + perception + planning.
+- **Humanoid locomotion** — bipedal nonholonomic-like.
+- **RL for mobile robots** — end-to-end learning.
+
+---
+
+## §X 산업의 Mobile Robots (2025)
+
+### AGV / AMR
+
+**AGV** (Automated Guided Vehicle): pre-planned route (magnetic tape, QR). KION, Daifuku.
+**AMR** (Autonomous Mobile Robot): SLAM + dynamic planning. Locus Robotics, Fetch, MiR, Amazon Robotics (Kiva).
+
+### Autonomous vehicles
+
+| | 회사 | Level |
+|--|--|--|
+| Waymo | Alphabet | L4 (geofenced) |
+| Cruise | GM | L4 (paused 2023) |
+| Tesla FSD | Tesla | L2-3 |
+| Mobileye | Intel | L2-3 |
+| Zoox | Amazon | L4 (purpose-built) |
+
+### Quadruped (4-leg)
+
+- Spot (Boston Dynamics) — industrial inspection
+- ANYmal (ANYbotics) — research + industrial
+- Unitree — affordable (B1, Go2)
+- Aliengo — Chinese low-cost
+
+→ Wheeled 보다 uneven terrain 강함.
+
+### Drones
+
+- DJI — consumer + industrial
+- Skydio — autonomous flight
+- Anduril — defense
+- Joby — eVTOL
+
+→ Aerial mobile robot — fully holonomic 3D.
+
+### Modern algorithms
+
+**SLAM**: ORB-SLAM3, LOAM, LIO-SAM, VINS-Fusion.
+**Path planning**: A*, RRT*, Hybrid A* (Ackermann), MPC, RL.
+**Localization**: Particle filter, EKF/UKF, Graph SLAM.
+
+### Sensor fusion
+
+- IMU (high freq, drift)
+- Wheel odometry (slip)
+- Camera (rich, slow)
+- LiDAR (precise, sparse)
+- GPS (outdoor only)
+- → Kalman filter / factor graph 통합

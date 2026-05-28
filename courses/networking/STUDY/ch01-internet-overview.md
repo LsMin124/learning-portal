@@ -407,7 +407,7 @@ $$d_{nodal} = d_{proc} + d_{queue} + d_{trans} + d_{prop}$$
 - d = link 거리 (m), s = 전파 속도 (~2×10^8 m/s in copper/fiber)
 - **거리 의존, link 속도 무관**
 
-예: 8000 km (서울 ↔ 뉴욕) → $d_{prop} = 8 \times 10^6 / (2 \times 10^8) = 40$ ms
+예: 11,000 km (서울 ↔ 뉴욕, great-circle distance) → $d_{prop} = 1.1 \times 10^7 / (2 \times 10^8) = 55$ ms
 
 #### 핵심 비교
 
@@ -822,7 +822,7 @@ Layer 1 Physical:     bits (electrical/optical/radio signal)
 - **Leonard Kleinrock** (MIT, 1961) — packet switching 의 *queuing theory* 기반
 - **Paul Baran** (RAND, 1964) — *survivable network* (핵 공격에 견디는 통신망)
 - **Donald Davies** (NPL, 1965) — "packet" 용어 창안
-- **ARPANET** (1969) — 첫 packet 교환 network. 4 node (UCLA, Stanford, UCSB, Utah)
+- **ARPANET** (1969) — 첫 packet 교환 network. 4 node (UCLA, **SRI** (Stanford Research Institute, 현 SRI International), UCSB, Utah)
 - **NCP (Network Control Protocol)** (1972) — ARPANET 의 *첫 host protocol*
 
 ### 7.2 1972~1980: 다른 network 들 + Internetworking

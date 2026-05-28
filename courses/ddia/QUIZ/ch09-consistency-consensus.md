@@ -28,7 +28,7 @@
 <details><summary>답</summary>
 
 **Majority side (3 node)**:
-- Quorum 보유 (3 ≥ ceil(5/2)+1 = 3)
+- Quorum 보유 (3 ≥ floor(5/2)+1 = 3)
 - Leader 가 그쪽에 있거나 *재선출*
 - Read/write 정상
 

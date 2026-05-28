@@ -72,7 +72,7 @@ PUMA, KUKA KR, ABB 대부분 산업용 6R arm 이 이 구조.
 
 ### 2.3 좌표계 설정 (DH 표준)
 
-PUMA-560 의 link 파라미터 (단위: m, 책의 예제 값):
+*Spherical-wrist 6R arm* (PUMA-style) 의 link 파라미터 — *shoulder offset 없는 단순화 버전*:
 
 | Link `i` | `α_{i-1}` | `a_{i-1}` | `d_i` | `θ_i` |
 |--|--|--|--|--|
@@ -82,6 +82,8 @@ PUMA-560 의 link 파라미터 (단위: m, 책의 예제 값):
 | 4 | −π/2 | `a_3 = 0.0203` | `d_4 = 0.4331` | `θ_4` |
 | 5 | π/2 | 0 | 0 | `θ_5` |
 | 6 | −π/2 | 0 | 0 | `θ_6` |
+
+> **주의**: 실제 PUMA-560 의 standard DH (Craig 3rd ed Table 3.4) 는 `d_3 ≈ 0.1254 m` *shoulder offset* 가 있다. 이 offset 이 *left-arm vs right-arm* configuration 을 만들고 `θ_1` 식에 영향. 본 §2 의 closed-form 풀이는 *shoulder offset 없는* spherical-shoulder 가정 — *교과서적 단순화*. 산업용 PUMA-560 IK 구현 시 Craig 의 정확한 표를 참조.
 
 핵심 기하 — **joints 4, 5, 6 의 축이 한 점 (wrist center)** 에서 만난다. 끝 EE 와 wrist center 사이는 `d_6 = 0.0565` 의 오프셋.
 

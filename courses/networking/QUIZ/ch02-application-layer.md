@@ -74,13 +74,16 @@
 
 <details><summary>답</summary>
 
-**Iterative**:
-- Host→Local 10 + Local→Root→Local 200 + Local→TLD→Local 100 + Local→Auth→Local 60 + Local→Host 10
-- Total = **380 ms**
+**Iterative** (RTT 는 round-trip 자체):
+- Host↔Local 왕복 = 10ms
+- Local↔Root 왕복 = 100ms
+- Local↔TLD 왕복 = 50ms
+- Local↔Auth 왕복 = 30ms
+- Total = 10 + 100 + 50 + 30 = **190 ms**
 
-이제 HTTP request 시작 — 추가 ~100ms (TCP) + ~100ms (req) → *전체 580ms* 후 first byte.
+이제 HTTP request 시작 — 추가 ~50ms (TCP handshake = 1 RTT 가정) + ~50ms (HTTP req-resp) → *전체 ~290ms* 후 first byte.
 
-**Subsequent (cache hit)**: 10ms only.
+**Subsequent (cache hit)**: ~10ms only.
 
 → DNS *caching 가치 절대적*.
 

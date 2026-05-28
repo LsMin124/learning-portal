@@ -260,8 +260,56 @@ ROS / Gazebo / RViz / MoveIt 모두 URDF 파싱 후 작업.
 
 ## 다음 학습으로
 
-- **5장 (Velocity Kinematics)** — Jacobian `J(θ)` 의 *Space form* 과 *Body form* 모두 PoE 에서 자연스럽게 도출. `V_s = J_s(θ) θ̇`, `V_b = J_b(θ) θ̇`.
-- **6장 (Inverse Kinematics)** — Newton-Raphson with PoE FK + matrix log. 본 장의 PoE 가 핵심 입력.
-- **8장 (Dynamics)** — link 의 inertia frame 표현에 4장의 frame 매개변수 사용.
+- **5장 (Velocity Kinematics)** — Jacobian `J(θ)` 의 *Space form* 과 *Body form* 모두 PoE 에서 자연스럽게 도출.
+- **6장 (Inverse Kinematics)** — Newton-Raphson with PoE FK + matrix log.
+- **8장 (Dynamics)** — link 의 inertia frame 표현.
 
 PoE 의 *우아함* — `T(θ)` 를 *해석적 함수* 로 본 결과, 후속 장의 미분 / 최적화 / 제어가 *기계적* 으로 풀린다.
+
+---
+
+## §X 산업의 FK 도구
+
+### 라이브러리
+
+| | 언어 | 특징 |
+|--|--|--|
+| **modern_robotics** | Python, MATLAB | 책의 reference impl |
+| **Pinocchio** | C++, Python | INRIA, 빠른 rigid body |
+| **Drake** | C++, Python | MIT, optimization-friendly |
+| **Orocos KDL** | C++ | ROS 표준 |
+| **MoveIt!** | C++/ROS | manipulator planning |
+| **PyBullet** | Python | physics + FK |
+| **MuJoCo** | C++/Python | DeepMind, contact-rich |
+
+### URDF + Xacro
+
+ROS 의 robot 표현:
+```xml
+<robot name="ur5">
+  <link name="base_link"> <inertial>...</inertial> </link>
+  <joint name="shoulder_pan_joint" type="revolute">
+    <origin xyz="0 0 0.0892" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="shoulder_link"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14" upper="3.14" effort="150" velocity="3.15"/>
+  </joint>
+</robot>
+```
+
+**Xacro** — URDF 의 macro 확장 (DRY).
+
+### Modern alternatives
+
+- **MJCF** (MuJoCo) — contact 정밀
+- **USD** (NVIDIA Isaac, Pixar) — 통합 scene
+- **SRDF** — semantic info (groups, end-effectors)
+
+### Production checklist
+
+- [ ] URDF 의 *joint limit* 정확
+- [ ] *Collision mesh* 단순화
+- [ ] *Inertia tensor* 검증
+- [ ] FK ↔ measured pose 의 *calibration*
+- [ ] *Mimic joint* (예: gripper) 지원

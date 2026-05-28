@@ -223,7 +223,51 @@ Manipulability ellipsoid 의 *쌍대* 개념. 단위 norm `‖τ‖ = 1` 에 대
 
 ## 다음 학습으로
 
-- **6장 (Inverse Kinematics)** — Newton-Raphson 의 update: `Δθ = J⁻¹(θ) V_d` 또는 pseudoinverse. 본 장의 `J(θ)` 가 직접 사용.
-- **8장 (Dynamics)** — Lagrangian `L = T - V` 의 미분에서 Jacobian 등장. mass matrix `M(θ)`, Coriolis `C(θ, θ̇)`.
-- **11장 (Control)** — operational space control. `τ = Jᵀ F_d` 의 force loop + impedance.
+- **6장 (Inverse Kinematics)** — Newton-Raphson, pseudoinverse 사용.
+- **8장 (Dynamics)** — Lagrangian 미분의 Jacobian.
+- **11장 (Control)** — operational space control.
 - **13장 (Mobile)** — nonholonomic Jacobian.
+
+---
+
+## §X Modern 산업의 Jacobian 활용
+
+### 산업 응용
+
+**1. Cartesian teleoperation**:
+- 사람이 Cartesian velocity 입력
+- $J^{-1}$ 또는 $J^+$ 로 joint velocity
+- DLS (damped least squares) 로 singularity 통과
+
+**2. Visual servoing**:
+- Image Jacobian — image feature 의 velocity
+- IBVS (image-based visual servoing)
+
+**3. Force-based teaching**:
+- F/T sensor 에서 wrench
+- $\tau = J^T F$ 로 zero torque mode
+
+**4. Impedance control**:
+- Spring-damper 모델 in task space
+- $F = K(x_d - x) + D(\dot{x}_d - \dot{x})$
+- $\tau = J^T F$
+
+### Numerical pitfalls
+
+**Singularity 근처**:
+- $J$ ill-conditioned
+- DLS:
+  $$\dot{q} = J^T (J J^T + \lambda^2 I)^{-1} \dot{x}_d$$
+  - $\lambda$ = damping
+  - Sacrifice accuracy, gain stability
+
+**Joint limit**:
+- Weighted pseudoinverse
+- Clamping + secondary objective
+
+### Tools
+
+- modern_robotics — `JacobianSpace()`, `JacobianBody()`
+- Pinocchio — auto-diff Jacobian
+- Drake — multibody plant
+- OSQP, Gurobi — QP redundancy

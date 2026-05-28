@@ -1,111 +1,147 @@
 # Chapter 11: Stream Processing — 학습 노트
 
 > *DDIA* (Kleppmann, 2017) **Chapter 11** (책 p.439~488, PDF p.461~510).
-> 11장: batch 의 *continuous* 버전. *event stream* + *Kafka* + *Flink/Spark Streaming*. **CDC (Change Data Capture)**, **event sourcing**, **windowing**.
+> 11장: batch 의 *continuous* 버전. *event stream* + *Kafka* + *Flink/Spark Streaming*. **CDC**, **event sourcing**, **windowing**.
+
+이 장의 *지적 무게중심*:
+1. **Event stream** — *unbounded log*, batch 와의 unification
+2. **Kafka** — log-based broker 의 표준
+3. **CDC + Event Sourcing** — DB ↔ stream 의 통합
+4. **Windowing** — event time vs processing time, watermark
+5. **Exactly-once** — idempotency + transaction
+
+---
 
 ## 들어가기 전에
 
-- **선수 지식**: 4장 (encoding), 5장 (replication, CDC), 10장 (batch)
+- **선수 지식**: 4장 (encoding), 5장 (CDC), 10장 (batch)
 - **학습 목표**
-  1. **Event stream** — unbounded, append-only log
-  2. **Message broker** (Kafka) vs **traditional queue** (RabbitMQ)
-  3. **CDC** — DB write 를 stream 으로 변환
-  4. **Event sourcing** — append-only state evolution
-  5. **Stream processing** — Flink, Spark Streaming, Kafka Streams
-  6. **Time** — event vs processing time, watermark
-  7. **Window** — tumbling, hopping, session
-  8. **Exactly-once** semantics — *어떻게* 달성하나
+  1. Event stream — unbounded log
+  2. Message broker (Kafka) vs traditional queue
+  3. CDC — DB write → stream
+  4. Event sourcing — append-only state
+  5. Stream processing — Flink, Spark, Kafka Streams
+  6. Time — event vs processing, watermark
+  7. Window — tumbling, hopping, session
+  8. Exactly-once semantics
 - **예상 학습 시간**: 200~240분
 
 ---
 
-## 1. Event Stream 의 정의
+## §1 Event Stream 의 정의
 
-### 1.1 Stream 의 본질
+### §1.1 Stream 의 본질
 
 > *Unbounded sequence of events*, *appended over time*.
 
-batch (bounded) ↔ stream (unbounded). 그러나 *같은 데이터 모델*:
-- Event = immutable record with timestamp
+batch (bounded) ↔ stream (unbounded). 같은 데이터 모델:
+- Event = immutable record + timestamp
 - Producer → broker → consumer
-- Storage 가 *append-only log*
+- Storage = append-only log
 
-### 1.2 Message brokers — 두 가지 모델
+### §1.2 Message brokers — 두 가지 모델
 
 **Traditional message queue** (AMQP — RabbitMQ, ActiveMQ):
-- *Transient*: consumer 가 받으면 message 삭제
+- *Transient*: consumer 받으면 삭제
 - *Queue* 단위 fan-out
-- *Order* 강하지 않음
 - 사용: task queue (Celery, Sidekiq)
 
 **Log-based broker** (Kafka, Pulsar, Kinesis):
-- *Persistent*: log file 에 영구 저장 (TTL or 무한)
-- *Topic-partition* 단위. partition 안 *strict order*
-- Consumer 가 *offset 추적*
-- *Replay 가능* — 옛 메시지 다시 읽기
+- *Persistent*: log file 영구
+- *Topic-partition*, partition 안 strict order
+- Consumer offset 추적
+- *Replay 가능*
 
-→ 11장 의 주제는 *log-based*. Kafka 가 dominant.
+→ 11장 = log-based. Kafka dominant.
 
 ---
 
-## 2. Kafka — 분산 log
+## §2 Kafka — 분산 log
 
-### 2.1 구조
+### §2.1 구조
 
 ```
 Topic: "user_events"
-  └─ Partition 0: [event 1, event 2, event 3, ...]
-  └─ Partition 1: [event 100, event 101, ...]
-  └─ Partition 2: [event 200, event 201, ...]
+  └─ Partition 0: [event 1, 2, 3, ...]
+  └─ Partition 1: [event 100, 101, ...]
+  └─ Partition 2: [event 200, 201, ...]
 ```
 
-- 각 partition 이 *log file* (3장의 LSM-like)
+- 각 partition = log file
 - *Replication factor* — partition 마다 N copy
-- *Consumer group* — group 안 partition 분배 (parallelism)
+- *Consumer group* — partition 분배
 
-### 2.2 Kafka 의 핵심 보장
+### §2.2 Kafka architecture
 
-- **Per-partition total order** — 한 partition 안에선 *완전 순서*
-- **At-least-once delivery** — message 못 잃음 (consumer 가 ack 후 commit)
-- **Replay** — consumer offset reset 으로 *옛 message 다시*
-- **Retention** — TTL 또는 *compact* (key 별 latest 만 유지)
+```
+[Producer] → [Kafka Broker] → [Consumer]
+                  |
+   [Broker 1] [Broker 2] [Broker 3]
+                  |
+              [Metadata]
+       (ZooKeeper 또는 KRaft)
+```
 
-> **함정 1**: *전체 topic* total order 아님. *partition 안* 만. *causality 가 partition 경계* 면 ordering 보장 안 됨.
+**KRaft** (KIP-500, 2022):
+- ZooKeeper 의존 제거
+- 내부 Raft consensus
+- Self-managed metadata
 
-### 2.3 Topic 종류
+### §2.3 Kafka 의 핵심 보장
 
-- **Compacted topic** — key 별 최신 value 만 유지 (key-value store 처럼). Kafka Streams 의 state.
-- **Regular topic** — TTL 기반 retention (7일, 30일 등). event log.
+- **Per-partition total order**
+- **At-least-once delivery**
+- **Replay** — offset reset
+- **Retention** — TTL 또는 compact
+
+> **함정 1**: *전체 topic* total order 아님. partition 안만.
+
+### §2.4 Topic 종류
+
+- **Compacted topic** — key 별 최신 value (KV store 처럼)
+- **Regular topic** — TTL retention (7일, 30일)
+
+### §2.5 Kafka alternatives
+
+| | 발표 | 특징 |
+|--|--|--|
+| Apache Pulsar | 2016 (Yahoo) | Multi-tenant, geo-replication |
+| AWS Kinesis | 2013 | Managed |
+| Google Pub/Sub | 2015 | Managed, auto-scaling |
+| Azure Event Hubs | 2014 | Managed |
+| NATS JetStream | 2020 | Lightweight |
+| Redpanda | 2021 | C++ Kafka-compat |
 
 ---
 
-## 3. Change Data Capture (CDC)
+## §3 Change Data Capture (CDC)
 
-### 3.1 동기
+### §3.1 동기
 
-primary RDBMS 의 변경을 *downstream system* (검색 index, cache, warehouse) 에 *실시간 sync*.
+primary RDBMS 의 변경을 *downstream* (검색 index, cache, warehouse) 에 sync.
 
-전통 — *dual write*: app 이 *DB 와 search index 둘 다* write. 위험:
-- 한쪽 실패 시 *불일치*
-- ordering 깨질 수 있음
+전통 — *dual write*: app 이 *DB 와 search 둘 다*. 위험:
+- 한쪽 실패 → 불일치
+- ordering 깨짐
 
-**CDC 의 해결**:
+**CDC 해결**:
 1. App 이 *DB 만* write
-2. DB 의 *replication log* (write-ahead log, binlog) 를 *stream 으로*
-3. Downstream consumer 가 stream 에서 변경 받음
+2. DB replication log (WAL, binlog) → stream
+3. Consumer 가 변경 받음
 
-![Figure 11-5 — Database 의 변경이 CDC stream 으로 → derived system. 책 p.455](/courses/ddia/figures/ch11/fig-11-5.png)
+![Figure 11-5 — CDC stream → derived. 책 p.455](/courses/ddia/figures/ch11/fig-11-5.png)
 
-### 3.2 산업 도구
+### §3.2 산업 도구
 
-- **Debezium** — PostgreSQL, MySQL, MongoDB 의 CDC → Kafka
-- **Maxwell** — MySQL binlog → Kafka
-- **AWS DMS** — managed CDC service
+- **Debezium** — PG, MySQL, MongoDB → Kafka
+- **Maxwell** — MySQL binlog
+- **AWS DMS** — managed
 - **Kafka Connect** — connector framework
+- **Striim, Fivetran, Airbyte** — modern ELT
 
-### 3.3 Event Sourcing — 더 깊은 패턴
+### §3.3 Event Sourcing
 
-> *상태 변경* 자체를 *Kafka topic 에 first-class event* 로.
+> *상태 변경 자체* 를 *Kafka topic 의 first-class event* 로.
 
 전통:
 ```
@@ -115,163 +151,287 @@ User updates email → DB.update(user, {email: "new"})
 Event sourcing:
 ```
 User updates email → emit event {type: "EmailChanged", user_id: 42, new: "new"}
-→ event log 에 append (immutable)
-→ Read model (cached projection) 갱신
+→ event log append (immutable)
+→ Read model 갱신
 ```
 
 **장점**:
-- *완전한 audit trail*
-- *Time travel* — 과거 시점 state 재구성
-- *Multiple read models* — 같은 event 에서 *여러 view* 도출
+- 완전한 audit trail
+- Time travel
+- Multiple read models
 
 **단점**:
-- 복잡함
-- Event schema evolution (4장)
-- Snapshot 관리 (state 재구성 비용)
+- 복잡
+- Event schema evolution
+- Snapshot 관리
+
+### §3.4 CQRS
+
+**Command Query Responsibility Segregation**:
+- *Command side* (write) — event 발행
+- *Query side* (read) — event 로 projection
+
+**예 — e-commerce**:
+- Command: `PlaceOrder` event
+- Query 1: 주문 목록 (PostgreSQL)
+- Query 2: 매출 dashboard (ClickHouse)
+- Query 3: 추천 (vector DB)
+
+Event log = source of truth.
 
 ---
 
-## 4. Stream Processing — Flink, Spark Streaming, Kafka Streams
+## §4 Stream Processing
 
-### 4.1 Stream processor 의 task
+### §4.1 Stream processor 의 task
 
-각 event 에 대해:
-- *Transformation* (map, filter)
-- *Aggregation* (count, sum, avg over time)
-- *Join* (stream × stream, stream × table)
-- *Pattern detection* (CEP — complex event processing)
+- Transformation (map, filter)
+- Aggregation (count, sum, avg)
+- Join (stream × stream, stream × table)
+- Pattern detection (CEP)
 
-### 4.2 Window — *stream 위에서 aggregate*
+### §4.2 Stream processor 비교
 
-stream 은 무한. *aggregate 결과* 를 *언제* 출력?
+| | 발표 | 특징 |
+|--|--|--|
+| Apache Storm | 2011 | First-gen, low-level |
+| Spark Streaming | 2013 | Micro-batch, RDD |
+| Spark Structured Streaming | 2016 | DataFrame, exactly-once |
+| Apache Flink | 2014 | True streaming, low-latency |
+| Kafka Streams | 2016 | Library (no cluster) |
+| Apache Beam | 2016 | Unified API |
+| ksqlDB | 2017 (Confluent) | SQL on Kafka |
+| Materialize | 2019 | Streaming SQL DB |
 
-**Window 종류**:
+### §4.3 Window
 
 ```
-Tumbling window (5 분):
-  [0-5][5-10][10-15]...   # 겹침 없음
-  
-Hopping window (5 분, 1 분 hop):
-  [0-5][1-6][2-7][3-8]...  # 1분마다 새 window
-
-Sliding window (사용자 정의):
-  마지막 N 개 event 또는 *event 시간 기준*
-
-Session window:
-  사용자가 *X 시간 동안 idle* 이면 새 session
-  → 동적 길이
+Tumbling (5 min): [0-5][5-10][10-15]   # 겹침 없음
+Hopping (5 min, 1 min hop): [0-5][1-6][2-7]   # 겹침
+Sliding: 시간/count 기준
+Session: idle 기반 동적
 ```
 
-### 4.3 Event time vs Processing time
+### §4.4 Event time vs Processing time
 
 | | Event time | Processing time |
 |--|--|--|
-| 의미 | event 가 *실제 발생* 한 시각 | processor 가 *받은* 시각 |
-| 결정 시점 | producer 가 결정 | broker / processor |
-| 신뢰성 | producer clock 의존 | local clock |
-| 사용 | 정확한 aggregate | 빠른 처리 |
+| 의미 | 실제 발생 시각 | 받은 시각 |
+| 결정 | producer | broker / processor |
+| 신뢰 | producer clock | local clock |
+| 사용 | 정확 aggregate | 빠른 처리 |
 
 **Event time 의 도전**:
 - *Late event* — network delay, mobile offline
-- *Out-of-order* arrival
-- *얼마나 기다려야* late event 가 안 옴?
+- *Out-of-order*
+- *얼마나 기다려야* late event 안 옴?
 
-### 4.4 Watermark — *late event 의 한계 신호*
+### §4.5 Watermark
 
-> "Event time t 이전의 event 는 *더 이상 안 옴* 이라고 *추정*."
+> "Event time t 이전 event 는 *더 이상 안 옴* 추정."
 
-Watermark t 가 오면 *event time ≤ t* 의 window 를 *close + emit*. t 이후의 event 는 *late* (handle policy 결정 — drop, side-output, update).
+Watermark t → event time ≤ t 의 window close + emit. t 이후 late event:
+- *Drop* (default)
+- *Side output*
+- *Update*
 
-Apache Beam, Flink 의 *first-class concept*.
+### §4.6 Stream-Table Duality
 
-### 4.5 Stream-Table Duality
+> **Stream = Table 의 *change log***. **Table = Stream 의 *현재 state*** (aggregate).
 
-> **Stream = Table 의 *change log***. **Table = Stream 의 *현재 state* (aggregate)**.
+Kafka 의 *compacted topic* = 이 idea — key 별 최신 = table.
 
-Kafka 의 *compacted topic* 이 이 idea — *key 별 최신 value* 가 table.
+**ksqlDB 예**:
+```sql
+CREATE STREAM orders (id INT, amount DOUBLE, user_id INT)
+  WITH (kafka_topic='orders', value_format='JSON');
 
-이게 *unified batch+stream* 의 이론적 기반 (Flink, Beam).
+CREATE TABLE user_totals AS
+  SELECT user_id, SUM(amount) AS total
+  FROM orders
+  GROUP BY user_id;
+```
+
+→ Stream 위 SQL, table = continuous aggregate.
 
 ---
 
-## 5. Exactly-Once Semantics
+## §5 Exactly-Once Semantics
 
-### 5.1 도전
+### §5.1 도전
 
-stream processing 의 *각 event 가 정확히 한 번 처리*. 실패 시:
-- *At-most-once* — event drop 가능 (under-count)
-- *At-least-once* — event 중복 처리 가능 (over-count)
+- *At-most-once* — drop 가능
+- *At-least-once* — 중복 처리 가능
 - *Exactly-once* — 정확히 한 번
 
-### 5.2 Achieving exactly-once
+### §5.2 Achieving exactly-once
 
-1. **Idempotency** — 같은 event 의 *반복 처리* 가 같은 결과 (예: `SET counter = 100` 은 idempotent, `INCREMENT counter` 은 아님)
-2. **Distributed transaction** — write + offset commit 을 *atomic* (2PC). Kafka 0.11+ 의 *exactly-once* 가 이 방식.
-3. **Effectful operation 의 transaction 결합** — *output topic write* 가 *input offset commit* 과 *atomic*.
+1. **Idempotency** — 같은 event 반복 = 같은 결과
+   - `SET counter = 100` (idempotent)
+   - `INCREMENT counter` (NOT)
 
-Flink, Kafka Streams 가 *production-ready exactly-once*.
+2. **Distributed transaction** — write + offset commit atomic (2PC). Kafka 0.11+.
 
-> **함정 2**: *Side effect 가 외부 system* (DB, API) 이면 *진정한 exactly-once 불가능*. *idempotent operation* 으로 *효과 동등* 만 보장.
+3. **Output topic + input offset** atomic.
+
+Flink, Kafka Streams = production-ready exactly-once.
+
+> **함정 2**: *Side effect 가 외부 system* (DB, API) 이면 진정한 exactly-once 불가. *idempotent operation* 으로 효과 동등.
+
+### §5.3 Idempotent 패턴
+
+**Unique key + upsert**:
+```sql
+INSERT INTO orders (id, ...) VALUES (123, ...)
+ON CONFLICT (id) DO UPDATE SET ...
+```
+
+**Idempotent ID**:
+- Event 마다 unique ID
+- 처리한 ID set 유지
+- 재처리 시 skip
+
+**Compare-and-swap**:
+- Version 검사 후 update
 
 ---
 
-## 6. Fault tolerance — Checkpoint
+## §6 Fault tolerance — Checkpoint
 
 Flink, Spark Streaming 의 *state recovery*:
 
-1. *주기적 checkpoint* — 모든 operator 의 state + input offset 을 storage 에
-2. *Failure 시* — 마지막 checkpoint 로 *모든 operator + offset rollback*
-3. *Replay* — 그 offset 부터 input stream 재처리
+1. *주기적 checkpoint* — operator state + offset 저장
+2. *Failure* → 마지막 checkpoint rollback
+3. *Replay* — 그 offset 부터 재처리
 
-이게 batch 의 *immutable input* 와 같은 효과. *stream 에서 fault tolerance* 의 표준.
+이게 batch 의 *immutable input* 과 같은 효과.
+
+**Flink 의 Chandy-Lamport-style**:
+- *Barrier* (special marker) 가 stream 따라 흐름
+- 각 operator 가 barrier 받으면 state snapshot
+- *Consistent global snapshot*
 
 ---
 
-## 자주 빠지는 함정
+## §7 Lambda vs Kappa
+
+### §7.1 Lambda Architecture (Marz, 2014)
+
+```
+Source → Batch (Hadoop) → Serving DB
+       → Stream (Storm) → Serving cache
+```
+
+- Batch: 정확, 분~시간 latency
+- Stream: 빠름, 부정확 가능
+
+**문제**: *두 codebase 유지*.
+
+### §7.2 Kappa Architecture (Kreps, 2014)
+
+```
+Source → Kafka → Stream processor → Serving
+```
+
+- *재처리* = 옛 offset replay
+- Single codebase
+- Beam, Flink unified API
+
+**현대 trend** = Kappa. 단 *역사적 batch* 는 여전히.
+
+---
+
+## §8 산업 사례
+
+### §8.1 Uber
+
+- Kafka — 핵심 event bus
+- Flink — real-time analytics
+- Pinot — real-time OLAP
+- Hudi — incremental data lake
+
+### §8.2 LinkedIn 의 origin
+
+- Kafka 의 origin (2010)
+- Activity stream — 100B+ events/day
+- Samza — 자체 stream processor
+
+### §8.3 Netflix
+
+- Mantis — 자체 stream processor
+- Keystone — Kafka pipeline
+- Real-time content recommendation
+
+### §8.4 Kafka Connect ecosystem
+
+| Source | Sink |
+|--|--|
+| Debezium (PG, MySQL, MongoDB) | Elasticsearch |
+| JDBC | S3, HDFS |
+| File | BigQuery, Snowflake |
+| MQTT (IoT) | Redis |
+
+→ Kafka = data integration hub.
+
+---
+
+## §9 자주 빠지는 함정
 
 | # | 함정 | 정정 |
 |--|--|--|
-| 1 | Kafka topic = global total order | partition 안만. 전체 topic 은 partial |
-| 2 | Stream = "fast batch" | event time, watermark, late event 등 *고유* 도전 |
-| 3 | Event time = processing time | 다름. 신뢰할 만한 *event time* 가 어려움 |
-| 4 | Exactly-once = no failure | 실제로는 *idempotent + 2PC*. 외부 system 엔 어려움 |
-| 5 | Stream processor 가 DB 대체 | 한정된 query. complex query 는 batch + warehouse |
-| 6 | CDC = dual write | dual write 의 *대체*. dual write 자체가 안티패턴 |
-| 7 | Event sourcing = *모든 system 적용* | 복잡도 큼. *audit-critical* 부분에만 |
-| 8 | RabbitMQ = Kafka | 다른 모델. queue vs log |
-| 9 | Watermark = 정확 | 추정. late event handling 정책 결정 |
-| 10 | Stream processing 이 *모든 batch 대체* | 둘 다 필요. Lambda / Kappa architecture |
+| 1 | Kafka topic = global total order | partition 안만 |
+| 2 | Stream = "fast batch" | event time, watermark 고유 도전 |
+| 3 | Event time = processing time | 다름 |
+| 4 | Exactly-once = no failure | idempotent + 2PC. 외부 system 어려움 |
+| 5 | Stream processor 가 DB | 한정된 query. complex = batch + warehouse |
+| 6 | CDC = dual write | dual write 의 대체 |
+| 7 | Event sourcing = 모든 system | 복잡도. audit-critical 만 |
+| 8 | RabbitMQ = Kafka | 다른 모델 |
+| 9 | Watermark = 정확 | 추정 |
+| 10 | Stream 이 모든 batch 대체 | 둘 다 필요 |
+| 11 | Lambda = 표준 | Kappa 가 modern |
+| 12 | Kafka 무한 retention | TTL 또는 compact. 무한은 비용 큼 |
 
 ---
 
-## 자가점검
+## §10 자가점검
 
-1. *Traditional queue* vs *log-based broker* 의 *3 가지 차이*.
-2. *Kafka 의 per-partition order* 의 의미.
-3. *CDC* 의 정의 + dual-write 대비 *장점*.
-4. *Event sourcing* 의 *3 가지 장단점*.
-5. *Tumbling, hopping, sliding, session* window 의 차이.
-6. *Event time* vs *processing time* + *watermark* 의 역할.
-7. *Stream-table duality* 의 의미.
-8. *Exactly-once* 의 *3 가지 달성 방법*.
-9. *Checkpoint* 가 *fault tolerance* 어떻게 제공.
+1. Queue vs log-based broker 의 3 차이?
+2. Kafka per-partition order 의 의미?
+3. CDC 정의 + dual-write 대비 장점?
+4. Event sourcing 의 3 장단점?
+5. Tumbling/hopping/sliding/session window?
+6. Event time vs processing time + watermark?
+7. Stream-table duality?
+8. Exactly-once 의 3 방법?
+9. Checkpoint 가 fault tolerance 어떻게?
+10. Lambda vs Kappa?
 
-### 해답 (간략)
+<details><summary>해답 (간략)</summary>
 
-1. Queue: transient, queue 단위. Log: persistent, partition 안 order, replay 가능.
-2. 한 partition 안에선 *strict total order*. 다른 partition 사이 순서 보장 X.
-3. DB 의 변경 (replication log) 을 *stream* 으로. Dual write 의 *불일치 + 순서 깨짐* 회피.
-4. + complete audit, time travel, multiple read models. − 복잡도, schema evolution, snapshot.
-5. Tumbling: 겹침 없는 고정 길이. Hopping: 겹침 있는 고정 길이. Sliding: 시간/count 기준 이동. Session: idle 기반 동적.
-6. Event time: 실제 발생. Processing time: 받은 시각. Watermark: event time t 이전의 event 가 더 안 옴 추정.
-7. Stream = table 의 change log. Table = stream 의 aggregate. 둘은 같은 데이터의 두 view.
-8. Idempotency, distributed transaction (2PC), output write + offset commit atomic.
-9. 주기적으로 모든 operator state + input offset 저장. failure 시 그 시점으로 rollback + replay.
+1. Queue: transient, 단위. Log: persistent, partition order, replay.
+2. 한 partition 안 strict total. 다른 사이 X.
+3. DB 변경 → stream. Dual write 의 불일치 + 순서 깨짐 회피.
+4. + audit, time travel, multi read. − 복잡, schema evolution, snapshot.
+5. Tumbling: 겹침 X. Hopping: 겹침. Sliding: 시간/count. Session: idle 동적.
+6. Event time: 실제. Processing: 받은 시각. Watermark: t 이전 event 안 옴 추정.
+7. Stream = table change log. Table = stream aggregate.
+8. Idempotency, distributed transaction, output + offset atomic.
+9. 주기적 operator state + offset 저장. Failure 시 rollback + replay.
+10. Lambda: batch + stream 2 layer. Kappa: stream 만. Kappa 가 modern.
+
+</details>
 
 ---
 
-## 다음 학습으로
+## §11 다음 학습으로
 
-- **12장 (Future)** — unbundled DB. stream 이 *모든 derived data* 의 backbone
-- *Apache Beam* — batch + stream unified programming model
-- *Streaming SQL* (ksqlDB, Materialize) — SQL on stream
+- **12장 (Future)** — unbundled DB
+- Apache Beam — unified
+- Streaming SQL (ksqlDB, Materialize)
+
+---
+
+## §12 한 줄 요약
+
+> **Stream = batch 의 *continuous* 버전. Kafka log-based broker. CDC + Event Sourcing + CQRS 의 DB-stream 통합. Window + Event time + Watermark. Exactly-once = idempotency + 2PC. Lambda 의 dual stack → Kappa 의 unified streaming.**

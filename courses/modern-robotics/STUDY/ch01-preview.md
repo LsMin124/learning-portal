@@ -420,3 +420,52 @@ PoE 의 장점: link frame 따로 안 박아도 됨. base + EE frame 만으로 �
 - **Appendix A**: 가장 많이 쓰는 식들의 *equation reference* — 복습·치팅용 한 페이지
 - **Appendix B**: Euler angle, quaternion, Cayley-Rodrigues 등 *대안 회전 표현*
 - **Appendix C**: D-H 표기와 PoE 와의 변환
+
+---
+
+## 6. Modern Robotics 산업 landscape (2025)
+
+본 책의 이론이 *어디에서 실제로 적용*?
+
+### 6.1 산업용 로봇
+
+| 회사 | 제품 | 특징 |
+|--|--|--|
+| ABB | 6-axis arm | 산업용 표준, IRB 시리즈 |
+| KUKA | LBR iiwa | 7-DoF collaborative |
+| Fanuc | M-2000iA | 초중량 (2.3톤 페이로드) |
+| Universal Robots | UR5, UR10 | 협동로봇 (cobot) 표준 |
+| Yaskawa | Motoman | 산업 자동화 |
+
+### 6.2 Humanoid + Mobile
+
+| | 제조사 | 특징 |
+|--|--|--|
+| Atlas | Boston Dynamics | parkour, hydraulic → electric (2024) |
+| Spot | Boston Dynamics | 4-leg, industrial inspection |
+| Digit | Agility Robotics | bipedal warehouse |
+| Optimus | Tesla | bipedal, mass production 목표 |
+| Figure 01 | Figure AI | OpenAI 협력, AI integration |
+| 1X NEO | 1X Technologies | home robot |
+
+### 6.3 Robot OS + simulation
+
+**ROS (Robot Operating System)**:
+- *De facto* 산업 표준
+- ROS 1 (deprecated 2025) → **ROS 2** (real-time, secure)
+- Publisher-subscriber, RPC, parameter server
+
+**Simulation tools**:
+- **Gazebo** — ROS 의 표준
+- **MuJoCo** (DeepMind, 2021 free) — 빠른 contact-rich
+- **NVIDIA Isaac Sim** — GPU-accelerated, photorealistic
+- **PyBullet** — Python, 학습용
+- **Drake** (MIT) — model-based + optimization
+
+### 6.4 Modern challenges
+
+- **Sim-to-real gap** — simulation 의 모델 ↔ 실제 robot 차이
+- **Reinforcement learning** — Atlas, Optimus 의 학습 기반 control
+- **Foundation models** — RT-2 (Google), VLA (vision-language-action) — natural language → robot action
+- **Human-robot collaboration** — 안전 + 효율
+- **Generalist robots** — 단일 task → 다양한 task 의 transition

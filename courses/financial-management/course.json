@@ -20,9 +20,9 @@
       "title": "Part II — Valuation and Capital Budgeting",
       "items": [
         {"stem": "ch04-dcf-valuation", "pages": 48, "label": "Ch 4. Discounted Cash Flow Valuation"},
-        {"stem": "ch05-npv-rules", "pages": 36, "label": "Ch 5. Net Present Value and Other Investment Rules"},
+        {"stem": "ch05-npv-investment-rules", "pages": 36, "label": "Ch 5. Net Present Value and Other Investment Rules"},
         {"stem": "ch06-capital-investment", "pages": 36, "label": "Ch 6. Making Capital Investment Decisions"},
-        {"stem": "ch07-risk-analysis", "pages": 30, "label": "Ch 7. Risk Analysis, Real Options, and Capital Budgeting"},
+        {"stem": "ch07-risk-analysis-real-options", "pages": 30, "label": "Ch 7. Risk Analysis, Real Options, and Capital Budgeting"},
         {"stem": "ch08-bond-valuation", "pages": 35, "label": "Ch 8. Interest Rates and Bond Valuation"},
         {"stem": "ch09-stock-valuation", "pages": 29, "label": "Ch 9. Stock Valuation"}
       ]
@@ -32,8 +32,8 @@
       "items": [
         {"stem": "ch10-market-history", "pages": 29, "label": "Ch 10. Lessons from Market History"},
         {"stem": "ch11-capm", "pages": 43, "label": "Ch 11. Return, Risk, and the Capital Asset Pricing Model"},
-        {"stem": "ch12-apt", "pages": 22, "label": "Ch 12. An Alternative View of Risk and Return"},
-        {"stem": "ch13-cost-of-capital", "pages": 35, "label": "Ch 13. Risk, Cost of Capital, and Valuation"}
+        {"stem": "ch12-apt-empirical", "pages": 22, "label": "Ch 12. An Alternative View of Risk and Return"},
+        {"stem": "ch13-wacc", "pages": 35, "label": "Ch 13. Risk, Cost of Capital, and Valuation"}
       ]
     },
     {

@@ -39,7 +39,7 @@
     {
       "title": "Part IV — Capital Structure and Dividend Policy",
       "items": [
-        {"stem": "ch14-efficient-markets", "pages": 40, "label": "Ch 14. Efficient Capital Markets and Behavioral Challenges"},
+        {"stem": "ch14-efficient-capital-markets", "pages": 40, "label": "Ch 14. Efficient Capital Markets and Behavioral Challenges"},
         {"stem": "ch15-long-term-financing", "pages": 19, "label": "Ch 15. Long-Term Financing"},
         {"stem": "ch16-capital-structure-basic", "pages": 32, "label": "Ch 16. Capital Structure: Basic Concepts"},
         {"stem": "ch17-capital-structure-limits", "pages": 32, "label": "Ch 17. Capital Structure: Limits to the Use of Debt"},

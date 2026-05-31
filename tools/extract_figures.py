@@ -346,7 +346,102 @@ def _figure_bbox_pixel(page, cap_block_rect, page_top_margin=60, page_bot_margin
     )
 
 
-def extract_figure(page, caption_prefix, out_path, dpi=2.5, precision="pixel"):
+def _figure_bbox_caption_above(page, cap_block_rect, page_top_margin=60, page_bot_margin=50):
+    """캡션이 figure '위' 에 있는 레이아웃 (예: Corporate Finance 12e) 용 bbox.
+
+    기본 도구는 caption-below-figure (학술 표준) 를 가정해 caption *위* 를 crop
+    하지만, 일부 교재는 caption 이 figure *위* 에 온다. 그 경우 figure 는 caption
+    아래에 있으므로 region = (현재 caption bottom, 다음 caption top 또는 page 하단).
+    그 region 안의 embedded image / vector drawing / (본문 아닌) text block 의 합집합
+    + caption block 자체.
+    """
+    page_h = page.rect.y1
+    all_caps = _find_all_caption_blocks(page)
+    cur_idx = next(
+        (i for i, r in enumerate(all_caps)
+         if abs(r.y0 - cap_block_rect.y0) < 1 and abs(r.y1 - cap_block_rect.y1) < 1),
+        None,
+    )
+    region_top = cap_block_rect.y1 + 2
+    if cur_idx is not None and cur_idx < len(all_caps) - 1:
+        region_bot = all_caps[cur_idx + 1].y0 - 2
+    else:
+        region_bot = page_h - page_bot_margin
+    if region_bot - region_top < 10:
+        region_bot = page_h - page_bot_margin
+
+    page_w = page.rect.x1
+
+    def _in_region(r):
+        return r.y0 >= region_top - 1 and r.y1 <= region_bot + 1
+
+    # 그래픽 항목: vector drawing + embedded image (figure 본체)
+    graphics = []
+    for d in page.get_drawings():
+        r = d["rect"]
+        if r.width < 2 or r.height < 2 or not _in_region(r):
+            continue
+        if r.height < 1.5 and r.width > page_w * 0.7:  # 가로 rule (header/separator)
+            continue
+        graphics.append(r)
+    for img in page.get_image_info():
+        b = fitz.Rect(img["bbox"])
+        if b.width >= 20 and b.height >= 20 and _in_region(b):
+            graphics.append(b)
+
+    # (본문 아닌) text block — 축 라벨·범례·식
+    text_blocks = []
+    for blk in page.get_text("dict")["blocks"]:
+        if blk.get("type") != 0:
+            continue
+        br = fitz.Rect(blk["bbox"])
+        if br.width < 1 or br.height < 1 or not _in_region(br):
+            continue
+        if br.width > page_w * 0.7 and br.height > 30:  # 큰 본문 paragraph 제외
+            continue
+        text_blocks.append(br)
+
+    if not graphics:
+        # 그래픽 없음 → text block gap-cluster fallback (caption 바로 아래 첫 묶음)
+        if not text_blocks:
+            return fitz.Rect(page.rect.x0 + 30, region_top,
+                             page.rect.x1 - 30, min(region_bot, region_top + 300))
+        text_blocks.sort(key=lambda r: r.y0)
+        fig_rect = fitz.Rect(text_blocks[0])
+        for r in text_blocks[1:]:
+            if r.y0 - fig_rect.y1 > 38:
+                break
+            fig_rect = fig_rect | r
+        fig_rect = fig_rect | cap_block_rect
+        return fitz.Rect(
+            max(page.rect.x0 + 2, fig_rect.x0 - 6),
+            max(page_top_margin - 5, fig_rect.y0 - 6),
+            min(page.rect.x1 - 2, fig_rect.x1 + 6),
+            min(page_h - page_bot_margin + 5, fig_rect.y1 + 10),
+        )
+
+    # 이 책 figure 는 베이지 배경 panel(가장 큰 vector rect) 위에 그려짐.
+    # caption 근처에서 시작하는 가장 큰 그래픽 = figure panel.
+    near = [r for r in graphics if r.y0 <= region_top + 100] or graphics
+    anchor = max(near, key=lambda r: r.width * r.height)
+
+    # anchor(panel) 와 수직으로 겹치는 그래픽/라벨만 합침 → panel 밖 본문·표 제외
+    fig_rect = fitz.Rect(anchor)
+    for r in graphics + text_blocks:
+        overlap = min(r.y1, anchor.y1) - max(r.y0, anchor.y0)
+        if overlap > -8:
+            fig_rect = fig_rect | r
+    fig_rect = fig_rect | cap_block_rect
+
+    return fitz.Rect(
+        max(page.rect.x0 + 2, fig_rect.x0 - 6),
+        max(page_top_margin - 5, fig_rect.y0 - 6),
+        min(page.rect.x1 - 2, fig_rect.x1 + 6),
+        min(page_h - page_bot_margin + 5, fig_rect.y1 + 10),
+    )
+
+
+def extract_figure(page, caption_prefix, out_path, dpi=2.5, precision="pixel", caption_pos="below"):
     """단일 figure 추출. 성공하면 True 반환.
 
     precision:
@@ -355,26 +450,31 @@ def extract_figure(page, caption_prefix, out_path, dpi=2.5, precision="pixel"):
             (2) pixel connected-component (vector graphic)
             (3) vector/text bbox 합집합 (fallback)
         "bbox"  — vector/text bbox 합집합만 (빠름, 약간 부정확)
+    caption_pos:
+        "below" — caption 이 figure 아래 (학술 표준, 기본값)
+        "above" — caption 이 figure 위 (예: Corporate Finance 12e)
     """
     cap_bbox, cap_block_rect = _find_caption(page, caption_prefix)
     if cap_bbox is None:
         return False
 
     fig_rect = None
-    if precision == "pixel":
-        fig_rect = _figure_bbox_from_image(page, cap_block_rect)
-        if fig_rect is None and _HAS_PIXEL:
-            fig_rect = _figure_bbox_pixel(page, cap_block_rect)
-
-    if fig_rect is None:
-        fig_rect = _figure_bbox(page, cap_bbox, cap_block_rect)
+    if caption_pos == "above":
+        fig_rect = _figure_bbox_caption_above(page, cap_block_rect)
+    else:
+        if precision == "pixel":
+            fig_rect = _figure_bbox_from_image(page, cap_block_rect)
+            if fig_rect is None and _HAS_PIXEL:
+                fig_rect = _figure_bbox_pixel(page, cap_block_rect)
+        if fig_rect is None:
+            fig_rect = _figure_bbox(page, cap_bbox, cap_block_rect)
 
     pix = page.get_pixmap(matrix=fitz.Matrix(dpi, dpi), clip=fig_rect)
     pix.save(out_path)
     return True
 
 
-def extract_figures(pdf, out_dir, figs, dpi=2.5, caption_format="Figure {num}:", precision="pixel"):
+def extract_figures(pdf, out_dir, figs, dpi=2.5, caption_format="Figure {num}:", precision="pixel", caption_pos="below"):
     """
     여러 figure 일괄 추출.
 
@@ -400,6 +500,7 @@ def extract_figures(pdf, out_dir, figs, dpi=2.5, caption_format="Figure {num}:",
             out,
             dpi=dpi,
             precision=precision,
+            caption_pos=caption_pos,
         )
         if ok:
             result[fnum] = out

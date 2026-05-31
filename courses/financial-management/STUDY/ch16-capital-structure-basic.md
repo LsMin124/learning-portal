@@ -1,323 +1,380 @@
 # Chapter 16: Capital Structure — Basic Concepts — 학습 노트
 
-> *Corporate Finance* (Ross 12e) **Chapter 16** (책 p.504~533).
-> 16장은 *Modigliani-Miller (MM)* — capital structure irrelevance + tax shield value. *재무의 가장 유명한 이론*.
+> 이 노트는 *Corporate Finance* (Ross, Westerfield, Jaffe, Jordan, 12e) **Chapter 16: Capital Structure — Basic Concepts** (책 p.504~533) 을 학습 가능한 형태로 재구성한 것이다.
+> 16장의 핵심은 **Modigliani–Miller (MM) 정리** — *완전시장에서 기업가치는 자본구조와 무관* 하다는 명제, 그리고 *법인세가 있으면 부채의 이자 절세효과(tax shield) 만큼 가치가 늘어난다* 는 수정 명제. 재무이론에서 가장 유명하고, 이후 모든 자본구조 논의(17~18장)의 *출발 기준선* 이다.
 
-이 장의 *지적 무게중심*:
-1. **MM Prop I (no tax)** — capital structure irrelevant
-2. **MM Prop II (no tax)** — cost of equity rises with leverage
-3. **MM Prop I + Tax** — V_L = V_U + T_c × D
-4. **MM Prop II + Tax** — cost of equity formula
-5. **Pie Model**
+## 들어가기 전에
 
----
-
-## §1 The Capital Structure Question
-
-### §1.1 Question
-
-> *Does capital structure matter*?
-> *Optimal D/E ratio*?
-
-### §1.2 Two extreme views
-
-**MM (1958)**: Irrelevant (no tax, frictions).
-**Real**: Tax shield favors debt, bankruptcy cost limits — Trade-off (Ch 17).
-
-### §1.3 Value of firm
-
-$$V = E + D$$
+- **선수 지식**
+  - **13장 (필수)** — WACC, 자기자본비용/타인자본비용
+  - **3장** — 레버리지, ROE/EPS, 재무비율
+  - **10~11장** — 위험과 수익, β
+- **학습 목표**
+  1. *자본구조 질문* — "최적 부채비율이 존재하는가?" 의 의미
+  2. **MM 명제 I (무세금)**: $V_L = V_U$ — 차익거래(homemade leverage) 로 증명
+  3. **MM 명제 II (무세금)**: $R_E = R_0 + (R_0 - R_D)\,D/E$ — *자기자본비용은 레버리지에 비례해 상승*
+  4. **법인세 도입**: $V_L = V_U + T_c D$ — 절세효과가 가치를 더함, WACC 는 하락
+  5. **MM 명제 II (법인세)** 와 *levered/unlevered β* 변환
+  6. MM 을 *귀무가설(benchmark)* 로 쓰는 사고법
+- **예상 학습 시간**: 100~130분 (공식보다 *직관과 가정* 을 잡는 데 시간이 걸림)
 
 ---
 
-## §2 MM Proposition I (No Tax)
+## §1 자본구조 질문과 Pie Model
 
-### §2.1 Statement
+### §1.1 핵심 질문
 
-$$V_L = V_U$$
+> 기업가치 $V$ 는 부채 $D$ 와 자기자본 $E$ 로 나뉜다: $V = D + E$.
+> **질문**: $D$ 와 $E$ 의 *비율* 을 바꾸면 *전체 파이* $V$ 가 커지는가?
 
-→ *Firm value independent of capital structure*.
+경영자의 목표는 *기업가치 극대화* = *기존 주주 부(富) 극대화*. 자본구조 결정이 가치를 바꾼다면, "최적 $D/E$" 가 존재한다.
 
-### §2.2 Arbitrage proof
+### §1.2 Pie Model — 직관의 출발점
 
-**Setup**: Two firms identical operations, different structure.
+자본구조를 *파이를 어떻게 자르는가* 로 보자. MM 의 핵심 통찰은 **"파이를 어떻게 잘라도 파이 전체 크기는 같다"** 는 것 — 적어도 완전시장에서는.
 
-**Case 1: V_L > V_U**:
-- Sell L equity, buy U equity + personal borrow (homemade leverage)
-- Same risk, lower cost → arbitrage
+![Figure 16.1 — Two Pie Models of Capital Structure. 교재 p.488](/courses/financial-management/figures/ch16/fig-16-1.png)
 
-**Case 2: V_L < V_U**:
-- Sell U equity, buy L equity + debt (homemade unlever)
-- Arbitrage
+왼쪽(Stocks 40%/Bonds 60%)과 오른쪽(60%/40%)은 *자르는 비율만 다를 뿐 원의 크기(=기업가치)는 동일*. 부채를 늘려 주식 조각이 작아져도, 그만큼 채권 조각이 커져 합은 불변이다.
 
-→ Equilibrium V_L = V_U.
+### §1.3 두 관점의 충돌
 
-### §2.3 Strong Assumptions
+| 관점 | 주장 |
+|--|--|
+| **MM (1958)** | 완전시장 → 자본구조 *무관* (파이 불변) |
+| **현실** | 절세효과는 부채를 선호, 파산비용은 부채를 제약 → *trade-off* (17장) |
 
-1. No taxes
-2. No transaction costs
-3. No bankruptcy costs
-4. Individuals borrow at firm rate
-5. No info asymmetry
-6. Cash flow unaffected by structure
-
-### §2.4 Implications
-
-- Capital structure doesn't matter
-- WACC constant
-- Risk shifted between equity + debt holders
+16장은 *완전시장 기준선* 을 세우고, 그다음 세금이라는 첫 번째 마찰을 더한다.
 
 ---
 
-## §3 MM Proposition II (No Tax)
+## §2 재무 레버리지와 EPS — Trans Am 예제
 
-### §3.1 Statement
+MM 을 추상적으로 받아들이기 전에, *레버리지가 주주 수익에 실제로 무엇을 하는지* 구체적 숫자로 보자.
 
-$$R_E = R_0 + (R_0 - R_D) \frac{D}{E}$$
+### §2.1 설정
 
-→ *Cost of equity rises with leverage*.
+Trans Am 사는 현재 *전액 자기자본* 기업이다.
 
-### §3.2 Derivation
+| 항목 | 값 |
+|--|--|
+| 자산 = 자기자본 | $8,000 |
+| 발행주식 | 400주 |
+| 주가 | $20 |
 
-From WACC = R_0:
+회사는 *$4,000 의 부채(이자율 10%)* 를 발행해 그 돈으로 *200주를 자사주 매입* 하는 재구성을 검토한다 → 부채 $4,000, 주식 200주.
+
+### §2.2 세 가지 경기 시나리오
+
+ROA(=EBIT/자산) 가 경기에 따라 5%/15%/25% 라 하자.
+
+| | 불황 | 기대 | 호황 |
+|--|--|--|--|
+| ROA | 5% | 15% | 25% |
+| **EBIT** | $400 | $1,200 | $2,000 |
+
+**현재 (전액 자기자본, 400주)**:
+
+| | 불황 | 기대 | 호황 |
+|--|--|--|--|
+| EBIT | $400 | $1,200 | $2,000 |
+| 이자 | 0 | 0 | 0 |
+| 순이익 | $400 | $1,200 | $2,000 |
+| **EPS** | $1.00 | $3.00 | $5.00 |
+| **ROE** | 5% | 15% | 25% |
+
+**제안 (부채 $4,000, 이자 $400, 200주)**:
+
+| | 불황 | 기대 | 호황 |
+|--|--|--|--|
+| EBIT | $400 | $1,200 | $2,000 |
+| 이자 (10%×4,000) | $400 | $400 | $400 |
+| 순이익 | $0 | $800 | $1,600 |
+| **EPS** | $0.00 | $4.00 | $8.00 |
+| **ROE** | 0% | 20% | 40% |
+
+### §2.3 그림으로 본 레버리지 효과
+
+![Figure 16.2 — Financial Leverage: EPS and EBI for the Trans Am Corporation. 교재 p.491](/courses/financial-management/figures/ch16/fig-16-2.png)
+
+두 직선이 만나는 **손익분기점(break-even)** 을 풀어 보자. 두 구조의 EPS 가 같아지는 EBIT:
+
+$$\frac{\text{EBIT}}{400} = \frac{\text{EBIT} - 400}{200} \;\Rightarrow\; \text{EBIT} = \$800,\quad \text{EPS} = \$2.00$$
+
+- **EBIT > $800** (호황): 레버리지가 EPS 를 *증폭* → "Advantage to debt"
+- **EBIT < $800** (불황): 레버리지가 EPS 를 *악화* → "Disadvantage to debt"
+
+> 레버리지는 *기대 EPS 를 높이는 게 아니라 EPS 의 변동성(위험) 을 키운다*. 호황엔 더 좋고 불황엔 더 나쁘다 — 위험의 재배분이지 공짜 점심이 아니다.
+
+### §2.4 Homemade Leverage — MM 의 씨앗
+
+"그럼 레버리지로 호황 EPS 가 커지니 회사가 부채를 내면 주주에게 이득 아닌가?" — **아니다.** 투자자는 *개인적으로 차입* 해서 동일한 손익을 *스스로* 만들 수 있다(homemade leverage). 반대로 회사가 과도하게 차입했으면 투자자가 *채권을 함께 보유* 해 레버리지를 *되돌릴(unlever)* 수도 있다.
+
+투자자가 스스로 복제할 수 있는 것에 대해 회사가 *프리미엄을 받을 수 없다* → 자본구조는 주가에 *무관*. 이것이 다음 절 MM 명제 I 의 직관이다.
+
+---
+
+## §3 MM 명제 I (무세금)
+
+### §3.1 명제
+
+$$\boxed{V_L = V_U}$$
+
+> *레버리지가 있는 기업(L) 의 가치 = 동일 영업의 무레버리지 기업(U) 의 가치.* 자본구조는 기업가치와 무관하다.
+
+### §3.2 차익거래 증명 (왜 성립하는가)
+
+두 기업이 *영업현금흐름은 동일* 하고 자본구조만 다르다고 하자.
+
+**Case A — 만약 $V_L > V_U$ 라면**:
+1. 투자자가 L 주식을 *판다* (고평가).
+2. 그 돈 + *개인 차입* 으로 U 주식을 산다 (homemade leverage 로 L 과 동일한 위험 복제).
+3. *동일한 현금흐름을 더 싸게* 얻는다 → 차익. 모두가 L 을 팔고 U 를 사면 $V_L \downarrow, V_U \uparrow$.
+
+**Case B — 만약 $V_L < V_U$ 라면**:
+1. U 주식을 판다.
+2. L 주식 + L 채권을 *함께* 산다 (레버리지를 되돌림 = unlever).
+3. 역시 차익 → 가격이 수렴.
+
+→ 균형은 $V_L = V_U$ 일 때만. *차익거래가 불가능* 한 가격이 곧 MM I.
+
+### §3.3 강한 가정 (어디가 깨지면 MM 도 깨지는가)
+
+1. 세금 없음
+2. 거래비용 없음
+3. 파산비용 없음
+4. 개인도 기업과 *같은 금리* 로 차입 가능
+5. 정보 비대칭 없음
+6. 자본구조가 *영업현금흐름을 바꾸지 않음*
+
+→ 이 6개는 *현실에서 어디가 깨지는지* 를 가리키는 지도다. 17장부터는 가정 2·3·5 를 하나씩 풀어 준다.
+
+### §3.4 함의
+
+- 자본구조는 *가치 무관*, **WACC 는 일정**.
+- 위험의 *총량은 불변*, 단지 주주와 채권자 사이에 *재배분* 될 뿐.
+
+---
+
+## §4 MM 명제 II (무세금)
+
+### §4.1 명제
+
+$$\boxed{R_E = R_0 + (R_0 - R_D)\,\frac{D}{E}}$$
+
+- $R_0$: 무레버리지(자산) 자본비용
+- $R_E$: 자기자본비용, $R_D$: 타인자본비용
+- → *자기자본비용은 $D/E$ 에 비례해 선형으로 상승*
+
+### §4.2 유도 (WACC 불변에서 바로 나온다)
+
+MM I 이 맞다면 WACC $= R_0$ (일정). WACC 정의:
+
 $$R_0 = \frac{E}{V} R_E + \frac{D}{V} R_D$$
 
-Solve for R_E.
+양변을 $R_E$ 에 대해 풀면 정확히 §4.1 의 식이 나온다. *명제 II 는 명제 I 의 수학적 따름정리* 다 — 새로운 가정이 아니다.
 
-### §3.3 Intuition
+### §4.3 그림 — 왜 WACC 는 평평한가
 
-- More debt → equity 더 risky (residual claim)
-- Higher equity risk → higher required return
-- Total risk constant, only shifted
+![Figure 16.3 — Cost of Equity, Cost of Debt, and WACC: MM Proposition II (No Taxes). 교재 p.497](/courses/financial-management/figures/ch16/fig-16-3.png)
 
-### §3.4 예
+- $R_S$($=R_E$) 는 *우상향 직선*: 부채가 늘수록 주주는 *후순위 잔여청구권* 이라 위험이 커지고 요구수익률이 오른다.
+- $R_B$($=R_D$) 는 (무위험 가정) *수평*.
+- **WACC 는 수평** — 자기자본비용 상승이 *값싼 부채 비중 확대* 와 정확히 상쇄된다.
+- $R_0$ 는 *한 점* 이지만 $R_S, R_B,$ WACC 는 *전체 직선*.
 
-$R_0 = 12\%$, $R_D = 6\%$:
+### §4.4 직관 — "값싼 부채" 의 함정
 
-| D/E | R_E |
-|--|--|
-| 0 | 12% |
-| 0.5 | 15% |
-| 1.0 | 18% |
-| 2.0 | 24% |
-| 5.0 | 42% |
+부채가 자기자본보다 *요구수익률이 낮은 것은 사실* 이지만, 부채를 늘리면 *남은 자기자본이 더 위험해져 $R_E$ 가 오른다*. 두 효과가 완전히 상쇄돼 WACC 는 불변. → "부채가 싸니 WACC 가 내려간다" 는 흔한 오류.
 
-### §3.5 WACC constant
+### §4.5 수치 확인
 
-| D/E | E/V | D/V | R_E | R_D | WACC |
-|--|--|--|--|--|--|
-| 0 | 100% | 0% | 12% | — | 12% |
-| 1 | 50% | 50% | 18% | 6% | 12% |
-| 2 | 33% | 67% | 24% | 6% | 12% |
+$R_0 = 12\%, R_D = 6\%$:
 
-→ WACC = constant at R_0 ✓ MM I confirmed.
+| D/E | $R_E$ | E/V | D/V | WACC |
+|--|--|--|--|--|
+| 0 | 12% | 100% | 0% | 12% |
+| 0.5 | 15% | 67% | 33% | 12% |
+| 1.0 | 18% | 50% | 50% | 12% |
+| 2.0 | 24% | 33% | 67% | 12% |
+| 5.0 | 42% | 17% | 83% | 12% |
 
----
-
-## §4 Pie Model (No Tax)
-
-> Firm value = fixed pie. Capital structure = how to slice.
-
-```
-   ┌─────────┐
-   │ Equity  │
-V= │ ........│
-   │ Debt    │
-   └─────────┘
-```
-
-→ Slicing doesn't change total.
+→ $R_E$ 는 오르지만 WACC 는 *항상 12%* = $R_0$. MM I 재확인. ✓
 
 ---
 
-## §5 MM Proposition I (With Corporate Taxes)
+## §5 법인세 도입 — MM 명제 I (법인세)
 
-### §5.1 Statement
+이제 첫 번째 현실 마찰: *이자는 손비 인정(세금 공제)* 된다. 이것이 부채에 *비대칭적 이점* 을 준다.
 
-$$V_L = V_U + T_c \times D$$
+### §5.1 절세효과 (Tax Shield)
 
-→ *Firm value increases with leverage due to tax shield*.
+영구부채 $D$, 이자율 $R_D$, 세율 $T_c$ 라면 매년 절세액 $= D \cdot R_D \cdot T_c$. 이를 $R_D$ 로 할인한 현재가치:
 
-### §5.2 Why
+$$PV(\text{tax shield}) = \frac{D \cdot R_D \cdot T_c}{R_D} = T_c \cdot D$$
 
-- Interest tax-deductible
-- Reduces tax → more cash to investors
-- Equity + Debt holder total ↑
-- Government 부담 ↓
+### §5.2 명제 I (법인세)
 
-### §5.3 Tax shield (perpetual debt)
+$$\boxed{V_L = V_U + T_c \cdot D}$$
 
-- Annual: $D \times R_D \times T_c$
-- PV (discount at R_D):
+> 레버리지 기업의 가치 = 무레버리지 가치 + *절세효과의 현재가치*. 부채가 많을수록 가치가 커진다.
 
-$$PV(TS) = \frac{D \times R_D \times T_c}{R_D} = T_c \times D$$
+### §5.3 Pie Model 재해석 — 정부라는 세 번째 조각
 
-### §5.4 예
+![Figure 16.4 — Two Pie Models of Capital Structure under Corporate Taxes. 교재 p.504](/courses/financial-management/figures/ch16/fig-16-4.png)
 
-V_U = $1000M, D = $400M, T_c = 25%.
+이제 파이는 *주주·채권자·정부(세금)* 세 조각으로 나뉜다. 부채를 늘리면 *정부(Taxes) 조각이 줄고* 그만큼 *투자자(주주+채권자) 조각이 커진다*. 절세효과란 결국 *정부 몫을 투자자 몫으로 옮기는 것*.
 
-$$V_L = 1000 + 0.25 \times 400 = \$1100M$$
+### §5.4 Divided Airlines 예제
 
-→ Leverage 가 $100M 가치 추가.
+Divided Airlines 는 전액 자기자본 기업으로 *영구 EBIT $126.6*, 세율 21% → 세후이익 $100. 무레버리지 자본비용 $R_0 = 20\%$.
 
-### §5.5 Implications
+$$V_U = \frac{\text{EBIT}(1 - T_c)}{R_0} = \frac{100}{0.20} = \$500$$
 
-- More debt → more tax shield → more value
-- Extreme: 100% debt = max value
-- Real: bankruptcy cost limits (Ch 17)
+이제 *$200 의 부채(이자율 10%)* 로 재구성한다면:
 
----
+$$V_L = V_U + T_c B = 500 + 0.21 \times 200 = \$542$$
 
-## §6 MM Proposition II (With Taxes)
+자기자본 가치 $S = V_L - B = 542 - 200 = \$342$.
 
-### §6.1 Cost of equity
+![Figure 16.5 — The Effect of Financial Leverage on Firm Value: MM with Corporate Taxes (Divided Airlines). 교재 p.507](/courses/financial-management/figures/ch16/fig-16-5.png)
 
-$$R_E = R_0 + (R_0 - R_D)(1 - T_c) \frac{D}{E}$$
+직선의 *기울기 $= T_c$* — 부채 $1 증가마다 기업가치 $T_c$ 만큼 증가. 부채가 절세를 통해 가치를 *선형으로* 끌어올린다.
 
-→ Tax shield reduces rate of increase.
+### §5.5 함의와 극단의 역설
 
-### §6.2 WACC
-
-$$WACC = \frac{E}{V} R_E + \frac{D}{V} R_D (1 - T_c)$$
-
-→ After-tax R_D.
-
-### §6.3 WACC decreases with leverage
-
-| D/E | E/V | D/V | R_E | After-tax R_D | WACC |
-|--|--|--|--|--|--|
-| 0 | 100% | 0% | 12% | — | 12% |
-| 1 | 50% | 50% | 16.5% | 4.5% | 10.5% |
-| 2 | 33% | 67% | 21% | 4.5% | 10% |
-| 5 | 17% | 83% | 39% | 4.5% | ~10% asymp |
-
-→ WACC ↓ with leverage (tax benefit).
-
-### §6.4 Optimal
-
-- Pure MM tax: 100% debt = lowest WACC
-- Real world: trade-off with bankruptcy (Ch 17)
+- 부채 ↑ → 절세효과 ↑ → 가치 ↑
+- *순수 MM-법인세 논리* 의 결론: **100% 부채가 최적** (가치 최대)
+- 현실은 그렇지 않다 → *파산비용·대리비용* 이 부채를 제약 (17장). 16장은 "왜 모두가 100% 부채가 아닌가?" 라는 질문을 *남겨두는* 장이다.
 
 ---
 
-## §7 Pie Model (With Taxes)
+## §6 MM 명제 II (법인세) 와 WACC
 
-> Tax = government slice. More debt → smaller gov slice.
+### §6.1 자기자본비용
 
-```
-No leverage:                With leverage:
-┌──────────┐                ┌──────────┐
-│ Equity   │                │ Equity   │
-│ 75%      │                │ 60%      │
-│ ........ │                │ ........ │
-│ Tax 25%  │                │ Debt 30% │
-└──────────┘                │ Tax 10%  │
-                            └──────────┘
-```
+$$\boxed{R_E = R_0 + (R_0 - R_D)(1 - T_c)\,\frac{D}{E}}$$
 
----
+무세금 식과 비교하면 $(1 - T_c)$ 가 곱해져 *상승 기울기가 완만* 해진다 — 절세효과가 주주가 떠안는 추가 위험의 일부를 *상쇄* 하기 때문.
 
-## §8 Levered vs Unlevered β
+### §6.2 그림 — 이제 WACC 는 내려간다
 
-### §8.1 Levered β
+![Figure 16.6 — Cost of Debt and Equity Capital: MM Proposition II with Corporate Taxes. 교재 p.509](/courses/financial-management/figures/ch16/fig-16-6.png)
 
-> Observed equity β.
+Divided Airlines 로 $R_E$ 를 계산($S = 342, B = 200$):
 
-$$\beta_L$$
+$$R_E = 0.20 + (1 - 0.21)(0.20 - 0.10)\frac{200}{342} = 0.20 + 0.79 \times 0.10 \times 0.5848 = 0.2462$$
 
-### §8.2 Unlevered β (Asset β)
+즉 24.62%. 무세금이라면 같은 $D/E$ 에서 더 높았을 것 — $(1 - T_c)$ 가 기울기를 눌렀다.
 
-> Business risk only, no leverage.
+### §6.3 WACC 공식과 하락
 
-$$\beta_U = \frac{\beta_L}{1 + (1 - T_c) D/E}$$
+$$\text{WACC} = \frac{E}{V} R_E + \frac{D}{V} R_D (1 - T_c)$$
 
-### §8.3 Re-lever
+핵심은 *세후 타인자본비용 $R_D(1 - T_c)$*. $R_E$ 상승 기울기가 완만해진 데다 부채 비용은 세후로 더 싸지므로, **WACC 는 레버리지가 커질수록 하락** 한다.
 
-$$\beta_L = \beta_U [1 + (1 - T_c) D/E]$$
+| D/E | $R_E$ | 세후 $R_D$ | WACC |
+|--|--|--|--|
+| 0 | 12% | — | 12% |
+| 1 | 16.5% | 4.5% | 10.5% |
+| 2 | 21% | 4.5% | 10% |
+| ∞ | (↑) | 4.5% | → 4.5% 점근 |
 
-### §8.4 Use case — Bottom-up β
-
-1. Industry peers β_L
-2. Unlever each → β_U
-3. Average β_U
-4. Re-lever for target D/E
+→ 무세금(WACC 일정) 과 정반대 — *세금이 부채를 보조* 한다.
 
 ---
 
-## §9 MM Contributions
+## §7 Levered vs Unlevered β
 
-### §9.1 Nobel Prize
+자본구조는 *관측되는 주식 β* 도 바꾼다. 레버리지는 주주 위험을 키우므로 $\beta_L > \beta_U$.
 
-- Modigliani (1985) — economics
-- Miller (1990) — finance
+### §7.1 Unlever / Re-lever
 
-### §9.2 Why important
+$$\beta_U = \frac{\beta_L}{1 + (1 - T_c)\,D/E}, \qquad \beta_L = \beta_U\big[1 + (1 - T_c)\,D/E\big]$$
 
-- First rigorous theory
-- Identifies frictions
-- Benchmark for real-world
+- $\beta_U$ (자산 β): *영업위험만*, 자본구조 제거
+- $\beta_L$ (주식 β): 영업위험 + *재무위험*
 
-### §9.3 Real-world deviations
+### §7.2 Bottom-up β 절차
 
-- Tax shield
-- Bankruptcy cost (Ch 17)
-- Agency cost (Ch 17)
-- Info asymmetry (Pecking order)
-- Behavioral
+1. 동종 비교기업들의 $\beta_L$ 수집
+2. 각 기업을 *unlever* → $\beta_U$
+3. $\beta_U$ 평균 (순수 사업위험)
+4. *목표 $D/E$ 로 re-lever* → 우리 회사 $\beta_L$
 
-### §9.4 MM as null hypothesis
-
-> *Any capital structure effect* must violate one of MM assumptions.
-
-→ Identifies *where* friction matters.
+→ 13장 WACC 추정의 핵심 도구. 신규사업·비상장사처럼 자체 β 가 없을 때 필수.
 
 ---
 
-## §10 자주 함정
+## §8 MM 의 의의 — 귀무가설로서의 MM
+
+### §8.1 노벨상
+
+Modigliani(1985), Miller(1990) — 자본구조·배당 이론으로 수상.
+
+### §8.2 왜 중요한가
+
+MM 의 진짜 가치는 "자본구조가 무관하다" 는 *결론* 이 아니라, **"자본구조가 가치를 바꾸려면 MM 가정 중 무엇이 깨져야 하는가?"** 라는 *질문 틀* 을 준 것이다.
+
+> MM 은 *귀무가설(null hypothesis)*. 현실에서 자본구조가 중요하다면, 그것은 *반드시* 어떤 마찰(세금·파산·대리·정보) 때문이다. MM 은 *어디를 봐야 하는지* 를 가리킨다.
+
+### §8.3 현실의 이탈 (이후 장 예고)
+
+| 마찰 | 효과 | 다루는 장 |
+|--|--|--|
+| 법인세 | 부채 선호 (절세) | 16 (본 장) |
+| 파산·재무곤경 비용 | 부채 제약 | 17, 30 |
+| 대리비용 | 양방향 | 17 |
+| 정보 비대칭 | pecking order | 17 |
+| 행동·시장 타이밍 | 다양 | 14 |
+
+---
+
+## §9 자주 빠지는 함정
 
 | # | 함정 | 정정 |
 |--|--|--|
-| 1 | MM = always true | Strong assumptions |
-| 2 | Capital structure irrelevant | Only without frictions |
-| 3 | Debt 항상 cheaper | After-tax only |
-| 4 | More debt = more value | Bankruptcy limits (Ch 17) |
-| 5 | WACC unchanging | Only without frictions |
-| 6 | Equity cost constant | Rises (Prop II) |
-| 7 | 100% debt optimal | Pure MM tax only |
-| 8 | Pie size constant | Tax shield grows |
+| 1 | MM 은 항상 성립 | 6개 강한 가정 위에서만 |
+| 2 | 레버리지가 *기대* EPS 를 높임 | *변동성(위험)* 을 높임 (Trans Am) |
+| 3 | 부채가 싸니 WACC 하락 (무세금) | $R_E$ 상승이 상쇄 → WACC 일정 |
+| 4 | 회사 레버리지에 프리미엄 지불 | homemade leverage 로 복제 가능 → 무관 |
+| 5 | 절세효과 무시하고 $V_L=V_U$ | 법인세 있으면 $V_L = V_U + T_c D$ |
+| 6 | 세금 모형에서 100% 부채가 진짜 최적 | 파산비용 제외한 *순수 MM* 결론일 뿐 (17장) |
+| 7 | $R_D$ 를 세전으로 WACC 계산 | *세후* $R_D(1-T_c)$ |
+| 8 | $\beta_L$ 을 그대로 신규사업에 사용 | unlever → re-lever 필요 |
 
 ---
 
-## §11 자가점검
+## §10 자가점검
 
-1. *MM Prop I (no tax)*?
-2. *MM Prop II (no tax)*?
-3. *MM with tax* — firm value?
-4. *WACC with leverage* (with tax)?
-5. *Levered vs Unlevered β*?
-6. *MM benchmark*?
+1. *MM 명제 I (무세금)* 과 그 *차익거래 증명* 의 골자?
+2. *MM 명제 II (무세금)* — 왜 $R_E$ 는 오르는데 WACC 는 평평한가?
+3. 절세효과의 PV 가 *왜* $T_c D$ 인가?
+4. *법인세 하 WACC* 는 레버리지에 따라 어떻게 변하나?
+5. Trans Am 손익분기 EBIT 와 그 의미?
+6. *Levered/unlevered β* 변환과 bottom-up β?
 
 <details><summary>해답</summary>
 
-1. $V_L = V_U$.
-2. $R_E = R_0 + (R_0 - R_D) D/E$.
-3. $V_L = V_U + T_c D$.
-4. WACC ↓ with leverage. Pure MM 100% debt = lowest.
-5. $\beta_U = \beta_L / [1 + (1-T_c) D/E]$.
-6. Null hypothesis. Any effect must violate MM. Identifies where friction matters.
+1. $V_L = V_U$. 만약 $V_L > V_U$ 면 L 매도 + 개인차입으로 U 매수(homemade leverage) → 같은 위험 더 싸게 → 차익. 반대면 unlever 차익. 균형은 $V_L = V_U$.
+2. $R_E = R_0 + (R_0-R_D)D/E$. 부채↑ → 주주 위험↑ → $R_E$↑. 그러나 *값싼 부채 비중 확대* 가 정확히 상쇄 → WACC $=R_0$ 불변 (Fig 16.3 수평선).
+3. 영구부채 절세액 $D R_D T_c$ 를 $R_D$ 로 할인 → $D R_D T_c / R_D = T_c D$.
+4. WACC $= (E/V)R_E + (D/V)R_D(1-T_c)$. $R_E$ 기울기가 $(1-T_c)$ 로 완만 + 세후 부채비용 → *WACC 하락* (Fig 16.6).
+5. EBIT/400 = (EBIT−400)/200 → EBIT=$800, EPS=$2. 그 위에선 레버리지 유리, 아래선 불리 (Fig 16.2).
+6. $\beta_U = \beta_L/[1+(1-T_c)D/E]$, 역으로 re-lever. 비교기업 β_L → unlever → 평균 → 목표 D/E 로 re-lever.
 
 </details>
 
 ---
 
-## §12 다음 학습으로
+## §11 다음 학습으로
 
-- **Ch 17** — Capital structure limits
-- **Ch 18** — APV
-- **Ch 19** — Dividends
+- **Ch 17** — Capital Structure: 부채의 한계 (파산비용·대리비용·pecking order) — "왜 100% 부채가 아닌가"
+- **Ch 18** — APV / FTE / WACC 방법 (레버리지 프로젝트 평가)
+- **Ch 13** — WACC (β unlever/re-lever 의 응용처)
 
 ---
 
-## §13 한 줄 요약
+## §12 한 줄 요약
 
-> **Modigliani-Miller — capital structure irrelevance (Prop I, no tax). Cost of equity rises with leverage (Prop II). MM with corporate tax — $V_L = V_U + T_c \times D$ — tax shield adds value. *WACC decreases with leverage* (tax benefit). *Levered vs unlevered β*. *MM as benchmark*. *Real deviations* — tax, bankruptcy, agency, info, behavioral.**
+> **MM 정리. *명제 I (무세금)* $V_L = V_U$ — homemade leverage 차익거래로 증명, 자본구조 무관(Pie 불변, Fig 16.1). *명제 II (무세금)* $R_E = R_0 + (R_0-R_D)D/E$ — 자기자본비용은 레버리지에 비례 상승하나 WACC 는 $R_0$ 로 일정(Fig 16.3). 레버리지는 기대 EPS 가 아니라 *변동성* 을 키움(Trans Am, Fig 16.2, BE EBIT $800). *법인세 도입* → $V_L = V_U + T_c D$ (절세효과, 정부 조각 축소 Fig 16.4·16.5), 명제 II 는 $(1-T_c)$ 만큼 완만, *WACC 는 하락*(세후 $R_D$, Fig 16.6). $\beta$ unlever/re-lever 로 bottom-up β. MM 은 *귀무가설* — 자본구조가 중요하다면 어떤 마찰이 깨진 것(17장).**

@@ -1,6 +1,6 @@
 # Chapter 15: Long-Term Financing — An Introduction — 학습 노트
 
-> *Corporate Finance* (Ross 12e) **Chapter 15** (책 p.483~503).
+> *Corporate Finance* (Ross 12e) **Chapter 15** (책 p.467~485).
 > 15장은 *long-term financing* introduction — Common stock, Preferred stock, Long-term debt 의 characteristics + practical.
 
 이 장의 *지적 무게중심*:
@@ -9,6 +9,16 @@
 3. **Long-term Debt** — bonds, indenture, covenants
 4. **Patterns of Financing** — empirical
 5. **Internal vs External Financing**
+
+---
+
+## §0 도입 — 장기 자금의 메뉴판
+
+기업이 장기 자금을 조달하는 *원천* 은 크게 셋 — **보통주·우선주·장기부채**. 그러나 실제 가장 큰 자금원은 외부가 아니라 **내부**(유보이익 + 감가상각)다. 15장은 각 증권의 성격을 훑고, "기업은 실제로 어디서 돈을 구하는가"를 데이터로 확인한다.
+
+![Figure 15.1 — The Long-Term Financial Deficit. 교재 p.481](/courses/financial-management/figures/ch15/fig-15-1.png)
+
+> **직관**: *자금 사용*(capital expenditures + 순운전자본)이 *내부 현금흐름*을 초과하는 만큼이 **financial deficit** — 이 부족분만 외부(부채·주식)로 메운다. 그래서 외부조달은 *잔여(residual)* 성격을 띤다(pecking order 와 연결).
 
 ---
 
@@ -162,6 +172,10 @@ $$P_{pref} = \frac{D_{pref}}{R_{pref}}$$ (perpetuity)
 - Internal: 70-80%
 - External: 20-30% (Debt 15-20%, Equity 5-10%)
 
+![Figure 15.2 — Financing by U.S. Nonfinancial Corporations as a Percentage of Uses of Cash Flow. 교재 p.482](/courses/financial-management/figures/ch15/fig-15-2.png)
+
+> **직관**: *내부조달(올리브)* 이 줄곧 ~100% 근처를 맴돈다 — 대부분을 자체 현금으로 충당한다. *신주(파랑)* 는 자주 *마이너스* 인데, buyback(자사주 매입)이 신규 발행을 넘어서 **순발행이 음(−)** 임을 뜻한다. *신규 부채(주황)* 가 외부조달의 주력.
+
 ### §4.2 Why internal preferred
 
 - No flotation cost
@@ -183,6 +197,10 @@ $$P_{pref} = \frac{D_{pref}}{R_{pref}}$$ (perpetuity)
 | Tech | Low debt (growth, no collateral) |
 | Real estate | High debt (collateralized) |
 | Pharma | Variable (R&D risk) |
+
+![Figure 15.3 — Debt to Equity Ratios: Total Debt as a Percentage of Book Value and Market Value of Equity for U.S. Nonfinancial Firms, 1975–2016. 교재 p.483](/courses/financial-management/figures/ch15/fig-15-3.png)
+
+> **직관**: *book value*(주황) 기준 D/E 는 비교적 안정적이지만, *market value*(올리브) 기준은 **주가에 따라 출렁인다** — 주가가 오르면(1990년대 말, 2010년대) market D/E 가 떨어진다. 분모가 시장가치라 leverage 측정이 시점에 민감함을 보여준다.
 
 ---
 

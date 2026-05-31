@@ -46,15 +46,27 @@ def _find_caption(page, caption_prefix):
     가 실제 line "Figure 1.1  ♦" 또는 "Figure\t1.4 ♦" 와도 매치.
     """
     import re
-    # caption_prefix 를 word 단위로 split 후 \s+ 로 join → 공백 정규화 regex
+    # caption_prefix 를 word 단위로 split 후 \s+ 로 join → 공백 정규화 regex.
+    # 끝에 (?!\d): "Figure 1.1" 가 "Figure 1.10" 에 오매치되는 것 방지 (.10+ figure 보호).
     parts = re.split(r'\s+', caption_prefix.strip())
-    pat = re.compile(r'^' + r'\s+'.join(re.escape(p) for p in parts))
+    pat = re.compile(r'^' + r'\s+'.join(re.escape(p) for p in parts) + r'(?!\d)')
+    fallback = None
     for blk in page.get_text("dict")["blocks"]:
         for line in blk.get("lines", []):
             txt = "".join(s["text"] for s in line["spans"])
-            if pat.match(txt):
-                return line["bbox"], fitz.Rect(blk["bbox"])
-    return None, None
+            m = pat.match(txt)
+            if not m:
+                continue
+            # prose 판정: 캡션 번호 뒤 첫 글자가 소문자면 본문 문장
+            #   ("Figure 17.2 illustrates …")  → 진짜 캡션이 아니므로 스킵.
+            rest = txt[m.end():].lstrip()
+            if rest[:1].islower():
+                if fallback is None:
+                    fallback = (line["bbox"], fitz.Rect(blk["bbox"]))
+                continue
+            return line["bbox"], fitz.Rect(blk["bbox"])
+    # 비-prose 캡션을 못 찾으면 첫 매치로 fallback (기존 동작 유지)
+    return fallback if fallback else (None, None)
 
 
 def _find_all_caption_blocks(page, caption_marker="Figure "):

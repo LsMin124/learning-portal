@@ -7,12 +7,15 @@
 
 캡션은 Corporate Finance 12e 특성상 figure '위'에 있으므로 caption_pos="above".
 
-멀티패널 figure (한 figure 가 세로로 쌓인 여러 차트 = GM/IBM/Kodak 식) 는
-panel-anchor 로직이 첫 패널만 잡아 under-crop 된다. MULTIPANEL 에 등록하면
-캡션 아래 region 의 모든 그래픽+이미지 합집합을 crop 하는 union 전략을 쓴다.
+추출 전략 3 종 (figure 별로 자동 선택):
+- 기본: extract_figures (panel-anchor, 단일 figure 대부분)
+- MULTIPANEL: 세로로 쌓인 여러 차트 → 캡션 영역 그래픽 합집합 union
+- MANUAL: 기본/union 둘 다 실패(본문 혼입·잘림)하는 까다로운 figure →
+          render_page.py 'rects' 로 차트 bbox 를 떠서 수동 좌표 지정.
+          캡션 블록은 자동 union.
 
 사용법:
-    python tools/extract_finance.py 17                # ch17 → figures/ch17
+    python tools/extract_finance.py 19                # ch19 → figures/ch19
     python tools/extract_finance.py 16 --out /tmp/x   # 출력 경로 지정(검증용)
 """
 from __future__ import annotations
@@ -22,7 +25,7 @@ import sys
 
 import fitz  # PyMuPDF
 
-from extract_figures import _find_caption, extract_figure, extract_figures  # tools/ 가 sys.path[0]
+from extract_figures import _find_caption, extract_figures  # tools/ 가 sys.path[0]
 
 PDF = "tools/inbox/financial-management/Corporate Finance, 12th Twelfth edition.pdf"
 OUT_BASE = "courses/financial-management/figures"
@@ -31,11 +34,20 @@ OUT_BASE = "courses/financial-management/figures"
 CHAPTERS: dict[int, dict[str, int]] = {
     16: {"16.1": 520, "16.2": 523, "16.3": 529, "16.4": 536, "16.5": 539, "16.6": 541},
     17: {"17.1": 561, "17.2": 563, "17.3": 565, "17.4": 573, "17.5": 575, "17.6": 576},
+    19: {"19.1": 606, "19.2": 607, "19.3": 610, "19.4": 612,
+         "19.5": 615, "19.6": 625, "19.7": 626, "19.8": 627},
 }
 
-# 멀티패널(세로로 쌓인 여러 차트) figure → union 전략. {chapter: {fnum, ...}}
+# union 전략 대상 → {chapter: {fnum, ...}}. 세로 누적 멀티패널 등.
 MULTIPANEL: dict[int, set[str]] = {
     17: {"17.6"},
+}
+
+# 수동 좌표(PDF pt, 차트 본체 bbox) → {chapter: {fnum: (x0, y0, x1, y1)}}.
+# 페이지 인덱스는 CHAPTERS 에서 가져오고, 캡션 블록은 자동 union 한다.
+MANUAL: dict[int, dict[str, tuple[float, float, float, float]]] = {
+    # 19.7: 같은 페이지 본문이 union 에 혼입 → 차트 img(171,94.7,546,299)+SOURCE 까지만
+    19: {"19.7": (171.0, 92.0, 547.0, 309.0)},
 }
 
 
@@ -50,6 +62,8 @@ def _union_rect(page, caption_prefix: str, top_margin: float = 70, bot_margin: f
     for d in page.get_drawings():
         r = d["rect"]
         if r.width < 6 or r.height < 6:
+            continue
+        if r.width > page_w * 0.92 and r.height > page_h * 0.92:  # 페이지 전체 배경/테두리
             continue
         if r.height < 1.5 and r.width > page_w * 0.7:   # 가로 rule/separator
             continue
@@ -70,14 +84,31 @@ def _union_rect(page, caption_prefix: str, top_margin: float = 70, bot_margin: f
     )
 
 
-def _extract_union(pidx: int, fnum: str, out_path: str, dpi: float = 2.5) -> bool:
+def _crop(page, rect, out_path: str, dpi: float = 2.5) -> None:
+    page.get_pixmap(matrix=fitz.Matrix(dpi, dpi), clip=rect).save(out_path)
+
+
+def _extract_union(pidx: int, fnum: str, out_path: str) -> bool:
     doc = fitz.open(PDF)
     page = doc[pidx]
     rect = _union_rect(page, f"Figure {fnum}")
-    if rect is None:
-        doc.close()
-        return False
-    page.get_pixmap(matrix=fitz.Matrix(dpi, dpi), clip=rect).save(out_path)
+    ok = rect is not None
+    if ok:
+        _crop(page, rect, out_path)
+    doc.close()
+    return ok
+
+
+def _extract_manual(pidx: int, fnum: str, box: tuple, out_path: str) -> bool:
+    """수동 차트 bbox + (자동 탐지) 캡션 블록 union 으로 crop."""
+    doc = fitz.open(PDF)
+    page = doc[pidx]
+    rect = fitz.Rect(*box)
+    _, cap_block = _find_caption(page, f"Figure {fnum}")
+    if cap_block is not None:
+        rect = rect | cap_block
+    rect = fitz.Rect(rect.x0 - 4, rect.y0 - 4, rect.x1 + 4, rect.y1 + 4)
+    _crop(page, rect, out_path)
     doc.close()
     return True
 
@@ -90,10 +121,12 @@ def run(chapter: int, out: str | None = None) -> None:
     out_dir = out or os.path.join(OUT_BASE, f"ch{chapter:02d}")
     os.makedirs(out_dir, exist_ok=True)
     multi = MULTIPANEL.get(chapter, set())
-    print(f"ch{chapter}: {len(figs)}개 figure → {out_dir}  (멀티패널: {sorted(multi) or '없음'})")
+    manual = MANUAL.get(chapter, {})
+    special = multi | set(manual)
+    print(f"ch{chapter}: {len(figs)}개 figure → {out_dir}  "
+          f"(union: {sorted(multi) or '-'}, manual: {sorted(manual) or '-'})")
 
-    # 일반 figure 는 표준 extract_figures, 멀티패널은 union 전략.
-    standard = {k: v for k, v in figs.items() if k not in multi}
+    standard = {k: v for k, v in figs.items() if k not in special}
     if standard:
         extract_figures(
             pdf=PDF, out_dir=out_dir, figs=standard,
@@ -104,6 +137,11 @@ def run(chapter: int, out: str | None = None) -> None:
         ok = _extract_union(figs[fnum], fnum, out_path)
         size = os.path.getsize(out_path) / 1024 if ok else 0
         print(f"{'OK  ' if ok else 'FAIL'} Fig {fnum} (union) -> {os.path.basename(out_path)}  ({size:.0f}KB)")
+    for fnum, box in sorted(manual.items()):
+        out_path = os.path.join(out_dir, f"fig-{fnum.replace('.', '-')}.png")
+        _extract_manual(figs[fnum], fnum, box, out_path)
+        size = os.path.getsize(out_path) / 1024
+        print(f"OK   Fig {fnum} (manual) -> {os.path.basename(out_path)}  ({size:.0f}KB)")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # Chapter 19: Dividends and Other Payouts — 학습 노트
 
-> *Corporate Finance* (Ross 12e) **Chapter 19** (책 p.591~629).
+> *Corporate Finance* (Ross 12e) **Chapter 19** (책 p.572~610).
 > 19장은 *payout policy* — Dividend vs Buyback, MM dividend irrelevance, signaling, clientele, taxes.
 
 이 장의 *지적 무게중심*:
@@ -9,6 +9,16 @@
 3. **Real-world factors** — taxes, transaction costs, signaling, clientele, agency
 4. **Stock repurchase vs dividend**
 5. **Dividend policy in practice** — Lintner
+
+---
+
+## §0 도입 — 번 돈을 어떻게 돌려줄까
+
+기업이 양(+)의 NPV 프로젝트에 다 쓰고도 현금이 남으면, *주주에게 돌려주는* 길은 둘이다 — **배당(dividend)** 과 **자사주 매입(buyback)**. 19장의 두 질문: ① *얼마나* 돌려줄까(payout 수준), ② *어떤 형태로*(배당 vs buyback). MM 의 출발점은 충격적이다 — *완전시장에서는 둘 다 가치와 무관*(homemade dividends). 그러나 현실에서는 **세금·신호·clientele·agency** 가 정책을 가른다.
+
+![Figure 19.4 — Quarterly Variation in Reported Earnings, Dividends, and Net Repurchases for Large U.S. Firms. 교재 p.580](/courses/financial-management/figures/ch19/fig-19-4.png)
+
+> **직관**: *dividends(주황)* 는 거의 평탄한 반면 *buybacks(올리브)* 는 이익을 따라 출렁인다 — 배당은 *sticky*(한 번 올리면 잘 못 내림), buyback 은 *유연한* 잔여 분배 수단임을 한눈에 보여준다. 2008 이익 급락(파랑) 때도 배당은 거의 줄지 않았다.
 
 ---
 
@@ -31,7 +41,13 @@
 | **Record date** | 주주명부 확정 |
 | **Payment date** | 실제 지급 |
 
+![Figure 19.1 — Example of Procedure for Dividend Payment. 교재 p.574](/courses/financial-management/figures/ch19/fig-19-1.png)
+
 → *Ex-date 에 주가 ≈ 배당금만큼 하락* (이론).
+
+![Figure 19.2 — Price Behavior around the Ex-Dividend Date for a $1 Cash Dividend. 교재 p.575](/courses/financial-management/figures/ch19/fig-19-2.png)
+
+> **직관**: ex-date 직전 주가 $(P+1)$ 에서 ex-date 에 정확히 배당금 $1 만큼 떨어져 $P 가 된다. 떨어지지 않는다면 *배당락 직전 매수→직후 매도* 로 무위험 차익이 생기므로, 차익거래가 그 간격을 메운다(세금 무시 시).
 
 ### §1.3 Stock dividend + Stock split
 
@@ -68,6 +84,10 @@
 - 회사가 배당 많이 함 → *배당 재투자* (배당 거부 효과)
 
 → *Dividend policy 가 투자자에게 무의미*.
+
+![Figure 19.3 — Homemade Dividends: A Trade-off between Dividends per Share at Date 0 and Date 1. 교재 p.578](/courses/financial-management/figures/ch19/fig-19-3.png)
+
+> **직관**: 기업의 배당 시점 선택은 투자자를 직선 위 한 점(A)에 놓을 뿐이다. 투자자는 *주식 매도/재투자* 로 같은 직선 위 어디로든(B·C) 자유롭게 이동할 수 있다 — 기울기 $-1/1.1$ 은 시간선호(할인). 그래서 배당정책 자체는 가치를 바꾸지 못한다.
 
 ### §2.3 가정
 
@@ -126,6 +146,10 @@
 - → *Buyback 이 tax-efficient*
 - *US 2003+*: qualified dividend 도 capital gain 세율 (15-20%)
 - 그래도 *capital gain 은 deferral 가능* (실현 시점 선택)
+
+![Figure 19.5 — Firm Issues Stock to Pay a Dividend. 교재 p.583](/courses/financial-management/figures/ch19/fig-19-5.png)
+
+> **직관**: 세금이 없으면(왼쪽) 주식을 발행해 배당하는 것은 돈이 회사→주주→회사로 돌기만 하는 *무의미한 순환*이다. 그러나 개인 배당세 15%(오른쪽)가 붙으면 매번 IRS 가 $15 를 떼어가 — 불필요한 배당은 *순전한 세금 누수*다. 배당이 capital gain 보다 불리한 핵심 이유.
 
 ### §4.2 Flotation costs
 
@@ -205,11 +229,19 @@ $$\Delta Div_t = \text{Speed} \times (\text{Target} - Div_{t-1})$$
 - *Signaling* — 안정성 신호
 - *Clientele* — 예측 가능성 선호
 
+![Figure 19.7 — Ratio of Aggregate Dividends to Aggregate Earnings for All U.S. Firms: 1980 to 2016. 교재 p.594](/courses/financial-management/figures/ch19/fig-19-7.png)
+
+> **직관**: 총 배당/이익 비율(payout ratio)이 해마다 0.4~0.8 사이를 오가는데, *분모(이익)* 가 경기 따라 출렁이는 게 주원인이다. 기업이 배당을 매끄럽게 유지(smoothing)하므로, 이익이 급락한 해엔 payout ratio 가 *치솟는다*(2008·2001).
+
 ### §6.4 Catering theory (Baker-Wurgler)
 
 - 투자자가 *배당주 선호* 시기 → 기업 배당 시작
 - *Dividend premium* 변동
 - *Behavioral*
+
+![Figure 19.8 — Proportion of Dividend Payers among All Publicly Held U.S. Industrial Firms: 1980–2015. 교재 p.595](/courses/financial-management/figures/ch19/fig-19-8.png)
+
+> **직관**: 배당하는 기업 비율이 1980 ~60% 에서 2000 ~15% 로 급락했다(Fama-French "disappearing dividends") — 신규 상장한 성장·기술 기업이 배당 대신 *재투자·buyback* 을 택했기 때문. 2002 이후 반등은 catering(투자자의 배당 선호 회귀)과도 맞물린다.
 
 ---
 
@@ -225,6 +257,10 @@ $$\Delta Div_t = \text{Speed} \times (\text{Target} - Div_{t-1})$$
 | 고소득 개인 | 낮은 배당 (tax) |
 | 기관 (tax-exempt) | 무차별 |
 | Growth 투자자 | 낮은 배당 (재투자) |
+
+![Figure 19.6 — Preferences of Investors for Dividend Yield. 교재 p.593](/courses/financial-management/figures/ch19/fig-19-6.png)
+
+> **직관**: 실제 데이터에서 *고소득(주황)* 투자자일수록 *고배당(High)* 분위 비중이 낮고, *저소득(올리브)* 일수록 고배당주를 더 담는다 — 세금 유인에 따라 clientele 이 갈린다는 증거. 다만 차이가 극적이진 않아 MM 을 부분적으로만 뒤집는다.
 
 ### §7.2 함의
 

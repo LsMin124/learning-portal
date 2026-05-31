@@ -1,6 +1,6 @@
 # Chapter 17: Capital Structure — Limits to the Use of Debt — 학습 노트
 
-> *Corporate Finance* (Ross 12e) **Chapter 17** (책 p.534~568).
+> *Corporate Finance* (Ross 12e) **Chapter 17** (책 p.528~559).
 > 17장은 *Trade-off Theory* — bankruptcy + agency cost 가 debt 사용의 *upper limit*. MM 의 *real-world adjustment*.
 
 이 장의 *지적 무게중심*:
@@ -10,6 +10,18 @@
 4. **Trade-off Theory** — optimal D/E
 5. **Personal Taxes** (Miller 1977)
 6. **Industry + Firm patterns**
+
+---
+
+## §0 도입 — MM 의 역설에서 Trade-off 로
+
+Ch 16 의 결론(법인세를 넣은 MM)을 곧이곧대로 받으면 *기업은 100% 부채로 가야 한다*. 이자비용이 만드는 세금방패 $T_c B$ 가 부채에 비례해 무한히 커지기 때문이다. 그러나 현실의 어떤 건전한 기업도 그렇게 하지 않는다. **무엇이 부채의 상한을 만드는가?** 가 17장의 질문이다.
+
+답은 *파이 모델(pie model)* 로 직관화된다. 기업가치라는 파이는 주주·채권자만 나눠 갖는 게 아니다. **세금(정부)·파산비용(변호사·회계사)·소송 청구권** 같은 *비시장 청구권(nonmarketed claims)* 에도 잘려 나간다.
+
+![Figure 17.2 — The Pie Model with Real-World Factors. 교재 p.531](/courses/financial-management/figures/ch17/fig-17-2.png)
+
+> **직관**: 부채를 늘리면 *세금 조각(정부 몫)* 은 줄어든다 — 이것이 세금방패의 이득이다. 그러나 동시에 *파산·distress 조각* 이 커진다. 주주와 채권자가 실제로 가져가는 *시장 청구권(marketed claims)* 의 합 $V_M = V_T - (\text{세금} + \text{distress})$ 을 **최대화**하는 D/E 가 최적이다. 곧, 부채의 한계이득(세금방패)과 한계비용(distress + agency)이 같아지는 지점이다.
 
 ---
 
@@ -128,21 +140,24 @@ $$V_L = V_U + PV(TS) - PV(Distress) - PV(Agency)$$
 
 > Marginal tax shield = Marginal distress + agency cost.
 
-```
-V_L
-  |                  ⌒  Maximum
-  |               /     \
-  |            /         \
-  V_U-/                    \
-  |                          \
-  |________________________ D/E
-              Optimal
-```
+![Figure 17.1 — The Optimal Amount of Debt and the Value of the Firm. 교재 p.529](/courses/financial-management/figures/ch17/fig-17-1.png)
+
+직선 $V_L = V_U + T_C B$ 는 distress 비용이 없을 때의 MM(법인세) 가치선 — 부채에 비례해 끝없이 상승한다. 실제 기업가치 $V$ 는 이 직선에서 *재무위기 비용의 현재가치* 만큼 아래로 휜다. **순한계이득이 0** 이 되는 부채 $B^*$ 에서 $V$ 가 최대가 되고, 그 너머에서는 가치가 하락한다.
+
+> **직관**: 처음 얼마간의 부채는 세금방패가 distress 위험을 압도해 가치를 키운다. 그러나 부채가 커질수록 파산확률이 가속적으로 오르고, $B^*$ 를 넘으면 추가 세금방패보다 늘어나는 distress·agency 비용이 더 커져 가치가 *하락* 한다. 이 $B^*$ 가 trade-off 이론이 말하는 최적 부채다.
 
 ### §4.3 Static vs Dynamic
 
 **Static**: Single optimal D/E, cross-sectional.
 **Dynamic**: Time-varying, adjustment costs, mean reversion.
+
+![Figure 17.5 — Survey Results on the Use of Target Debt-Equity Ratios. 교재 p.543](/courses/financial-management/figures/ch17/fig-17-5.png)
+
+설문(392 CFO)을 보면 대다수 기업이 *목표 D/E* 를 둔다 — "very strict"(10%) + "somewhat tight"(34%) + "flexible"(37%) = 81% 가 어떤 형태로든 목표를 운용하고, "목표 없음" 은 19% 뿐이다. 곧 현실의 재무담당자는 trade-off 가 시사하는 *최적 구간* 을 의식하되, 조정비용 때문에 *유연하게* 운영한다.
+
+![Figure 17.6 — Leverage Ratios of General Motors, IBM, and Eastman Kodak over Time. 교재 p.544](/courses/financial-management/figures/ch17/fig-17-6.png)
+
+> **직관**: 개별 기업의 leverage 는 수십 년에 걸쳐 *평균회귀(mean reversion)* 하면서도 주가 변동에 따라 출렁인다. GM·IBM·Kodak 모두 *book* 과 *market* leverage 가 장기적으로 같은 띠 안에서 움직인다 — 목표가 존재하되 즉각 조정되지는 않는다는 *dynamic* trade-off 의 증거다.
 
 ### §4.4 Industry patterns
 
@@ -181,6 +196,10 @@ V_L
 - Profitable firms use less debt (counter trade-off)
 - External financing follows bad earnings
 - Equity issues depress stock ~3%
+
+![Figure 17.3 — Stock Returns at the Time of Announcements of Exchange Offers. 교재 p.533](/courses/financial-management/figures/ch17/fig-17-3.png)
+
+> **직관**: 교환오퍼(exchange offer)는 자본구조만 바꾸는 *깨끗한 실험* 이다. *부채를 늘리는*(leverage-increasing) 발표에는 주가가 **상승**, *부채를 줄이는*(leverage-decreasing) 발표에는 **하락** 한다. 부채 증가는 경영진이 미래 현금흐름에 자신 있다는 신호로, 자기자본 증가는 주식이 고평가됐다는 신호로 읽히기 때문 — signaling·pecking order 와 정합적이다.
 
 ### §5.4 Pecking Order vs Trade-off
 
@@ -261,6 +280,10 @@ Most reliable determinants:
 - Bust: deleverage (covenants, refinancing)
 
 ### §7.4 Country differences (Rajan-Zingales 1995)
+
+![Figure 17.4 — Median Leverage Ratio of Sample Firms in 39 Different Countries (1991–2006). 교재 p.541](/courses/financial-management/figures/ch17/fig-17-4.png)
+
+> **직관**: 국가별 median leverage 는 한국·인도네시아·브라질 등이 높고(은행 중심·관계금융), 미국·캐나다·호주가 낮다(자본시장 발달, 주식금융 용이). *법체계(La Porta)·세제·은행 vs 자본시장* 구조가 자본구조의 국가 간 차이를 만든다. 아래 Rajan-Zingales 표는 그중 G7 의 좁은 단면이다.
 
 | Country | Mean Debt Ratio |
 |--|--|

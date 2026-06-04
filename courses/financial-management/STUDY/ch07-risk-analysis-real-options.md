@@ -12,6 +12,21 @@
 
 ---
 
+## §0 도입 — *경직된 NPV* 를 흔들기
+
+> **핵심 한 문장**: 4~6장의 NPV 는 "*하나의 확정된 미래* 를 discount" 했다. 현실은 (1) 미래가 *불확실* 하고 (2) 경영자가 도중에 *반응* 한다. 7장은 이 둘을 NPV 에 도로 집어넣는다 — **risk**(얼마나 흔들리나) + **flexibility**(반응할 권리 = *real option*).
+
+장은 두 덩어리로 나뉜다:
+- **전반(§1~3) — risk 의 *측정***: sensitivity(한 변수)·scenario(몇 시나리오)·simulation(분포 전체), break-even(몇 개 팔아야 본전), decision tree(단계별 조건부 결정).
+- **후반(§4~8) — flexibility 의 *가치***: real option.
+
+> $$NPV_{total} = NPV_{static} + Option\ Value$$
+> static NPV 가 *음수* 여도 *확장·포기·연기* 할 권리가 가치를 양수로 돌릴 수 있다.
+
+이 장의 figure 들이 그 골격이다: 7.1~7.2(break-even 교점), 7.3~7.4(Monte Carlo *입력 분포 → 출력 분포*), 7.5~7.8(*decision tree* = real option 을 가지로 그린 것 — 나쁜 가지에서 *빠져나올 권리*).
+
+---
+
 ## §1 Risk Analysis Tools — 3 종
 
 ### §1.1 Sensitivity Analysis
@@ -56,6 +71,10 @@
 
 **Output**: Mean, Std, P(NPV<0), VaR, Tornado.
 
+![Figure 7.3 — Probability Distributions for Industrywide Unit Sales, Market Share, and Price. 교재 p.215](/courses/financial-management/figures/ch07/fig-7-3.png)
+
+> **직관**: Monte Carlo 의 ***입력***. 각 불확실 변수를 점추정이 아닌 *분포* 로 본다 — Panel A(산업 판매량), Panel B(BBI 시장점유율), Panel C(가격: 50% 확률로 위/아래 random drawing). 이렇게 *확률* 을 넣는 것이 simulation 의 출발점.
+
 **Python 예**:
 
 ```python
@@ -73,6 +92,10 @@ npv = -1000 + sum(cf / (1 + r)**t for t in range(1, T+1))
 print(f"Mean: {npv.mean():.1f}")
 print(f"P(NPV<0): {(npv < 0).mean()*100:.1f}%")
 ```
+
+![Figure 7.4 — Simulated Distribution of the Third Year's Cash Flow. 교재 p.217](/courses/financial-management/figures/ch07/fig-7-4.png)
+
+> **직관**: 위 입력들을 수천 번 random draw 해 결과(여기선 3년차 CF)를 모으면 ***출력 분포*** 가 나온다. 평균뿐 아니라 *P(CF<0)* 와 꼬리 위험(VaR)까지 읽히는 것 — 점추정인 sensitivity·scenario 와의 결정적 차이.
 
 ### §1.4 비교
 
@@ -109,6 +132,14 @@ $$Q = \frac{FC + EAC}{P - VC}$$
 
 → *Financial > Accounting > Cash*.
 
+![Figure 7.1 — Break-Even Point Using Accounting Numbers. 교재 p.210](/courses/financial-management/figures/ch07/fig-7-1.png)
+
+> **직관**: *회계적* break-even — 수익선(Annual revenues)과 총비용선(Total costs)이 만나는 2,240대에서 *순이익 0*. 단 이건 감가상각만 회수할 뿐 *자본의 기회비용* 은 빠져 있다.
+
+![Figure 7.2 — Break-Even Point Using Net Present Value. 교재 p.212](/courses/financial-management/figures/ch07/fig-7-2.png)
+
+> **직관**: *재무적(NPV)* break-even — 모든 금액을 *PV* 로 바꿔 그린 같은 그림. 교점이 2,427대로 *더 높다* — 회계 BE 가 자본 기회비용을 빼먹어 과소평가하기 때문. **재무 BE 만이 가치 창출의 진짜 문턱**.
+
 ### §2.3 경영 의미
 
 - *Cash BE* — 즉시 부도 회피
@@ -138,6 +169,10 @@ Phase II cost: $20M
 $$E[NPV] = 0.6 \times 100 + 0.4 \times 0 - 20 = \$40M$$
 
 → Phase II go.
+
+![Figure 7.8 — Decision Tree for SEC (in $ millions). 교재 p.223](/courses/financial-management/figures/ch07/fig-7-8.png)
+
+> **직관**: decision tree 의 표준형. *지금* 확정하지 않고 *test 로 정보를 산 뒤* 분기 — Test → 결과 공개 → Success(75%)면 invest(NPV +$1,518) / Failure(25%)면 *invest 안 함*(NPV 0, −$3,611 을 *회피*). 핵심은 *나쁜 가지에서 빠져나올 권리* 가 단순 E[NPV] 보다 가치를 키운다는 것 — §5 real option 의 본질이 여기 이미 들어 있다.
 
 ### §3.3 복수 stage
 
@@ -210,6 +245,10 @@ $$NPV_{real\ option} = NPV_{static} + Option\ Value$$
 - σ = uncertainty
 - r = risk-free
 
+![Figure 7.5 — Decision Tree for Ice Hotel. 교재 p.219](/courses/financial-management/figures/ch07/fig-7-5.png)
+
+> **직관**: *확장 옵션* 을 가지로. 작게 "first ice hotel" 을 짓고 — 성공이면 *expand*, 실패면 *do not expand*. static DCF 는 평균만 보지만, 진짜 가치는 *성공한 가지에서만 확장하는 비대칭* 에서 나온다.
+
 ### §5.2 Option to Abandon
 
 > Failure 시 abandon.
@@ -220,6 +259,10 @@ $$NPV_{real\ option} = NPV_{static} + Option\ Value$$
 - Dry hole → abandon
 
 **Salvage value** = abandon option 의 strike.
+
+![Figure 7.6 — The Abandonment Option in the Movie Industry. 교재 p.220](/courses/financial-management/figures/ch07/fig-7-6.png)
+
+> **직관**: *포기 옵션*. 영화 제작의 단계마다 빠져나갈 문이 있다 — bad script 면 commission 직후 abandon, large cost overrun 이면 produce 도중 abandon. 그림의 note 처럼 *제작 전 과정에 abandonment option 이 깔려* 하방 손실을 잘라낸다.
 
 ### §5.3 Option to Delay (Wait)
 
@@ -236,6 +279,10 @@ $$NPV_{real\ option} = NPV_{static} + Option\ Value$$
 - Information arrival in delay
 - Holding cost 작음
 - Irreversibility 큼
+
+![Figure 7.7 — Decision Tree for Vacant Land. 교재 p.222](/courses/financial-management/figures/ch07/fig-7-7.png)
+
+> **직관**: *연기(wait) 옵션*. 공터를 지금 안 짓고 *기다린다* — 임대료가 오르면 office building 을 짓고, 그대로면 계속 보류. "지금 짓는 NPV 가 음수" 여도 *오를 때만 행사* 할 권리가 공터에 *오늘의 가치* 를 부여한다. 비가역성↑·정보 도래↑·보유비용↓ 일수록 wait 이 유리.
 
 ### §5.4 Option to Switch
 

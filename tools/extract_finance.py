@@ -32,6 +32,8 @@ OUT_BASE = "courses/financial-management/figures"
 
 # chapter -> {figure 번호: 0-based PDF page index}.  find_figures.py 결과를 검토 후 등록.
 CHAPTERS: dict[int, dict[str, int]] = {
+    1: {"1.1": 34, "1.2": 35, "1.3": 40},   # 1.3 = period-prose 후보, QA 필수
+    3: {"3.1": 100},
     14: {"14.1": 463, "14.2": 466, "14.3": 467, "14.4": 471, "14.5": 472,
          "14.6": 474, "14.7": 478, "14.8": 480, "14.9": 481, "14.10": 481,
          "14.11": 482, "14.12": 483, "14.13": 487, "14.14": 488, "14.15": 490},
@@ -50,6 +52,10 @@ MULTIPANEL: dict[int, set[str]] = {
 # 수동 좌표(PDF pt, 차트 본체 bbox) → {chapter: {fnum: (x0, y0, x1, y1)}}.
 # 페이지 인덱스는 CHAPTERS 에서 가져오고, 캡션 블록은 자동 union 한다.
 MANUAL: dict[int, dict[str, tuple[float, float, float, float]]] = {
+    1: {
+        "1.2": (198.0, 258.0, 578.0, 709.0),   # 긴 조직도(y260~706)
+        "1.3": (68.0, 466.0, 548.0, 713.0),    # 페이지 하단 그림 + 좌측 캡션(상단 prose 제외)
+    },
     # ch14: 표준 추출이 하단 라벨/노트/x축·우측 라벨을 잘라 → render_page rects 기반 수동 box
     14: {
         "14.1":  (196.0, 382.0, 641.0, 736.0),   # 하단 라벨 + 우측 라벨
@@ -120,7 +126,9 @@ def _extract_manual(pidx: int, fnum: str, box: tuple, out_path: str) -> bool:
     page = doc[pidx]
     rect = fitz.Rect(*box)
     _, cap_block = _find_caption(page, f"Figure {fnum}")
-    if cap_block is not None:
+    # 캡션 블록은 box 와 *세로로 근접* 할 때만 union — 같은 페이지의 멀리 떨어진
+    # prose("Figure 1.3. The arrows…")가 잡혀 box 를 본문까지 늘리는 것 방지.
+    if cap_block is not None and cap_block.y1 >= box[1] - 50 and cap_block.y0 <= box[3] + 50:
         rect = rect | cap_block
     rect = fitz.Rect(rect.x0 - 4, rect.y0 - 4, rect.x1 + 4, rect.y1 + 4)
     _crop(page, rect, out_path)

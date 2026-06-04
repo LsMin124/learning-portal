@@ -175,6 +175,10 @@ $$EFN = (Asset\ Growth) - (Spontaneous\ Liability\ Growth) - (Retained\ Earnings
 
 → $50 의 *external financing* (debt or new equity) 필요.
 
+![Figure 3.1 — Growth and Related Financing Needed for the Hoffman Company. 교재 p.68](/courses/financial-management/figures/ch03/fig-3-1.png)
+
+> **직관**: 성장률이 오를수록 *필요 자산 증가*(보라 직선)는 가파르게, *유보이익*(주황 직선)은 완만하게 늘어 둘이 벌어진다. 두 선이 만나는 점이 *EFN = 0* — 외부조달 없이 가능한 성장(§6 SGR). 그 오른쪽은 **EFN > 0(deficit, 외부조달 필요)**, 왼쪽은 **EFN < 0(surplus)**.
+
 ---
 
 ## §6 Sustainable + Internal Growth Rate

@@ -29,19 +29,9 @@
 
 ### §1.1 Balance Sheet Model of the Firm
 
-```
-        Assets                          Claims
-   +-----------+              +---------------------+
-   | Current   |              | Current liabilities |
-   | assets    |              +---------------------+
-   |           |              |  Long-term debt     |
-   +-----------+              +---------------------+
-   | Fixed     |              |                     |
-   | assets    |              |   Shareholders'     |
-   |  - Tangible|             |   equity            |
-   |  - Intangible|           |                     |
-   +-----------+              +---------------------+
-```
+![Figure 1.1 — The Balance Sheet Model of the Firm. 교재 p.2](/courses/financial-management/figures/ch01/fig-1-1.png)
+
+> **직관**: 왼쪽(자산)은 *capital budgeting* 질문 — 어떤 자산에 투자하나. 오른쪽(부채+자본)은 *capital structure* 질문 — 어떻게 조달하나. 둘 사이의 *current assets − current liabilities = net working capital* 이 세 번째 질문(단기 관리)이다. 재무의 3 질문이 한 그림에 담겨 있다.
 
 → Firm = *자산 + 그 자산을 sustain 하는 capital 조달*.
 
@@ -66,19 +56,12 @@
 
 ### §1.3 Financial Manager 의 위치
 
-```
-            Board of Directors
-                   |
-                  CEO
-                   |
-                  CFO
-                  / \
-             Treasurer  Controller
-              (cash)    (accounting)
-```
+![Figure 1.2 — Hypothetical Organization Chart. 교재 p.3](/courses/financial-management/figures/ch01/fig-1-2.png)
 
 - **Treasurer**: cash management, capital expenditure, financial plan
 - **Controller**: accounting, tax, internal audit
+
+> **직관**: CFO 아래 *Treasurer*(미래 지향 — 현금·자본조달·투자)와 *Controller*(과거 기록 — 회계·세무·감사)로 갈린다. 재무 의사결정(Treasurer)과 재무 보고(Controller)의 분리.
 
 ---
 
@@ -128,6 +111,10 @@
 > *"The key to understanding how value is added is cash flows."*
 
 회계 이익 (accounting income) ≠ cash flow. 가치 평가의 *근본 단위* 는 cash flow.
+
+![Figure 1.3 — Cash Flows between the Firm and the Financial Markets. 교재 p.8](/courses/financial-management/figures/ch01/fig-1-3.png)
+
+> **직관**: 기업과 금융시장 사이 현금흐름 — (A) 증권 발행으로 자금 조달 → (B) 자산에 투자 → (C) 현금 창출 → 일부는 정부에 세금(D), 일부는 유보(E), 나머지는 주주·채권자에 배당·이자(F). **가치 창출 조건: 시장에 돌려주는 F > 시장에서 조달한 A.**
 
 ### §3.1 Identification — 무엇이 cash flow 인가
 

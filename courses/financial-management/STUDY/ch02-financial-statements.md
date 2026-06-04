@@ -25,6 +25,18 @@
 
 ---
 
+## §0 도입 — 회계 숫자에서 '진짜 현금'으로
+
+1장은 *cash flow 가 가치의 근본 단위* 라 했다. 그런데 재무제표가 보여주는 **순이익(net income)** 은 *발생주의(accrual)* 의 산물 — 외상 매출도 매출로 잡고, 이미 현금을 쓴 자산도 감가상각으로 *수년에 걸쳐* 비용 처리한다. 즉 *장부 이익 ≠ 손에 쥔 현금*.
+
+2장의 임무는 세 재무제표(B/S·I/S·CF)에서 **재무가 실제로 쓰는 현금흐름**을 정확히 뽑아내는 것이다. 핵심 정체식(§4):
+
+$$\text{CF from assets} = \text{CF to creditors} + \text{CF to stockholders}$$
+
+> **직관**: 기업이 자산에서 만든 현금(OCF − ΔNWC − Capex)은 *반드시* 채권자(이자·원금)와 주주(배당·자사주)에게 흘러간다 — 새는 곳이 없다. 이 항등식이 2장의 뼈대이고, 여기서 나오는 FCF 가 4장 DCF valuation 의 입력이 된다.
+
+---
+
 ## §1 The Balance Sheet
 
 > *Snapshot 의 firm at a point in time*. 항등식: **Assets = Liabilities + Equity**.

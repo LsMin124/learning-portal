@@ -34,6 +34,8 @@ OUT_BASE = "courses/financial-management/figures"
 CHAPTERS: dict[int, dict[str, int]] = {
     1: {"1.1": 34, "1.2": 35, "1.3": 40},   # 1.3 = period-prose 후보, QA 필수
     3: {"3.1": 100},
+    4: {"4.1": 118, "4.2": 119, "4.3": 120, "4.4": 122, "4.5": 122, "4.6": 123,
+        "4.7": 124, "4.8": 126, "4.9": 127, "4.10": 128, "4.11": 136, "4.12": 143},
     14: {"14.1": 463, "14.2": 466, "14.3": 467, "14.4": 471, "14.5": 472,
          "14.6": 474, "14.7": 478, "14.8": 480, "14.9": 481, "14.10": 481,
          "14.11": 482, "14.12": 483, "14.13": 487, "14.14": 488, "14.15": 490},
@@ -49,12 +51,31 @@ MULTIPANEL: dict[int, set[str]] = {
     17: {"17.6"},
 }
 
+# 캡션 union 을 끌 figure → {chapter: {fnum, ...}}.
+# EXAMPLE 박스 안의 figure 처럼 캡션 '위' prose 가 같은 figure 번호를 언급("…displayed
+# in Figure 4.10.")하면 _find_caption 이 그 prose 를 캡션으로 잡아 box 를 위로 늘린다.
+# 이 경우 MANUAL box 에 실제 캡션을 직접 포함시키고 자동 union 은 끈다.
+NO_CAPTION_UNION: dict[int, set[str]] = {
+    4: {"4.2", "4.3", "4.7", "4.9", "4.10"},
+}
+
 # 수동 좌표(PDF pt, 차트 본체 bbox) → {chapter: {fnum: (x0, y0, x1, y1)}}.
 # 페이지 인덱스는 CHAPTERS 에서 가져오고, 캡션 블록은 자동 union 한다.
 MANUAL: dict[int, dict[str, tuple[float, float, float, float]]] = {
     1: {
         "1.2": (198.0, 258.0, 578.0, 709.0),   # 긴 조직도(y260~706)
         "1.3": (68.0, 466.0, 548.0, 713.0),    # 페이지 하단 그림 + 좌측 캡션(상단 prose 제외)
+    },
+    # ch04: text-block 좌표로 검증(render_page rects + get_text blocks). 캡션은 좌측 여백.
+    4: {
+        "4.1":  (250.0,  92.0, 472.0, 190.0),  # 상단 timeline — 우측 $11,424 잘림 복구(좌측 캡션 union)
+        "4.2":  (200.0,  92.0, 512.0, 242.0),  # 캡션+패널만, 하단 'Suppose, instead…'(y247) 제외 (union OFF)
+        "4.3":  (175.0, 164.0, 485.0, 303.0),  # 캡션+패널만, 하단 prose 제외 (union OFF)
+        "4.4":  ( 84.0,  92.0, 534.0, 336.0),  # 막대+note. x0=84 로 우측정렬 캡션 'Compound Interest'(x86.7) 포함
+        "4.7":  (170.0, 162.0, 548.0, 306.0),  # 캡션+패널만, 하단 'The ratio…'(y309) 제외 (union OFF)
+        "4.8":  (190.0,  92.0, 528.0, 351.0),  # 차트+우측라벨+하단 note (우측 라벨은 x487 까지)
+        "4.9":  (200.0, 227.0, 552.0, 390.0),  # 캡션+2패널. 위 'Figure 4.9 illustrates…'·아래 prose 제외 (union OFF)
+        "4.10": (172.0, 174.0, 485.0, 316.0),  # 캡션+패널만, 위 prose·아래 ratio 제외 (union OFF)
     },
     # ch14: 표준 추출이 하단 라벨/노트/x축·우측 라벨을 잘라 → render_page rects 기반 수동 box
     14: {
@@ -120,16 +141,22 @@ def _extract_union(pidx: int, fnum: str, out_path: str) -> bool:
     return ok
 
 
-def _extract_manual(pidx: int, fnum: str, box: tuple, out_path: str) -> bool:
-    """수동 차트 bbox + (자동 탐지) 캡션 블록 union 으로 crop."""
+def _extract_manual(pidx: int, fnum: str, box: tuple, out_path: str,
+                    union_caption: bool = True) -> bool:
+    """수동 차트 bbox + (자동 탐지) 캡션 블록 union 으로 crop.
+
+    union_caption=False 면 box 를 그대로 쓴다 (캡션 '위' prose 가 같은 figure
+    번호를 언급해 _find_caption 이 prose 를 잡는 EXAMPLE 박스용 — NO_CAPTION_UNION).
+    """
     doc = fitz.open(PDF)
     page = doc[pidx]
     rect = fitz.Rect(*box)
-    _, cap_block = _find_caption(page, f"Figure {fnum}")
-    # 캡션 블록은 box 와 *세로로 근접* 할 때만 union — 같은 페이지의 멀리 떨어진
-    # prose("Figure 1.3. The arrows…")가 잡혀 box 를 본문까지 늘리는 것 방지.
-    if cap_block is not None and cap_block.y1 >= box[1] - 50 and cap_block.y0 <= box[3] + 50:
-        rect = rect | cap_block
+    if union_caption:
+        _, cap_block = _find_caption(page, f"Figure {fnum}")
+        # 캡션 블록은 box 와 *세로로 근접* 할 때만 union — 같은 페이지의 멀리 떨어진
+        # prose("Figure 1.3. The arrows…")가 잡혀 box 를 본문까지 늘리는 것 방지.
+        if cap_block is not None and cap_block.y1 >= box[1] - 50 and cap_block.y0 <= box[3] + 50:
+            rect = rect | cap_block
     rect = fitz.Rect(rect.x0 - 4, rect.y0 - 4, rect.x1 + 4, rect.y1 + 4)
     _crop(page, rect, out_path)
     doc.close()
@@ -145,6 +172,7 @@ def run(chapter: int, out: str | None = None) -> None:
     os.makedirs(out_dir, exist_ok=True)
     multi = MULTIPANEL.get(chapter, set())
     manual = MANUAL.get(chapter, {})
+    no_union = NO_CAPTION_UNION.get(chapter, set())
     special = multi | set(manual)
     print(f"ch{chapter}: {len(figs)}개 figure → {out_dir}  "
           f"(union: {sorted(multi) or '-'}, manual: {sorted(manual) or '-'})")
@@ -162,9 +190,10 @@ def run(chapter: int, out: str | None = None) -> None:
         print(f"{'OK  ' if ok else 'FAIL'} Fig {fnum} (union) -> {os.path.basename(out_path)}  ({size:.0f}KB)")
     for fnum, box in sorted(manual.items()):
         out_path = os.path.join(out_dir, f"fig-{fnum.replace('.', '-')}.png")
-        _extract_manual(figs[fnum], fnum, box, out_path)
+        _extract_manual(figs[fnum], fnum, box, out_path, union_caption=fnum not in no_union)
+        tag = "manual" if fnum not in no_union else "manual,no-cap-union"
         size = os.path.getsize(out_path) / 1024
-        print(f"OK   Fig {fnum} (manual) -> {os.path.basename(out_path)}  ({size:.0f}KB)")
+        print(f"OK   Fig {fnum} ({tag}) -> {os.path.basename(out_path)}  ({size:.0f}KB)")
 
 
 if __name__ == "__main__":

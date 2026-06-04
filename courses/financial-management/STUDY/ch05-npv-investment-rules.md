@@ -12,6 +12,27 @@
 
 ---
 
+## §0 도입 — *결정 규칙* 들의 경연
+
+> **핵심 한 문장**: 좋은 투자 규칙은 *(1) 돈의 시간가치, (2) 위험, (3) 가치의 가산성* 을 모두 반영해야 한다 — 이 셋을 다 갖춘 건 **NPV 뿐**.
+
+4장이 "미래 현금흐름을 현재가치로 바꾸는 *기계*" 였다면, 5장은 그 기계로 "*이 프로젝트를 할까 말까*" 를 정하는 **규칙들의 비교** 다. 후보는 넷:
+
+| 규칙 | 한 줄 | 평가 |
+|--|--|--|
+| **NPV** | 미래 CF 의 PV 합 − 투자 | *gold standard* |
+| **Payback** | 원금 회수 기간 | 시간가치·후속 CF 무시 |
+| **IRR** | NPV=0 의 수익률 | 직관적·인기, *4가지 함정* |
+| **PI** | PV / 투자 | capital rationing 에서만 우위 |
+
+이 장의 드라마는 대부분 **IRR 이 NPV 와 충돌하는 순간** 에 있다 (multiple IRR / financing 역방향 / scale / timing — §4). figure 5.4~5.6 의 ***NPV profile*** (discount rate 를 x축, NPV 를 y축에 그린 곡선) 이 그 충돌을 시각적으로 푼다:
+
+> **곡선이 x축을 만나는 점 = IRR**, **세로선 r=hurdle 에서의 곡선 높이 = NPV**.
+
+둘이 *언제 일치하고 언제 갈라지는지* 가 5장의 전부다.
+
+---
+
 ## §1 The Net Present Value Rule
 
 ### §1.1 NPV 의 정의
@@ -22,6 +43,10 @@ $$NPV = -C_0 + \sum_{t=1}^{T} \frac{CF_t}{(1+r)^t}$$
 - NPV > 0 → **accept**
 - NPV < 0 → **reject**
 - NPV = 0 → indifferent
+
+![Figure 5.1 — Cash Flows of an Investment Project. 교재 p.136](/courses/financial-management/figures/ch05/fig-5-1.png)
+
+> **직관**: 4장의 timeline 이 그대로 capital budgeting 으로 넘어온다. 지금 $50,000 을 쓰고(−$50,000) 1·2·3년 후 $30k·$20k·$10k 를 받는다. NPV 는 이 미래 화살표 셋을 *모두 현재로 discount* 한 뒤 −$50,000 과 더한 값. 양수면 *가치 창출* → 채택.
 
 ### §1.2 *왜 NPV* 가 *gold standard*
 
@@ -100,6 +125,10 @@ Flaw 2, 3 여전히 존재. *NPV 가 더 우수*.
 
 $$0 = -C_0 + \sum_{t=1}^{T} \frac{CF_t}{(1 + IRR)^t}$$
 
+![Figure 5.2 — Cash Flows for a Simple Project. 교재 p.140](/courses/financial-management/figures/ch05/fig-5-2.png)
+
+> **직관**: 가장 단순한 프로젝트 — 지금 $100, 1년 후 $110. 이 *한 번의 sign change*(−→+) 가 IRR 을 *유일하게* 보장한다. NPV=0 으로 만드는 r = 10% 가 IRR. 부호 변화 1번 = IRR 1개의 보증수표.
+
 ### §3.2 Decision rule
 
 - IRR > required rate → accept
@@ -114,6 +143,14 @@ $$0 = -100 + \frac{130}{1 + IRR} \Rightarrow IRR = 30\%$$
 
 → 만약 *required* 10% 면 *30% > 10%* → accept.
 
+![Figure 5.3 — Cash Flows for a More Complex Project. 교재 p.141](/courses/financial-management/figures/ch05/fig-5-3.png)
+
+> **직관**: 다기간 버전 — −$200 뒤 3년간 $100 씩. IRR 은 $0 = -200 + \sum 100/(1+IRR)^t$ 를 푸는 r 인데 손으로는 안 풀려 *시행착오/계산기* 가 필요하다. 그 해가 아래 그림(5.4)의 곡선이 0 을 지나는 지점.
+
+![Figure 5.4 — NPV Profile for a More Complex Project. 교재 p.142](/courses/financial-management/figures/ch05/fig-5-4.png)
+
+> **직관**: 위 5.3 프로젝트의 ***NPV profile*** — discount rate 를 x축, NPV 를 y축에 그린 곡선. r=0 이면 NPV=$100(현금 합−투자), r 이 오를수록 NPV 하락, **23.38% 에서 0 을 통과**(=IRR). NPV rule(세로선 r=hurdle 의 높이)과 IRR rule(곡선이 x축 닿는 점)이 *왜 보통 같은 답* 을 주는지 한눈에 보인다.
+
 ### §3.4 NPV vs IRR — *agreement* 의 조건
 
 **Conventional project** (-, +, +, +, ...) + *single sign change*:
@@ -122,6 +159,10 @@ $$0 = -100 + \frac{130}{1 + IRR} \Rightarrow IRR = 30\%$$
 ---
 
 ## §4 IRR 의 4 가지 문제
+
+![Figure 5.5 — NPV Profile for Projects A, B, and C. 교재 p.144](/courses/financial-management/figures/ch05/fig-5-5.png)
+
+> **직관**: IRR 이 무너지는 *세 가지 곡선 모양*. **A**(−,+): 우하향 — 정상, IRR 1개. **B**(+,−): 우상향 — *financing* 이라 규칙이 뒤집힌다(§4.3). **C**(−,+,−): 부호 변화 2번 — 봉우리 모양이라 x축을 *두 번* 만나 IRR 2개(§4.1), r→∞ 면 −100 으로 수렴. *부호 변화 횟수 = IRR 개수의 상한*.
 
 ### §4.1 *Multiple IRRs*
 
@@ -192,6 +233,10 @@ $$0 = -100 + \frac{130}{1 + IRR} \Rightarrow IRR = 30\%$$
 - NPV(B) = $35.24
 
 → IRR 은 A, NPV 는 B. *Discount rate 의 *crossover***.
+
+![Figure 5.6 — Net Present Value and the Internal Rate of Return for Mutually Exclusive Projects. 교재 p.151](/courses/financial-management/figures/ch05/fig-5-6.png)
+
+> **직관**: 상호배타 A·B 의 NPV profile 이 *교차*(crossover, ≈12.94%). 교차점 *왼쪽*(낮은 r)에선 B 우월(NPV_B>NPV_A), *오른쪽*에선 A 우월. IRR(곡선이 x축 닿는 점)만 보면 늘 한쪽이지만, *실제 r 이 교차점보다 낮으면 다른 쪽이 정답* — 이것이 mutually exclusive 에서 IRR 이 틀리고 NPV 가 맞는 이유. crossover 는 *증분 현금흐름의 IRR* 로 찾는다.
 
 ---
 

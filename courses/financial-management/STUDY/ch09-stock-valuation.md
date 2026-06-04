@@ -13,6 +13,22 @@
 
 ---
 
+## §0 도입 — *주식 = 불확실한 배당의 PV*
+
+> **핵심 한 문장**: 채권(8장)이 *고정* CF 의 PV 였다면, 주식은 *불확실하게 성장하는 배당* 의 PV — 같은 4장 기계지만, 이제 **성장률 g** 가 주인공이다.
+
+주가 = 미래 모든 배당의 현재가치, $P_0 = \sum_{t=1}^{\infty} D_t/(1+R)^t$. 이 무한합을 풀려면 배당이 *어떻게 성장하는가* 를 가정해야 한다 — 그래서 9장은 **성장 패턴별 closed form** 의 카탈로그다:
+
+| 성장 가정 | 모형 | 절 |
+|--|--|--|
+| g = 0 | $P_0 = D/R$ (perpetuity) | §2 |
+| 일정 g | Gordon: $P_0 = D_1/(R-g)$ | §3 |
+| 단계별 g | Multi-stage (high→stable) | §4 |
+
+핵심 긴장은 **$R > g$** (아니면 발산)과 **terminal value 가 가치의 70%+** 라는 점(§4). 배당이 없는 회사(Amazon·Tesla)도 결국 *언젠가의 배당/buyback* 으로 환원된다. figure 9.1(세 패턴 한눈에)·9.2(차등성장 예)가 이 골격의 그림.
+
+---
+
 ## §1 The Present Value of Common Stocks
 
 ### §1.1 *기본 framework*
@@ -20,6 +36,10 @@
 > Stock price = *모든 future dividend* 의 *현재 가치*.
 
 $$P_0 = \sum_{t=1}^{\infty} \frac{D_t}{(1+R)^t}$$
+
+![Figure 9.1 — Zero Growth, Constant Growth, and Differential Growth Patterns. 교재 p.272](/courses/financial-management/figures/ch09/fig-9-1.png)
+
+> **직관**: 9장 전체의 *지도*. 같은 무한합 $P_0=\sum D_t/(1+R)^t$ 도 배당이 어떻게 자라느냐에 따라 세 갈래로 갈린다 — **Zero**(g=0, 수평선 → $P_0=D/R$), **Constant**(일정 g, 매끈한 지수곡선 → $D/(R-g)$), **Differential**(high $g_1$ 뒤 low $g_2$, 꺾이는 곡선 → 단계별 합산). 패널 하단의 세 공식이 §2·§3·§4 의 목차다.
 
 ### §1.2 *왜 dividend*
 
@@ -141,6 +161,10 @@ $$P_0 = \sum \frac{D_t}{1.12^t} + \frac{64.75}{1.12^5}$$
 $$= 12.37 + 36.74 = \$49.11$$
 
 → Terminal value PV ($36.74) = 전체 의 75%.
+
+![Figure 9.2 — Growth in Dividends for Elixir Drug Company. 교재 p.274](/courses/financial-management/figures/ch09/fig-9-2.png)
+
+> **직관**: 차등(2-stage) 성장의 *모양*. Elixir 배당은 1~5년 *15%* 로 빠르게(곡선 가팔라짐) 자라다 6년차부터 *10%* 로 둔화(기울기 완만). $1.15 → $2.0114(5년) → $2.9448(10년). 가치 평가는 이 곡선을 *두 구간으로 쪼개* — Stage 1 은 배당을 하나씩 PV, Stage 2 는 Gordon 으로 묶어 terminal value 로 처리(위 예의 75% 처럼 대부분의 가치가 여기 몰린다).
 
 ### §4.3 3-Stage Growth
 

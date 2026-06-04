@@ -13,6 +13,20 @@
 
 ---
 
+## §0 도입 — *채권 = 정해진 현금흐름*
+
+> **핵심 한 문장**: 채권은 4장 PV 기계의 *가장 깨끗한 응용* — 현금흐름(coupon + face value)이 *계약으로 고정*돼 있어, 가치는 오직 **할인율(yield)** 하나로 움직인다.
+
+주식과 달리 채권의 CF 는 미리 정해져 있다. 그래서 8장은 *PV 식의 변주* 다:
+- **Price ↔ Yield 는 역관계** (§2) — 한쪽을 알면 다른 쪽이 나온다. yield 가 오르면 price 하락.
+- **YTM** = 그 채권을 만기까지 들고 갈 때의 *IRR* (§3).
+- **위험 측정** — 같은 yield 변화에도 *만기 길수록·coupon 낮을수록* 가격이 더 출렁인다 (duration, §2).
+- **Yield 의 분해** (§7~8) — 시장 yield = 실질금리 + 인플레 프리미엄 + 만기위험 + 부도위험 + 세금 + 유동성.
+
+figure 들이 이 골격을 따라간다: 8.1(채권 CF) → 8.2(만기와 금리위험) → 8.3·8.4(실제 시세) → 8.5·8.6(인플레·금리 역사) → 8.7·8.8(term structure / yield curve).
+
+---
+
 ## §1 Bonds and Bond Valuation
 
 ### §1.1 Bond 의 *기본 특징*
@@ -45,6 +59,10 @@ $$Price = \sum_{t=1}^{T} \frac{C}{(1+y)^t} + \frac{F}{(1+y)^T}$$
 $$Price = 30 \times 13.5903 + 1000 \times 0.4564 = \$864.10$$
 
 → *Discount bond* (price < par because YTM > coupon).
+
+![Figure 8.1 — Cash Flows for Xanth Co. Bond. 교재 p.236](/courses/financial-management/figures/ch08/fig-8-1.png)
+
+> **직관**: 채권의 현금흐름은 *계약으로 고정*. Xanth 채권 = 매년 coupon $80 (10년) + 만기에 face value $1,000. 가치 평가는 이 *정해진 화살표들* 을 yield 로 discount 한 PV 일 뿐 — 4장 timeline 의 가장 깨끗한 사례. 불확실한 건 *할인율* 뿐.
 
 ### §1.4 *Premium vs Par vs Discount*
 
@@ -81,6 +99,10 @@ $$Price = 30 \times 13.5903 + 1000 \times 0.4564 = \$864.10$$
 | YTM 8% | $864 | $774 |
 | YTM 4% | $1166 | $1346 |
 | Change | +35% | +74% |
+
+![Figure 8.2 — Interest Rate Risk and Time to Maturity. 교재 p.240](/courses/financial-management/figures/ch08/fig-8-2.png)
+
+> **직관**: 같은 금리 변화에도 *만기가 길수록 가격이 더 출렁인다*. 30년 채권(파란 곡선)은 금리 5%→20% 에 $1,768.62→$502.11 로 급락하지만, 1년 채권(갈색)은 $1,047.62→$916.67 로 거의 평평. 둘 다 10% 에서 par($1,000) 교차. 먼 미래 CF 일수록 할인의 *복리 효과* 가 커서 — 이것이 duration 의 직관.
 
 ### §2.4 Coupon 예
 
@@ -202,6 +224,10 @@ $$Dirty = Clean + Accrued$$
 - US Treasury: 32 분의 1
 - Corporate: percentage
 
+![Figure 8.3 — Sample TRACE Bond Quotations. 교재 p.251](/courses/financial-management/figures/ch08/fig-8-3.png)
+
+> **직관**: 실제 회사채 시세(FINRA TRACE). 각 행 = Coupon·Maturity·신용등급(Moody's/S&P)·High/Low/Last 가격·Change·**Yield%**. 가격은 par 100 기준 percentage 로 호가 — 예: Last 100.08 = par 의 100.08%. 가격과 yield 가 *한 줄에 같이* 표시되는 게 §2 의 역관계가 시장에서 실현된 모습.
+
 ### §5.4 Treasury types
 
 | | 만기 | 특징 |
@@ -210,6 +236,10 @@ $$Dirty = Clean + Accrued$$
 | T-note | 2-10년 | Semi-annual coupon |
 | T-bond | 10-30년 | Semi-annual coupon |
 | TIPS | 5-30년 | Inflation-protected |
+
+![Figure 8.4 — Sample Wall Street Journal U.S. Treasury Bond Prices. 교재 p.252](/courses/financial-management/figures/ch08/fig-8-4.png)
+
+> **직관**: 미국 국채 시세표 — Maturity·Coupon·**Bid/Asked**(매수/매도 호가)·Chg·Asked Yield. Treasury 는 전통적으로 *32분의 1* 단위로 호가(예: Asked 100:08 = 100 + 8/32). 만기·coupon 별로 빼곡한 이 표가 §7 yield curve 의 *원자료* — 각 만기의 yield 를 모으면 곡선이 된다.
 
 ---
 
@@ -220,6 +250,10 @@ $$Dirty = Clean + Accrued$$
 $$(1 + r_n) = (1 + r_r) \times (1 + \pi)$$
 
 근사: $r_n \approx r_r + \pi$.
+
+![Figure 8.5 — Annualized One-Month Treasury Bill Returns and Inflation. 교재 p.257](/courses/financial-management/figures/ch08/fig-8-5.png)
+
+> **직관**: Fisher 효과의 *실증*. 명목 단기금리(파란 T-bill)와 인플레이션(주황)이 1950~2016 내내 *함께 움직인다* — 명목금리가 인플레를 따라가며 실질금리를 대체로 보존한다는 Fisher 식 $r_n \approx r_r + \pi$ 의 그림. 1970~80년대 고인플레 구간에서 둘이 같이 치솟는 게 특히 뚜렷.
 
 ### §6.2 TIPS
 
@@ -252,6 +286,10 @@ $$BEI = Treasury\ Yield - TIPS\ Yield$$
 
 > Maturity vs Yield plot.
 
+![Figure 8.8 — The Treasury Yield Curve: February 2018. 교재 p.261](/courses/financial-management/figures/ch08/fig-8-8.png)
+
+> **직관**: yield curve = *만기(x)별 yield(y)* 를 점으로 잇는 곡선. 2018년 2월 곡선은 *우상향(normal)* — 1MO 약 1.4% 에서 30YR 약 3.0% 로. 위쪽 nominal, 아래쪽 real(TIPS) 곡선의 간격이 곧 *기대 인플레*. §5.4 의 국채 시세표를 만기순으로 줄 세운 결과.
+
 ### §7.2 Shape — 3 종
 
 | Shape | 의미 |
@@ -259,6 +297,10 @@ $$BEI = Treasury\ Yield - TIPS\ Yield$$
 | Upward (normal) | Long > Short — 미래 rate 상승 expectation |
 | Flat | 모든 maturity 비슷 — uncertainty |
 | Inverted | Short > Long — recession indicator |
+
+![Figure 8.7 — The Term Structure of Interest Rates. 교재 p.260](/courses/financial-management/figures/ch08/fig-8-7.png)
+
+> **직관**: 명목 금리를 *세 겹* 으로 분해. **Real rate**(바닥) + **Inflation premium**(가운데) + **Interest rate risk premium**(위, 만기 길수록 커짐) = Nominal interest rate. **A. 우상향**은 만기위험 프리미엄이 쌓여 곡선이 오르는 정상 형태, **B. 우하향(inverted)**은 *인플레 premium 이 만기 갈수록 줄어들* 때 — 미래 금리 하락(=경기 둔화) 기대를 반영.
 
 ### §7.3 Inverted = recession signal
 
@@ -292,6 +334,10 @@ $$BEI = Treasury\ Yield - TIPS\ Yield$$
 4. Default risk premium
 5. Taxability premium
 6. Liquidity premium
+
+![Figure 8.6 — U.S. Interest Rates: 1800–2016. 교재 p.258](/courses/financial-management/figures/ch08/fig-8-6.png)
+
+> **직관**: 이 6 요인의 *합* 이 시대마다 어떻게 움직였나 — 200년치 미국 장기(주황)·단기(파랑) 금리. 1800~1960 은 대체로 2~6% 박스권, 1980년 전후 고인플레로 *14% 이상* 까지 치솟았다가 이후 장기 하락. 금리는 고정 상수가 아니라 *인플레·정책·위험* 이 만드는 시계열임을 보여 준다.
 
 ### §8.2 *Yield 분해 예*
 

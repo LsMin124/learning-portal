@@ -12,6 +12,24 @@
 
 ---
 
+## §0 도입 — *어떤 현금흐름* 을 세느냐
+
+> **핵심 한 문장**: NPV 의 식은 5장에서 끝났다. 6장은 그 식에 넣을 **올바른 현금흐름을 *세는* 기술** — *정확한 r 보다 정확한 CF 가 먼저*.
+
+5장이 "규칙(NPV)" 이었다면, 6장은 그 규칙에 먹일 **현금흐름의 정의** 다. 핵심 원칙은 단 하나:
+
+> **Incremental cash flow** — 프로젝트를 *하느냐 마느냐* 로 *달라지는* 현금흐름만 센다 (*with* − *without*).
+
+이 한 줄에서 모든 함정이 갈린다:
+- **Sunk cost** (이미 쓴 돈) — 무관, 무시
+- **Opportunity cost** (다른 용도의 포기 가치) — 반드시 포함
+- **Side effects** (erosion·synergy) — 포함
+- **Allocated overhead** (배분된 간접비) — 증분이 아니면 제외
+
+그리고 CF 를 셀 때 빠지기 쉬운 두 축이 **세금** (depreciation tax shield·MACRS — §3·§4) 과 **일관성** (명목/실질·NWC 회수·서로 다른 수명의 EAC). figure 6.1 은 그중 *명목 vs 실질* 의 직관을 잡아 준다.
+
+---
+
 ## §1 Incremental Cash Flows
 
 ### §1.1 *Stand-alone* principle
@@ -243,6 +261,10 @@ $$EAC_B = \frac{12000}{5.3349} = \$2249$$
 
 > 일관성:
 > *Nominal CF* + *nominal r*  OR  *Real CF* + *real r*
+
+![Figure 6.1 — Calculation of Real Rate of Interest. 교재 p.188](/courses/financial-management/figures/ch06/fig-6-1.png)
+
+> **직관**: *명목 vs 실질* 을 햄버거로. 은행에 $1,000(=햄버거 1,000개) 넣고 명목 10% 로 1년 후 $1,100. 그런데 물가가 6% 올라 햄버거가 $1.06 → $1,100 으로 *1,038개* 만 산다. 즉 *구매력* 은 3.8% 만 늘었다 = **실질이자율**. 근사로 $real \approx nominal - inflation$ (10−6=4%), 정확히는 Fisher: $1 + r_{real} = \frac{1.10}{1.06}$ → 3.8%. *명목 CF 는 명목 r 로, 실질 CF 는 실질 r 로* 맞춰 discount 해야 하는 이유.
 
 ### §8.2 흔한 실수
 

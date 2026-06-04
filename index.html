@@ -22,7 +22,7 @@
     --ease: cubic-bezier(0.2, 0, 0, 1);
   }
   *{ box-sizing: border-box; }
-  html, body{ margin: 0; padding: 0; height: 100%; }
+  html, body{ margin: 0; padding: 0; height: 100%; overflow: hidden; }  /* 페이지 전체 스크롤 봉인 — 스크롤은 .main/.sidebar 내부에서만 */
   body{
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
     background: var(--bg); color: var(--text);
@@ -41,6 +41,8 @@
     grid-template-areas: "topbar topbar" "sidebar main";
     height: 100vh;             /* fallback */
     height: 100dvh;            /* iOS Safari 주소창 포함 정확 */
+    overflow: hidden;          /* 1fr 트랙 콘텐츠가 body 로 흘러 이중 스크롤+하단 빈공간 되는 것 차단
+                                  (모바일 sidebar/overlay/toast 는 position:fixed 라 안 잘림) */
   }
   .hamburger{
     display: none;             /* 데스크톱은 숨김 */
@@ -108,6 +110,7 @@
     grid-area: sidebar;
     background: var(--surface); border-right: 1px solid var(--border);
     overflow-y: auto;
+    min-height: 0;             /* grid 1fr item — 내부 .course-list(flex:1) 가 스스로 스크롤 */
     display: flex; flex-direction: column;
   }
   .course-picker{
@@ -176,6 +179,7 @@
 
   .main{
     grid-area: main; overflow-y: auto; padding: 24px;
+    min-height: 0;             /* grid 1fr item 의 min-height:auto 무력화 → 트랙 안에서 내부 스크롤 */
     scroll-behavior: smooth;
   }
   .empty{

@@ -13,7 +13,29 @@
 
 ---
 
+## §0 도입 — *할인율은 어디서 오는가*
+
+> **핵심 한 문장**: 4~13장 내내 "현금흐름을 r 로 할인한다"고 했지만 r 을 *주어진 것* 으로 뒀다 — 13장은 마침내 **그 r 자체를 어디서 구하나** 에 답한다. 답은 자본을 댄 사람들(주주·채권자)의 *기회비용* 을 시장가치로 가중평균한 것, **WACC**.
+
+논리의 출발은 단순하다(figure 13.1): 기업이 현금을 손에 쥐면 *프로젝트에 투자* 하거나 *주주에게 돌려줄* 수 있다. 주주는 그 돈을 직접 *비슷한 위험의 금융자산* 에 굴릴 수 있으므로, 프로젝트는 *그 대안만큼은 벌어야* 한다. 그래서 할인율 = **투자자의 기회비용**.
+
+그 기회비용을 자본 종류별로 추정한다:
+- **자기자본비용 $R_E$** (§1) — CAPM $R_f+\beta\,ERP$ 가 표준(figure 13.2 의 SML), DDM·build-up 으로 삼각측량. β 는 주식수익을 시장수익에 회귀한 *기울기*(figure 13.3) 인데 시기마다 흔들린다(figure 13.4).
+- **타인자본비용 $R_D(1-T_c)$** (§2) — 시장 YTM 에 *이자 세금방패* 를 반영.
+
+이 둘을 시장가치 비중으로 섞으면
+
+$$WACC = \frac{E}{V}R_E + \frac{D}{V}R_D(1-T_c)$$
+
+마지막 경고(§6): WACC 는 *firm 평균* 이다. 위험이 다른 프로젝트엔 *그 프로젝트의* β 로 다시 구해야 한다 — 안 그러면 고위험은 과대수용·저위험은 과소기각된다(figure 13.5).
+
+---
+
 ## §1 Cost of Equity
+
+![Figure 13.1 — Choices of a Firm with Extra Cash. 교재 p.394](/courses/financial-management/figures/ch13/fig-13-1.png)
+
+> **직관**: WACC 전체의 *왜* 를 담은 그림. 기업이 현금을 받으면 두 갈래 — *프로젝트 투자* 또는 *주주 환원*. 주주는 받은 돈을 *비슷한 위험의 금융자산* 에 직접 굴릴 수 있다(오른쪽 가지). 따라서 프로젝트는 *그 대안 수익률만큼은* 벌어야 정당화된다 — 이 '대안 수익률'이 곧 할인율(자본비용)이다.
 
 ### §1.1 3 estimation methods
 
@@ -25,6 +47,10 @@ $$R_E = \frac{D_1}{P_0} + g$$
 
 **3. Build-up**:
 $$R_E = R_f + ERP + Size + Industry + Firm$$
+
+![Figure 13.2 — Using the Security Market Line to Estimate the Risk-Adjusted Discount Rate for Risky Projects. 교재 p.396](/courses/financial-management/figures/ch13/fig-13-2.png)
+
+> **직관**: CAPM(=SML)을 *프로젝트 채택 기준* 으로 쓰는 법. 가로축 firm 베타, 세로축 프로젝트 IRR. SML 위(A)면 IRR > 요구수익 → *accept*(NPV>0), 아래(C)면 *reject*(NPV<0), 선 위(B)면 경계. 즉 *위험에 맞는 hurdle rate* 는 SML이 정한다 — 모든 프로젝트가 firm만큼 위험할 때의 그림.
 
 ### §1.2 예 — IBM
 
@@ -187,6 +213,10 @@ $$PV(TS) = T_c \times D$$
 - Firm WACC = average of existing
 - 새 project 다른 risk면 부적합
 
+![Figure 13.5 — Relationship between the Firm's Cost of Capital and the Security Market Line (SML). 교재 p.407](/courses/financial-management/figures/ch13/fig-13-5.png)
+
+> **직관**: firm WACC를 *모든* 프로젝트에 쓰면 왜 위험한지. 수평선이 'firm 전체 자본비용', 대각선이 SML(위험에 맞는 진짜 요구수익). 둘이 어긋나 — *고위험* 프로젝트(오른쪽)는 수평선 위지만 SML 아래라 *수용하면 안 되는데 수용*(accept unprofitable), *저위험*(왼쪽)은 반대로 *기각하면 안 되는데 기각*. 그래서 프로젝트별 β가 필요하다(§6.2).
+
 ### §6.2 Project-specific Methods
 
 **1. Pure-play firm**:
@@ -260,6 +290,14 @@ $$R_E = R_f + \beta(R_M - R_f) + CRP$$
 - Bayesian smoothing (Bloomberg)
 - Industry β (Damodaran)
 - Sensitivity
+
+![Figure 13.3 — Plots of Five Years of Monthly Returns (2013–2017) on Four Individual Securities against the S&P 500 Index. 교재 p.400](/courses/financial-management/figures/ch13/fig-13-3.png)
+
+> **직관**: β를 *어떻게 추정하나* — 5년치 월별 수익을 (S&P 수익, 종목 수익) 산점도로 찍고 회귀선의 *기울기 = β*. Walmart 0.30(평평)부터 Prudential 1.56(가파름)까지 — 기울기가 클수록 시장에 민감하다. 점들의 흩어짐이 클수록(낮은 R²) 추정이 불안정.
+
+![Figure 13.4 — Plots of Monthly Returns on Microsoft against the S&P 500 for Four Consecutive 5-Year Periods. 교재 p.400](/courses/financial-management/figures/ch13/fig-13-4.png)
+
+> **직관**: 같은 Microsoft인데 *시기마다 β가 달라진다* — 1998~2002 닷컴기 1.74, 2003~2007 0.77, 이후 0.98. β는 *상수가 아니라* 사업·레버리지·시장국면에 따라 흔들린다. 그래서 §8.1처럼 Bayesian 평활·산업 β로 보정한다(단일 추정 맹신 금지).
 
 ### §8.2 ERP estimation
 

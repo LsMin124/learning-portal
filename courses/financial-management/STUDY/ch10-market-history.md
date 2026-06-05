@@ -13,6 +13,30 @@
 
 ---
 
+## §0 도입 — *이론 이전의 경험적 기록*
+
+> **핵심 한 문장**: 11~13장이 "위험과 수익은 *어떻게 연결돼야 하는가*"를 이론으로 묻기 전에, 10장은 "*실제로 무슨 일이 있었나*"를 100년 데이터로 답한다 — 모든 위험 모형(CAPM·APT·WACC)의 *경험적 닻*.
+
+재무이론은 미래의 위험·수익을 가정에서 연역하지만, 그 가정이 터무니없지 않다는 보증은 *역사* 뿐이다. 10장의 메시지는 세 겹이다:
+
+1. **수익은 둘로 쪼개진다** — *income(배당·이자) + capital gain(가격변동)*. figure 10.1·10.2 가 이 분해를 달러·퍼센트로 보여준다.
+2. **더 높은 수익엔 더 높은 위험이 붙는다** — 1926년 이후 미국 실측:
+
+| 자산 | 평균수익 | 표준편차 | $1 → 2024 |
+|--|--|--|--|
+| Small stocks | 16.1% | 31.4% | $40,000+ |
+| Large stocks | 12.1% | 19.5% | $13,000+ |
+| LT gov bonds | 6.0% | 9.8% | $200 |
+| T-bills | 3.4% | 3.0% | $25 |
+| Inflation | 3.0% | 4.0% | $18 |
+
+   주식 risk premium ≈ **8%**, 그러나 변동성도 ~6배. figure 10.4(부의 지수)·10.5~10.8(연도별 수익)이 이 trade-off 의 그림.
+3. **수익은 *근사적으로* 정규분포지만 꼬리가 두껍다** — figure 10.9(히스토그램)·10.10(종형곡선)이 ±1σ=68% 규칙을, figure 10.12(2008)가 그 규칙이 깨지는 순간을 보여준다.
+
+여기에 *arithmetic vs geometric mean*(변동성 drag, §4)과 *EMH*(가격은 정보를 즉시 반영, §6)가 더해져, 10장은 "*과거는 미래의 보장이 아니라 baseline*"이라는 겸손을 가르친다.
+
+---
+
 ## §1 Returns
 
 ### §1.1 *Total return* 의 *2 source*
@@ -22,9 +46,21 @@
 
 $$Total\ Return = \frac{P_1 - P_0 + D_1}{P_0} = \frac{D_1}{P_0} + \frac{P_1-P_0}{P_0}$$
 
+![Figure 10.1 — Dollar Returns. 교재 p.300](/courses/financial-management/figures/ch10/fig-10-1.png)
+
+> **직관**: 총수익을 *달러* 로 분해한 타임라인. $3,700 을 넣으면(아래 outflow) 1년 뒤 배당 $185 + 기말가치 $4,033 = **$4,218** 이 돌아온다(위 inflow). 곧 *수익 = income(배당) + capital gain(가격변동)* — 우측 괄호가 그 두 조각을 묶는다.
+
+![Figure 10.2 — Percentage Returns. 교재 p.301](/courses/financial-management/figures/ch10/fig-10-2.png)
+
+> **직관**: 같은 분해를 *주당·퍼센트* 로. 주가 $37 → 배당 $1.85(5%) + 기말 $40.33 → 총 $42.18. 달러 *크기* 를 지워야 자산 간 비교가 되므로, 이 퍼센트가 §2 역사적 수익률의 단위가 된다.
+
 ### §1.2 Holding period return
 
 $$HPR = (1+R_1)(1+R_2)...(1+R_T) - 1$$
+
+![Figure 10.3 — Cash Flow: An Investment Example. 교재 p.302](/courses/financial-management/figures/ch10/fig-10-3.png)
+
+> **직관**: 단일기간 수익의 골격 — $25 투자 → 배당 $2 + 기말주가 $35 = $37 회수, $R = (2+10)/25 = 48\%$. HPR 은 바로 이런 단일기간 $(1+R)$ 을 여러 해 *곱한* 것: 복리는 더하기가 아니라 곱하기다.
 
 ### §1.3 예
 
@@ -48,6 +84,18 @@ Annualized = $1.242^{1/3} - 1 = 7.49%$.
 | T-bills | 3.4% | 3.0% |
 | Inflation | 3.0% | 4.0% |
 
+![Figure 10.5 — Year-by-Year Total Returns on Large-Company Common Stocks. 교재 p.305](/courses/financial-management/figures/ch10/fig-10-5.png)
+
+> **직관**: 위 표의 *평균 12.1%* 뒤에 숨은 raw data. 막대가 0 위(파랑)·아래(빨강)로 춤춘다 — +54%(1933)에서 −43%(1931)·−37%(2008)까지. *평균은 어느 해에도 실현되지 않는다*; 변동성이 본질이다.
+
+![Figure 10.6 — Year-by-Year Total Returns on Small-Company Stocks. 교재 p.305](/courses/financial-management/figures/ch10/fig-10-6.png)
+
+> **직관**: 소형주는 같은 그림의 *증폭판*. y축이 −100~+200% (대형주는 −60~+60). +143%(1933) 같은 폭등과 더 깊은 골 — 높은 평균수익(16.1%)의 대가가 이 진폭(σ 31.4%)이다.
+
+![Figure 10.7 — Year-by-Year Total Returns on Long-term Government Bonds and U.S. Treasury Bills. 교재 p.306](/courses/financial-management/figures/ch10/fig-10-7.png)
+
+> **직관**: 위 패널(장기국채)은 주식보다 *좁게* 출렁이고, 아래(T-bill)는 거의 0 위에만 머문다 — *거의 무위험*. 단 1970~80년대 인플레기에 T-bill 이 15%까지 치솟은 것은 "명목 ≠ 실질"(§2.3)을 예고한다.
+
 ### §2.2 Risk Premium
 
 $$Risk\ Premium = Asset\ Return - R_f$$
@@ -55,6 +103,10 @@ $$Risk\ Premium = Asset\ Return - R_f$$
 - Large stock ERP: 12.1% - 3.4% = **8.7%**
 
 → *Historical ERP ≈ 8-9%*.
+
+![Figure 10.11 — Stock Market Risk Premiums for 17 Countries, 1900–2010. 교재 p.319](/courses/financial-management/figures/ch10/fig-10-11.png)
+
+> **직관**: 미국의 8% ERP 가 우연 아닌가? 17개국 1900~2010 평균은 6.9%이고 *모두 양(+)* — 어디서나 주식이 안전자산을 이겼다. 미국(7.2%)은 중간일 뿐. survivorship bias 를 감안해도 *주식 위험 프리미엄은 보편적* 현상이다.
 
 ### §2.3 Real Returns (after inflation)
 
@@ -65,6 +117,10 @@ $$Risk\ Premium = Asset\ Return - R_f$$
 | T-bills | 3.4% | ~0.4% |
 
 → T-bill real ≈ 0 — *purchasing power 만 보존*.
+
+![Figure 10.8 — Year-by-Year Inflation. 교재 p.307](/courses/financial-management/figures/ch10/fig-10-8.png)
+
+> **직관**: 인플레이션 자체도 출렁인다 — 1940년대·1970~80년대 급등(18%), 1930년대엔 *디플레*(−10%). 명목수익에서 이 막대를 빼야 *실질* 수익이 남는다. T-bill 의 명목 3.4% 가 인플레 3.0% 와 거의 같아 *실질수익 ≈ 0* 인 것이 이 그림의 결론.
 
 ### §2.4 $1 → 2024
 
@@ -78,6 +134,10 @@ $$Risk\ Premium = Asset\ Return - R_f$$
 | CPI | $18 |
 
 → Stock long-term superiority + compounding power.
+
+![Figure 10.4 — Wealth Indexes of Investments in the U.S. Capital Markets (Year-End 1925 = $1.00). 교재 p.304](/courses/financial-management/figures/ch10/fig-10-4.png)
+
+> **직관**: 10장에서 가장 유명한 그림. 1925년 $1 을 넣었다면 2017년 small stock $36,931 vs T-bill $20.78 — 약 *1,800배* 차이다. *로그 스케일* 이라 완만해 보이지만 한 칸이 10배임에 주의. 주식의 장기 우위 + 복리의 위력과, 동시에 1930년대·2008년의 깊은 골(위험)을 한 장에 담았다.
 
 ---
 
@@ -168,6 +228,14 @@ $$\bar{R}_G \approx \bar{R}_A - \frac{\sigma^2}{2}$$
 | μ ± 2σ | 95% |
 | μ ± 3σ | 99.7% |
 
+![Figure 10.10 — The Normal Distribution. 교재 p.314](/courses/financial-management/figures/ch10/fig-10-10.png)
+
+> **직관**: 정규분포의 ±1/2/3σ 규칙을 주식수익(μ=12.1%, σ=19.8%)에 입힌 그림. 해의 *68%* 는 −7.7%~+31.9% 안에 든다. 단 하나의 모수 σ 로 위험 전체를 요약한다는 이 *단순화* 가 §3 표준편차와 11장 이후 모든 위험 모형의 출발 가정이다.
+
+![Figure 10.9 — Histogram of Returns on Large-Company Stocks: 1926–2017. 교재 p.310](/courses/financial-management/figures/ch10/fig-10-9.png)
+
+> **직관**: 각 연도를 수익 구간(10%폭)에 벽돌처럼 쌓은 *경험적 분포*. 0~20% 근처가 가장 높고 양극단으로 갈수록 낮아져 위 종형(정규)에 *근사* 한다. 다만 −40%대(1931·2008)와 +50%대(1933·1954)에 막대가 남아 있는 것이 §5.4 의 *fat tail* — 정규가 "거의 불가능"이라던 사건이 실제로 일어났다.
+
 ### §5.2 S&P 500 예 (μ=12%, σ=20%)
 
 | Range | Probability |
@@ -181,6 +249,10 @@ $$\bar{R}_G \approx \bar{R}_A - \frac{\sigma^2}{2}$$
 - 2008: -37% (3σ event, close)
 - 1933: +54% (2σ event)
 - 2020: -34% intra-year (2σ+)
+
+![Figure 10.12 — S&P 500 Monthly Returns, 2008. 교재 p.321](/courses/financial-management/figures/ch10/fig-10-12.png)
+
+> **직관**: 정규분포가 깨지는 순간을 클로즈업. 2008년 *월별* 수익에서 10월 −16.8% 는 정규 가정상 수만 년에 한 번꼴 사건이다. 이런 *fat tail* 이 현실에선 10년마다 찾아온다 — Gaussian VaR 의 과소추정과 스트레스 테스트가 필요한 이유(§5.4).
 
 ### §5.4 Fat tails
 

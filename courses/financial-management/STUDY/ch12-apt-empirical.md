@@ -13,11 +13,29 @@
 
 ---
 
+## §0 도입 — *하나의 시장에서 여러 요인으로*
+
+> **핵심 한 문장**: 11장 CAPM이 "*시장* 하나"의 β로 수익을 설명했다면, 12장 APT는 *여러 체계적 요인* 을 허용하고 — 까다로운 균형 가정 대신 **"차익거래가 불가능하다"는 한 줄** 만으로 같은 형태의 선형 가격식을 끌어낸다.
+
+출발점은 *요인 모형*(§1): 자산수익을 $R_i = E(R_i) + \beta_i F + \epsilon_i$ 로 쓰면, 수익 변동은 *공통 요인 F*(체계적, figure 12.1)와 *고유 충격 ε*(비체계적)로 갈린다. 포트폴리오를 충분히 분산하면 ε 는 상쇄돼 사라지고 *요인 노출 β 만 남는다*(figure 12.2).
+
+여기서 APT 의 핵심 논증(§2)이 나온다: 두 잘 분산된 포트폴리오가 *같은 요인 노출* 인데 기대수익이 다르면, 비싼 걸 팔고 싼 걸 사는 *무위험 차익* 이 생긴다 → 균형에선 그럴 수 없으므로
+
+$$E[R_i] = R_f + \beta_{i1}\lambda_1 + \cdots + \beta_{iK}\lambda_K$$
+
+요인이 하나뿐이면 이 식은 SML 그 자체(figure 12.3·12.4) — *APT 는 CAPM 을 특수경우로 품는다*. 차이는 **이론적 토대**(CAPM=균형·시장포트폴리오 / APT=무차익·요인 임의)와 *몇 개의 요인을 쓰느냐* 다. 이후 §3–4 가 그 "요인"을 실제로 채운다 — 거시(Chen-Roll-Ross), 펀더멘털(Fama-French SMB·HML).
+
+---
+
 ## §1 Factor Models
 
 ### §1.1 Single-factor
 
 $$R_i = \alpha_i + \beta_i F + \epsilon_i$$
+
+![Figure 12.1 — The One-Factor Model. 교재 p.375](/courses/financial-management/figures/ch12/fig-12-1.png)
+
+> **직관**: 일요인 모형의 그림. 가로축은 *공통요인 F*, 세로축은 자산 i의 초과수익. 각 직선이 한 종목이고 *기울기 = β* — β=1.5는 요인에 민감하게, β=0.5는 둔감하게 반응한다. 모든 종목이 *같은 F* 에 노출되되 민감도만 다르다는 게 요인모형의 골자.
 
 ### §1.2 Multi-factor
 
@@ -40,6 +58,10 @@ $$R_i = \alpha_i + \beta_{i1} F_1 + \beta_{i2} F_2 + ... + \beta_{iK} F_K + \eps
 
 ---
 
+![Figure 12.2 — Diversification and the Portfolio Risk for an Equally Weighted Portfolio. 교재 p.378](/courses/financial-management/figures/ch12/fig-12-2.png)
+
+> **직관**: 분산이 위험을 어떻게 가르는지. 종목 수 N이 늘면 *총위험* 이 떨어지다 *systematic risk* 선에서 멈춘다 — 윗부분 *unsystematic(ε)* 은 상쇄돼 사라지고 아래 *systematic(요인 F)* 만 남는다. 그래서 잘 분산된 포트폴리오의 수익은 *요인 노출 β 만의 함수* 가 되고, 이것이 §2 APT 가격식의 전제다.
+
 ## §2 APT
 
 ### §2.1 Stephen Ross (1976)
@@ -53,6 +75,14 @@ $$R_i = \alpha_i + \beta_{i1} F_1 + \beta_{i2} F_2 + ... + \beta_{iK} F_K + \eps
 $$E[R_i] = R_f + \beta_{i1} \lambda_1 + ... + \beta_{iK} \lambda_K$$
 
 - $\lambda_k$ = risk premium for factor k
+
+![Figure 12.3 — A Graph of Beta and Expected Return for Individual Stocks Under the One-Factor Model. 교재 p.379](/courses/financial-management/figures/ch12/fig-12-3.png)
+
+> **직관**: 요인이 하나일 때의 APT 가격식 = *SML*. 가로축 β, 세로축 기대수익. 잘 분산된 자산은 모두 직선 위(A·C·L)에 놓인다. 어떤 자산이 선을 벗어나면(예: 직선 아래 B) *차익거래* 가 발동해 가격을 선으로 되돌린다 — no-arbitrage 의 그림.
+
+![Figure 12.4 — A Graph of Beta and Expected Return for Market Portfolio under the One-Factor Model. 교재 p.381](/courses/financial-management/figures/ch12/fig-12-4.png)
+
+> **직관**: 같은 일요인 SML을 *시장포트폴리오* 기준으로. 요인을 시장과 동일하게 척도화하면 시장의 β=1, 기대수익 E(R_M). 그러면 직선은 $R_F$ 에서 출발해 (1, E(R_M))을 지나는 — 바로 CAPM의 SML. *APT(K=1) = CAPM* 임을 보여주는 그림.
 
 ### §2.3 APT vs CAPM
 

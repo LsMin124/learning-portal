@@ -12,6 +12,22 @@
 
 ---
 
+## §0 도입 — *기업 도처의 옵션*
+
+> **핵심 한 문장**: 22장이 *거래소 옵션* 의 가격을 다뤘다면, 23장은 그 렌즈를 **기업 안** 으로 돌린다 — 경영진 보상(ESO), 스타트업의 단계 투자, 광산·R&D 의 유연성, 위험 채권까지 모두 *옵션* 으로 보고 같은 이항트리·risk-neutral 기법으로 값을 매긴다.
+
+22장의 결론("주식 = call")을 받아, 23장은 다섯 갈래로 확장한다:
+
+1. **경영진 옵션 (ESO)** (§1): 사실상 회사 주식 call — 2004년 FASB 가 ATM 도 *fair value 비용* 으로 인식하게 강제하기 전까진 "공짜 보상"처럼 보였다. repricing·backdating 논란의 뿌리.
+2. **스타트업·R&D = compound option** (§2): 적자 기업도 *높은 변동성* 이 곧 가치 — 각 투자 라운드가 *다음 라운드에 대한 옵션* 이라 DCF 음수도 정당화될 수 있다(남용 주의).
+3. **real options 심화** (§3): expand(call)·abandon(put)·delay(American call)·switch. 값은 *binomial tree* 로 — figure 23.1(2시점)·23.2(3시점)이 그 골격.
+4. **decision tree vs real option** (§4): 둘 다 미래 분기를 다루지만 decision tree 는 *실제 확률 + 위험조정 할인율*, real option 은 *risk-neutral 확률 + 무위험율* 을 쓴다. 기초자산이 거래되면 후자가 무차익으로 더 정확.
+5. **위험 채권 = 무위험채권 − put** (§6): credit spread 가 곧 그 put 의 가격. 광산 같은 자원 사업(figure 23.3 의 금 이항트리·23.4 의 시뮬 경로)이 이 모든 기법의 결정판이다.
+
+관통하는 명제: **유연성과 조건부 결정은 모두 옵션이고, 옵션은 변동성을 먹고 산다.**
+
+---
+
 ## §1 Executive Stock Options (ESO)
 
 ### §1.1 정의
@@ -111,6 +127,16 @@
 
 ---
 
+![Figure 23.1 — Movement of Heating Oil Prices from September 1 to December 1 in a Two-Date Example. 교재 p.726](/courses/financial-management/figures/ch23/fig-23-1.png)
+
+> **직관**: real option 을 *이항트리* 로 푸는 가장 단순한 예. 9월 1일 heating oil $2.00 이 12월 1일 $2.74(↑) 또는 $1.46(↓). 행사가 $2.10 call 은 위에서 $0.64, 아래서 $0. risk-neutral 확률로 두 결과를 가중·할인하면 옵션 값 — *실제 확률은 필요 없다*.
+
+![Figure 23.2 — Movement of Heating Oil Prices in a Three-Date Model. 교재 p.728](/courses/financial-management/figures/ch23/fig-23-2.png)
+
+> **직관**: 같은 논리를 *3시점* 으로. 단계마다 ×1.25 / ×0.80 로 갈라져 12월 1일엔 세 결과($3.13/$2.00/$1.28). 끝에서부터 *역진(backward)* 으로 각 노드의 옵션 값을 채워 현재로 접는다 — multi-period binomial 의 전형.
+
+---
+
 ## §4 Decision Tree vs Real Options
 
 ### §4.1 Decision Tree (Ch 7 recap)
@@ -202,6 +228,14 @@ $$\text{Risky debt} = \text{Risk-free debt} - \text{Put on firm value}$$
 - *낮은 가격* → 생산 중단 (abandon option)
 - *높은 가격* → 확장 (expand)
 - *Brennan-Schwartz* model
+
+![Figure 23.3 — A Binomial Tree for Gold Prices. 교재 p.734](/courses/financial-management/figures/ch23/fig-23-3.png)
+
+> **직관**: 광산이라는 real option 의 무대 — 금값의 6개월 간격 *이항트리*(Now $1,300 → 18개월 후 $2,209~$765). 각 노드에서 *채굴할까 멈출까* 를 결정할 수 있어 광산은 금값에 대한 *일련의 옵션* 이 된다. expand/abandon 이 트리 위에서 행사된다.
+
+![Figure 23.4 — A Possible Path for the Price of Gold. 교재 p.736](/courses/financial-management/figures/ch23/fig-23-4.png)
+
+> **직관**: 그 트리에서 뽑은 *하나의 시뮬 경로*. 가격이 $2,209 에 닿으면 광산을 *열고*(−$20M), $1,089 로 떨어지면 *닫는다*(−$10M). 각 시점 현금흐름 = 25,000oz × (금값−$1,400). 이런 경로 5,000개의 평균 PV 가 광산 가치 — Monte Carlo real option 의 그림.
 
 ### §7.2 부동산 개발
 

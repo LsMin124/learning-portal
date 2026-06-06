@@ -12,6 +12,19 @@
 
 ---
 
+## §0 도입 — *외상과 재고, 묶인 현금의 두 얼굴*
+
+> **핵심 한 문장**: 매출채권(외상)과 재고는 둘 다 *현금을 묶어두는 유동자산 투자* — 26장의 *carrying ↔ shortage* 트레이드오프가 그대로 적용된다. 외상엔 "*할인 포기 = 연 44% 차입*"이라는 숨은 비용이, 재고엔 *EOQ* 라는 최적 주문량이 핵심.
+
+28장은 두 자산을 나란히 다룬다:
+
+1. **신용(외상) 정책** (§1–5): terms of sale + 신용분석 + 회수. *2/10 net 30* 에서 할인을 포기하면 연 **44.6%** 짜리 차입과 같다 — 그래서 보통 할인을 받는다. 신용을 *줄지 말지* 는 매출 증가 마진과 부도·회수 비용을 견주는 NPV 문제이고(figure 28.1 의 비용 트레이드오프), 상대의 신용도는 *5 Cs* 로 가린다.
+2. **재고 관리** (§6–8): 재고도 *carrying(보유)* 과 *restocking/shortage(주문·부족)* 의 합이 최소인 점이 최적 — 그게 *EOQ* $Q^*=\sqrt{2DF/CC}$(figure 28.3). 재고는 톱니처럼 소진·재주문되며 평균은 $Q/2$(figure 28.4), 불확실성엔 *reorder point + safety stock* 으로 대비한다(figure 28.5). 가치별 *ABC*(figure 28.2)와 *JIT* 가 현대 기법.
+
+관통하는 명제: **외상도 재고도 "더 들면 carrying, 덜 들면 shortage" — 최적은 둘의 합이 최소인 지점이다.**
+
+---
+
 ## §1 신용정책 (Credit Policy)
 
 ### §1.1 세 요소
@@ -72,6 +85,10 @@ $$\text{실효 연이자} = \left(1 + \frac{d}{1-d}\right)^{\frac{365}{N-D}} - 1
 - 매출 증가 (Q → Q')
 - 추가 마진: $(P - v)(Q' - Q)$
 - 비용: 회수 지연, 부도, 회수비용
+
+![Figure 28.1 — The Costs of Granting Credit. 교재 p.856](/courses/financial-management/figures/ch28/fig-28-1.png)
+
+> **직관**: 신용을 *얼마나 줄까* 의 비용 곡선. 외상을 늘리면 *carrying cost*(자금이 묶이는 비용, 우상향)가 늘고, 줄이면 *opportunity cost*(놓친 매출, 우하향)가 는다. 둘의 합 total cost 가 최소인 지점이 *최적 신용 규모* — 신용정책도 결국 carrying↔shortage 최적화.
 
 ### §3.2 NPV 공식 (단순화)
 
@@ -174,6 +191,10 @@ $$Q^* = \sqrt{\frac{2 \times D \times F}{CC}}$$
 - F = 주문당 고정비용
 - CC = 단위당 연간 보유비용
 
+![Figure 28.3 — Costs of Holding Inventory. 교재 p.864](/courses/financial-management/figures/ch28/fig-28-3.png)
+
+> **직관**: 재고의 *EOQ* 그림. 주문량 Q 를 키우면 *carrying cost*(보유, 우상향)는 늘고 *restocking cost*(주문 횟수↓, 우하향)는 준다. 둘의 합 total cost 가 최소인 *Q\** 가 경제적 주문량 — 26장 운전자본 그래프와 같은 U자 트레이드오프.
+
 ### §7.2 관련 지표
 
 | 지표 | 공식 |
@@ -182,6 +203,10 @@ $$Q^* = \sqrt{\frac{2 \times D \times F}{CC}}$$
 | 주문 횟수 | D/Q* |
 | 총비용 (최적) | 거래비용 = 보유비용 |
 
+![Figure 28.4 — Inventory Holdings for the Eyssell Corporation. 교재 p.864](/courses/financial-management/figures/ch28/fig-28-4.png)
+
+> **직관**: *평균 재고 = Q/2* 의 시각화. Eyssell 사는 3,600단위로 시작해 4주에 걸쳐 0 까지 *직선으로 소진*하고 다시 채운다. 톱니의 평균 높이가 Q/2 = 1,800 — EOQ 의 '평균재고 Q/2' 가정이 이 그림.
+
 ### §7.3 Reorder Point + Safety Stock
 
 - *Reorder point* = 리드타임 × 일수요 (+ safety stock)
@@ -189,12 +214,20 @@ $$Q^* = \sqrt{\frac{2 \times D \times F}{CC}}$$
 
 ---
 
+![Figure 28.5 — Safety Stocks and Reorder Points. 교재 p.869](/courses/financial-management/figures/ch28/fig-28-5.png)
+
+> **직관**: 불확실성에 대비하는 두 장치. *A. safety stock*: 최소재고선 위에 *완충 재고* 를 깔아 품절을 막는다. *B. reorder point*: 배송 리드타임을 감안해 *재고가 일정선에 닿으면 미리 주문*. *C. 둘의 결합*: reorder point 와 safety stock 을 함께 써 예측 못 한 수요·지연에 모두 대비한다.
+
 ## §8 현대 재고 기법
 
 ### §8.1 ABC 분석
 
 - 재고를 *중요도(가치)* 로 A/B/C 분류
 - A (고가치 소수) → 집중 관리
+
+![Figure 28.2 — ABC Inventory Analysis. 교재 p.864](/courses/financial-management/figures/ch28/fig-28-2.png)
+
+> **직관**: *ABC 분석* — 재고를 가치로 차등 관리. A 그룹은 *품목 수로는 10%* 인데 *가치로는 57%*(위 막대 대비 아래 막대), C 그룹은 반대로 품목 50%·가치 16%. 소수의 고가치 A 품목에 관리를 집중하라는 파레토 원리.
 
 ### §8.2 Just-In-Time (JIT)
 

@@ -13,6 +13,21 @@
 
 ---
 
+## §0 도입 — *비대칭이 만드는 가치*
+
+> **핵심 한 문장**: 옵션은 *권리지 의무가 아니라서* payoff 가 한쪽으로만 꺾인다(hockey stick) — 이 **비대칭** 이 "변동성이 클수록 가치가 크다"는 반직관을 낳고, 끝내 *부채 있는 기업의 주식 자체가 firm value 에 대한 call option*(Merton)이라는 통찰로 이어진다.
+
+22장은 네 층으로 쌓인다:
+
+1. **payoff 의 기하학** (§2–3): call 은 $\max(S-K,0)$(figure 22.1), put 은 $\max(K-S,0)$(figure 22.2) — 손실은 premium 으로 한정되고 이익만 열려 있다. 이 조각들을 더하면 *protective put*(figure 22.4)·*covered call*(figure 22.6) 같은 구조화 포지션이 나온다.
+2. **무엇이 옵션을 비싸게 하나** (§4): 6 요인 중 *변동성* 이 왕이다 — 손실은 막혀 있으니 더 출렁일수록(figure 22.9 의 넓은 분포 B) 위쪽 가능성만 커진다. 가치는 항상 상·하한 사이에 갇힌다(figure 22.7·22.8).
+3. **가격을 어떻게 매기나** (§5–7): *put-call parity* $C+PV(K)=P+S$(figure 22.5)가 네 자산을 묶고, *binomial*(risk-neutral 확률)과 그 극한인 *Black-Scholes* $C=SN(d_1)-Ke^{-rT}N(d_2)$ 가 값을 준다. $N(d)$ 는 누적정규확률(figure 22.10).
+4. **기업 = 옵션** (§8): 부채 만기에 주주는 $V>D$ 면 빚을 갚고 잔여를 갖고, $V<D$ 면 walk away — 곧 *주식 = call*(figure 22.11), *채권 = 무위험채권 − put*(figure 22.12). 여기서 asset substitution·debt overhang 이 따라 나온다.
+
+관통하는 한 단어는 **비대칭**: 꺾인 payoff 가 변동성을 *자산* 으로 바꾸고, 유한책임이 주식을 *옵션* 으로 바꾼다.
+
+---
+
 ## §1 Options 기본
 
 ### §1.1 정의
@@ -45,9 +60,17 @@ $$\text{Call payoff} = \max(S_T - K, 0)$$
 - *At-the-money* (ATM): $S_T = K$
 - *Out-of-the-money* (OTM): $S_T < K$
 
+![Figure 22.1 — The Value of a Call Option on the Expiration Date. 교재 p.675](/courses/financial-management/figures/ch22/fig-22-1.png)
+
+> **직관**: call payoff 의 *하키스틱*. 만기 주가가 행사가(100) 아래면 가치 0(왼쪽 평평), 위면 $S-K$ 만큼 1:1 상승(오른쪽 45°). 손실은 0 에서 멈추고 이익만 열린 *비대칭* — 옵션의 모든 직관이 이 꺾임에서 나온다.
+
 ### §2.2 Put payoff (만기)
 
 $$\text{Put payoff} = \max(K - S_T, 0)$$
+
+![Figure 22.2 — The Value of a Put Option on the Expiration Date. 교재 p.676](/courses/financial-management/figures/ch22/fig-22-2.png)
+
+> **직관**: put 은 call 의 거울상. 주가가 행사가(50) 위면 가치 0, 아래로 갈수록 $K-S$ 만큼 가치 상승(최대 $K$, 주가 0 일 때). 하락에 베팅하되 손실은 premium 한정.
 
 ### §2.3 Profit (premium 차감)
 
@@ -75,6 +98,10 @@ profit                  profit
 | Long put | Bearish | Premium | K−Premium |
 | Short put | Bullish | K−Premium | Premium |
 
+![Figure 22.3 — The Payoffs to Sellers of Calls and Puts and to Buyers of Common Stock. 교재 p.678](/courses/financial-management/figures/ch22/fig-22-3.png)
+
+> **직관**: *매도자(writer)* 의 payoff — 매수자를 위아래로 뒤집은 것. *Sell a call*: 주가 오르면 손실 무한(우하향). *Sell a put*: 주가 폭락 시 손실(좌하향). *Buy stock*: 그냥 45° 직선. 옵션은 *zero-sum* — 매수자 이익 = 매도자 손실.
+
 ---
 
 ## §3 Option Combinations
@@ -84,9 +111,17 @@ profit                  profit
 - *주식 + put 매수* → downside 보호 (보험)
 - "Portfolio insurance"
 
+![Figure 22.4 — Payoff to the Combination of Buying a Put and Buying the Underlying Stock. 교재 p.680](/courses/financial-management/figures/ch22/fig-22-4.png)
+
+> **직관**: *protective put* = 주식 + put. 주식의 우상향(왼쪽)에 put 의 좌상향(가운데)을 더하면 — 하단이 $K$ 에서 *평평하게 막힌* L자 곡선(오른쪽). 주가가 아무리 떨어져도 $K$ 는 보장되는 *포트폴리오 보험*.
+
 ### §3.2 Covered call
 
 - *주식 보유 + call 매도* → premium 수취, upside 제한
+
+![Figure 22.6 — Payoff to the Combination of Buying a Stock and Selling a Call. 교재 p.682](/courses/financial-management/figures/ch22/fig-22-6.png)
+
+> **직관**: *covered call* = 주식 + call 매도. 주식 우상향(왼쪽)에 call 매도의 우하향(가운데)을 더하면 — 위쪽이 $K$ 에서 *천장에 막힌* 곡선(오른쪽). upside 를 포기하는 대가로 premium 을 받는다.
 
 ### §3.3 Straddle
 
@@ -117,12 +152,24 @@ profit                  profit
 - **시간 ↑** → 더 많은 기회 → 가치 ↑
 - **변동성이 옵션 가치의 핵심** (Black-Scholes 의 σ)
 
+![Figure 22.9 — Distribution of Common Stock Price at Expiration for Both Security A and Security B. 교재 p.686](/courses/financial-management/figures/ch22/fig-22-9.png)
+
+> **직관**: 왜 *변동성* 이 옵션 가치의 핵심인가. 같은 행사가에 두 주식 — A(좁은 분포)와 B(넓은 분포). 손실은 어차피 premium 으로 막혀 있으니, B 의 *더 두꺼운 오른쪽 꼬리*(큰 상승 가능성)만 옵션 가치에 더해진다. 그래서 σ↑ → call·put 모두 ↑.
+
 ### §4.2 Intrinsic value vs Time value
 
 $$\text{Option value} = \text{Intrinsic value} + \text{Time value}$$
 
 - *Intrinsic*: $\max(S-K, 0)$ (call) — 즉시 행사 가치
 - *Time value*: 나머지 (변동성 + 시간 premium)
+
+![Figure 22.7 — The Upper and Lower Boundaries of Call Option Values. 교재 p.683](/courses/financial-management/figures/ch22/fig-22-7.png)
+
+> **직관**: 옵션 가치가 갇히는 *띠*. *상한* = 주가 자체(call 이 주식보다 비쌀 순 없다). *하한* = 주가 − 행사가(내재가치). 실제 call 값은 이 두 경계 사이 색칠된 영역 안에 — 만기 전엔 항상 *하한보다 위*(time value).
+
+![Figure 22.8 — Value of an American Call as a Function of Stock Price. 교재 p.685](/courses/financial-management/figures/ch22/fig-22-8.png)
+
+> **직관**: 그 띠 안에서 실제 call 값은 *완만한 곡선*(점선). 깊은 OTM 에선 0 에 붙고, 깊은 ITM 에선 하한선(주가−K)에 수렴. 곡선과 하한의 *간격 = time value*, ATM 부근에서 가장 크다.
 
 ---
 
@@ -140,6 +187,10 @@ $$C + Ke^{-rT} = P + S$$
 - *왼쪽*: Call + 무위험채권 (K 의 PV)
 - *오른쪽*: Put + 주식
 - → *동일 payoff* (만기 둘 다 $\max(S_T, K)$)
+
+![Figure 22.5 — Payoff to the Combination of Buying a Call and Buying a Zero Coupon Bond. 교재 p.680](/courses/financial-management/figures/ch22/fig-22-5.png)
+
+> **직관**: put-call parity 의 그림. *call + 무위험채권(K)* 의 payoff(오른쪽)가 figure 22.4 의 *put + 주식* 과 똑같다 — 둘 다 $\max(S,K)$. 그래서 $C+PV(K)=P+S$. 네 자산 중 셋을 알면 넷째는 복제(synthetic)된다.
 
 ### §5.3 차익거래
 
@@ -220,6 +271,10 @@ $$d_2 = d_1 - \sigma\sqrt{T}$$
 - $N(d_2)$ = risk-neutral 행사 확률
 - *Continuous-time* binomial 의 극한
 
+![Figure 22.10 — Graph of Cumulative Probability (N(d)). 교재 p.692](/courses/financial-management/figures/ch22/fig-22-10.png)
+
+> **직관**: Black-Scholes 의 $N(d)$ 가 무엇인가 — 표준정규분포의 *누적확률*. 종형곡선에서 $d$(여기 .3742) 왼쪽 면적이 $N(.3742)=.6459$. $N(d_1)$=delta(헤지비율), $N(d_2)$=risk-neutral 행사확률. (책 라벨은 Table 22.10)
+
 ### §7.4 Put (parity 로부터)
 
 $$P = Ke^{-rT}N(-d_2) - S N(-d_1)$$
@@ -256,12 +311,20 @@ $$P = Ke^{-rT}N(-d_2) - S N(-d_1)$$
 
 $$\text{Equity} = \max(V - D, 0)$$
 
+![Figure 22.11 — Cash Flow to Stockholders of Popov Company as a Function of Cash Flow to the Firm. 교재 p.696](/courses/financial-management/figures/ch22/fig-22-11.png)
+
+> **직관**: *주식 = firm 에 대한 call*. 가로축 firm 현금흐름, 세로축 주주 몫. 부채 $800 이하면 주주는 0(채권자에 넘김), 초과분만 45° 로 가져간다 — 정확히 행사가 $800 짜리 call payoff. 유한책임이 주식을 옵션으로 만든다.
+
 ### §8.2 채권자 관점
 
 > *Risky debt* = *risk-free debt − put option*.
 
 - 채권자 = firm 매수 + put 매도 (주주에게)
 - *Put* = default option (주주의 limited liability)
+
+![Figure 22.12 — Cash Flow to Bondholders of Popov Company as a Function of Cash Flow to the Firm. 교재 p.697](/courses/financial-management/figures/ch22/fig-22-12.png)
+
+> **직관**: *채권 = 무위험채권 − put*. 채권자는 firm 현금흐름이 $800 미만이면 그 전부를(우상향), 초과하면 $800 에서 *천장에 막힘*. 즉 채권자는 firm 을 소유하되 주주에게 call 을 *매도* 한 것 — default risk premium 의 정체.
 
 ### §8.3 함의
 

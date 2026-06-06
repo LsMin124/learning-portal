@@ -12,6 +12,22 @@
 
 ---
 
+## §0 도입 — *누가 시너지를 가져가는가*
+
+> **핵심 한 문장**: M&A 는 *결합가치 − 개별가치 합 = 시너지* 가 *지급 프리미엄* 을 넘을 때만 인수기업에 이득인데 — 실증적으로는 시너지의 대부분이 **target 주주** 에게 가고 acquirer 는 본전이다(winner's curse·hubris).
+
+29장은 인수의 해부다:
+
+1. **형태** (§1–2): merger(주총)·주식 인수(tender offer, 적대적 가능)·자산 인수의 세 갈래(figure 29.1), 그리고 현금이냐 주식이냐에 따라 갈리는 세금(과세 vs 이연).
+2. **시너지 — 가치의 원천** (§3): $V_{AB}-(V_A+V_B)$. 매출증대·*비용절감(규모의 경제, 가장 신뢰, figure 29.2)*·세금·자본비용. *분산·EPS 부양·제국 건설* 은 가짜 동기.
+3. **인수 NPV** (§4–5): cash 면 $NPV = 시너지 - 프리미엄$ 으로 단순하지만, *stock* 이면 target 이 결합기업 지분을 갖게 돼 시너지를 *공유* — 실효비용이 $\alpha\times V_{AB}$ 로 결합가치에 의존한다.
+4. **방어와 실증** (§6–7): poison pill·white knight 등 방어는 주주보호인지 경영진보호(agency)인지 논쟁적. 실증은 냉정하다 — *target +20~40%, acquirer ≈ 0*(figure 29.3 의 누적 손익, 2000년 거대 적자).
+5. **반대 방향 — divestiture** (§8): spin-off·carve-out·LBO 로 *부분의 합이 전체보다 클* 때 쪼갠다.
+
+한 문장으로: **합치는 데 드는 프리미엄이 시너지를 넘으면 파괴고, 그 경계를 가르는 건 누가 협상력을 쥐느냐다.**
+
+---
+
 ## §1 인수 형태
 
 ### §1.1 세 가지 법적 형태
@@ -21,6 +37,10 @@
 | *Merger/Consolidation* | 흡수합병/신설합병 (주총 승인) |
 | *Acquisition of stock* | 주식 인수 (tender offer, 주총 불필요) |
 | *Acquisition of assets* | 자산 인수 (소수주주 문제 회피) |
+
+![Figure 29.1 — Varieties of Takeovers. 교재 p.878](/courses/financial-management/figures/ch29/fig-29-1.png)
+
+> **직관**: *takeover 의 분류*. 가장 넓은 *takeover* 아래 세 갈래 — *acquisition*(인수)·*proxy contest*(위임장 대결)·*going private*(상장폐지). 그중 acquisition 은 다시 *merger/consolidation*(합병)·*acquisition of stock*(주식 인수)·*acquisition of assets*(자산 인수)로 나뉜다. M&A 라 부르는 것의 정확한 지도.
 
 ### §1.2 분류
 
@@ -78,6 +98,10 @@ $$\text{Synergy} = V_{AB} - (V_A + V_B)$$
 
 **4. Lower cost of capital**:
 - 규모 → 발행비용 ↓ (단, 단순 분산은 X)
+
+![Figure 29.2 — Economies of Scale and the Optimal Size of the Firm. 교재 p.881](/courses/financial-management/figures/ch29/fig-29-2.png)
+
+> **직관**: 시너지의 가장 신뢰받는 원천 — *규모의 경제*. 생산 규모(Size)가 커질수록 단위당 비용이 떨어지다(economies of scale) 최소점을 지나 다시 오른다(diseconomies). 두 기업을 합쳐 *최적 규모* 에 다가가면 비용이 절감되는 게 cost-reduction 시너지의 그림.
 
 ### §3.3 의심스러운 동기
 
@@ -167,6 +191,10 @@ $$\text{Cost (stock)} = \alpha \times V_{AB}$$
 - *Target 주주*: 큰 이득 (premium 20-40%)
 - *Acquirer 주주*: 평균 ≈ 0 또는 *약간 음수*
 - → 시너지는 주로 *target 에게* 이전
+
+![Figure 29.3 — Yearly Aggregate Dollar Gain or Loss for the Shareholders of Acquiring Firms. 교재 p.901](/courses/financial-management/figures/ch29/fig-29-3.png)
+
+> **직관**: M&A 가 *인수기업* 에 이득인가 — 1980~2001 인수기업 주주의 연간 총손익(10억 달러). 대부분 해엔 0 근처지만 1998~2001 거대 합병기에 *수백억 달러 손실*(2000년 −$148B). 시너지가 있어도 *프리미엄* 으로 다 토해내 acquirer 평균 ≈ 0 인 실증의 결정판.
 
 ### §7.2 실패 원인
 

@@ -12,6 +12,21 @@
 
 ---
 
+## §0 도입 — *사업을 굴리는 돈*
+
+> **핵심 한 문장**: 장기 자본예산(2~13장)이 "어떤 자산을 살까"였다면, 26장은 그 사업을 *굴리는 동안* 묶이는 단기 자금 — 재고·매출채권에서 매입채무를 뺀 **cash cycle** — 을 관리한다. cash cycle 이 길수록 자금이 더 필요하고, 정책은 *안전과 수익* 을 맞바꾼다.
+
+운전자본 관리는 네 질문으로 흐른다:
+
+1. **돈은 얼마나 오래 묶이나** (§2): 재고를 사서(현금 유출) 팔고 대금을 받기까지가 *operating cycle*, 거기서 매입채무 유예를 뺀 게 *cash cycle*(figure 26.1) — 현금이 실제로 발이 묶이는 기간. Dell·Amazon 은 이걸 *음수* 로 만들어 공급업체 돈으로 영업한다.
+2. **유동자산을 얼마나 들고 있을까** (§3–4): *flexible*(많이, 안전·수익↓)과 *restrictive*(적게, 수익↑·위험↑)의 trade-off. 최적은 *carrying cost(보유)* 와 *shortage cost(부족)* 의 합이 최소인 점(figure 26.2).
+3. **그 자산을 무엇으로 조달하나** (§5): *maturity matching* — 영구 자산은 장기 자금, 계절 자산은 단기 자금(figure 26.3·26.4). flexible 은 거의 다 장기로(figure 26.5 의 Strategy F), restrictive 는 단기를 적극 쓴다(Strategy R).
+4. **현금 타이밍을 어떻게 예측하나** (§6–7): *cash budget* 으로 월별 과부족을 내다보고, 부족분은 line of credit·commercial paper 로 메운다(compensating balance 가 실효이자를 올린다).
+
+한 문장으로: **단기 재무는 "현금이 얼마나, 얼마나 오래 묶이고, 무엇으로 메우나"의 관리다.**
+
+---
+
 ## §1 운전자본 (Working Capital) 기초
 
 ### §1.1 정의
@@ -73,6 +88,12 @@ $$\text{Cash cycle} = \text{Operating cycle} - \text{AP period}$$
 
 - *Cash cycle ↑* → 운전자본 투자 ↑ → 자금 필요 ↑
 - *Cash cycle ↓* → 효율적 (Dell, Amazon: 음수 가능)
+
+---
+
+![Figure 26.1 — Cash Flow Time Line and the Short-Term Operating Activities of a Typical Manufacturing Firm. 교재 p.799](/courses/financial-management/figures/ch26/fig-26-1.png)
+
+> **직관**: *cash cycle* 을 타임라인으로. 재고 매입(현금 유출)부터 판매까지가 *inventory period*, 판매부터 대금 회수까지가 *AR period* — 둘을 합치면 *operating cycle*. 그런데 매입대금은 나중에 내므로(*AP period*), 현금이 실제 묶이는 *cash cycle* = operating − AP. 이 기간만큼 운전자본 자금이 필요하다.
 
 ---
 
@@ -140,6 +161,12 @@ $$\text{Total cost} = \text{Carrying} + \text{Shortage} \to \min$$
 
 ---
 
+![Figure 26.2 — Carrying Costs and Shortage Costs. 교재 p.806](/courses/financial-management/figures/ch26/fig-26-2.png)
+
+> **직관**: 유동자산을 얼마나 들지 결정하는 *비용 트레이드오프*. *carrying cost*(보유비용, 우상향)와 *shortage cost*(부족비용, 우하향)의 합인 total cost 가 최소가 되는 CA* 가 최적. 아래 두 패널처럼 *flexible*(carrying 우세)·*restrictive*(shortage 우세) 정책에 따라 최적점이 옮겨간다.
+
+---
+
 ## §5 자금 조달 — 만기 매칭
 
 ### §5.1 Maturity Matching (만기 대응)
@@ -149,6 +176,10 @@ $$\text{Total cost} = \text{Carrying} + \text{Shortage} \to \min$$
 - 장기 자산 → 장기 자금
 - 단기/계절 자산 → 단기 자금
 
+![Figure 26.3 — Financing Policy for an Ideal Economy. 교재 p.808](/courses/financial-management/figures/ch26/fig-26-3.png)
+
+> **직관**: *이상적 경제* 의 만기매칭. 고정자산(장기 부채로 조달, 우상향 직선)과 계절적 유동자산(톱니, 단기 부채로 조달)이 정확히 매칭돼 *순운전자본이 항상 0*. 단기 자산은 단기 부채로, 장기 자산은 장기 자본으로 — 헤징 접근의 교과서적 그림.
+
 ### §5.2 세 가지 전략
 
 | 전략 | 영구 자산 | 계절 자산 |
@@ -157,10 +188,20 @@ $$\text{Total cost} = \text{Carrying} + \text{Shortage} \to \min$$
 | Flexible (보수적) | 장기 | 장기 (잉여 → 단기투자) |
 | Restrictive (공격적) | 단기+장기 | 단기 |
 
+![Figure 26.5 — Alternative Asset Financing Policies. 교재 p.809](/courses/financial-management/figures/ch26/fig-26-5.png)
+
+> **직관**: 두 극단 전략. *Strategy F*(flexible): 장기 자금을 *총자산 수요의 정점 위* 로 잡아 평소엔 잉여를 marketable securities 로 굴린다(안전, 수익↓). *Strategy R*(restrictive): 장기 자금을 낮게 잡고 부족분을 *단기 차입* 으로 메운다(수익↑, 위험↑). 둘 사이가 maturity matching.
+
 ### §5.3 누적 자금 수요
 
 - *영구 운전자본* — 항상 필요 (장기 조달)
 - *계절 운전자본* — 변동 (단기 조달)
+
+---
+
+![Figure 26.4 — The Total Asset Requirement over Time. 교재 p.808](/courses/financial-management/figures/ch26/fig-26-4.png)
+
+> **직관**: 현실의 *총자산 수요*. 고정자산+영구 운전자본이 *꾸준히 성장*(직선)하는 위에 *계절 변동*(물결)이 얹힌다. 직선 부분은 장기 자금으로, 물결 부분은 단기 자금으로 대는 게 maturity matching — §5.2 전략들의 출발점.
 
 ---
 

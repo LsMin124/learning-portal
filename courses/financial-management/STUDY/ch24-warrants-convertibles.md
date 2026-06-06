@@ -12,6 +12,21 @@
 
 ---
 
+## §0 도입 — *옵션이 박힌 증권*
+
+> **핵심 한 문장**: 워런트와 전환사채는 *옵션이 박힌 기업 증권* — 워런트는 회사가 발행한 **call**(행사 시 신주 *dilution*), 전환사채는 **채권 + 전환 call**. 둘 다 "공짜 점심"이 아니라 옵션 가치만큼 대가를 치르는, 정보 비대칭 시대의 *뒷문 주식 발행(backdoor equity)*.
+
+22장의 옵션 가격이론을 *실제 발행 증권* 에 입히면:
+
+1. **워런트 = 회사가 쓴 call** (§1): 거래소 call 과 달리 행사하면 *신주가 새로 발행* 돼 주식 수가 늘어난다 — 그래서 같은 조건이라도 dilution factor $n/(n+n_w)$ 만큼 call 보다 싸다(figure 24.1 의 AIG 워런트, 상·하한 사이 곡선).
+2. **전환사채 = 채권 + 전환권** (§2–3): 가치는 *세 조각* 으로 읽는다 — straight bond floor(하한), conversion value(=비율×주가), 그 위의 option premium. 주가가 낮으면 채권처럼, 높으면 주식처럼 움직인다(figure 24.2 의 floor, 24.3 의 합성 곡선).
+3. **왜 발행하나** (§4): "싼 coupon" 은 환상이고(전환권이 그 대가), 진짜 이유는 *backdoor equity*·agency 완화·cash 절약 — 고성장·고위험 기업(Tesla·Netflix)이 단골이다.
+4. **forced conversion·CoCo·차익거래** (§5–7): callable 전환사채로 부채를 자본으로 강제 전환하고, 은행은 CoCo 로 규제자본을 만들며, 헤지펀드는 convertible 매수+주식 공매도로 옵션을 포착한다.
+
+한 문장으로: **이 증권들의 값은 "채권 + 옵션"으로 분해되고, 그 옵션은 dilution 을 빼고 변동성을 더해 매겨진다.**
+
+---
+
 ## §1 Warrants
 
 ### §1.1 정의
@@ -41,6 +56,10 @@ $$W = \frac{n}{n + n_w} \times \text{Call value (on diluted firm)}$$
 
 - n = 기존 주식, n_w = warrant 주식
 - *Dilution factor* = $\frac{n}{n + n_w}$
+
+![Figure 24.1 — AIG Warrants on December 1, 2017. 교재 p.743](/courses/financial-management/figures/ch24/fig-24-1.png)
+
+> **직관**: 워런트 가치의 *띠*. *상한* = 주식 가치(1:1, 위 직선), *하한* = 내재가치(주가−행사가, 아래 직선). 실제 워런트 값은 그 사이 *완만한 곡선*(점선). AIG 워런트는 행사가 $45, 주가 $59.88 일 때 $17.95 — 내재가치($14.88)보다 비싼 만큼이 time value. (call 과 달리 행사 시 dilution 반영)
 
 ### §1.4 직관
 
@@ -74,6 +93,10 @@ $$W = \frac{n}{n + n_w} \times \text{Call value (on diluted firm)}$$
 **3. Convertible value**:
 $$\text{Convertible} = \max(\text{Bond floor}, \text{Conversion value}) + \text{Option premium}$$
 
+![Figure 24.2 — Minimum Value of a Convertible Bond versus the Value of the Stock for a Given Interest Rate. 교재 p.749](/courses/financial-management/figures/ch24/fig-24-2.png)
+
+> **직관**: 전환사채의 *바닥*. 두 하한이 만난다 — 수평의 *straight bond value*(주가 무관, 채권으로서 최소가치)와 우상향의 *conversion value*(=전환비율×주가, 기울기=전환비율). 전환사채는 이 둘 중 *높은 쪽* 아래로는 결코 안 내려간다.
+
 ### §2.3 가치 다이어그램
 
 ```
@@ -89,6 +112,10 @@ value
 - *낮은 주가*: bond floor 근처 (채권처럼)
 - *높은 주가*: conversion value 근처 (주식처럼)
 - *중간*: option premium (둘 다 보다 높음)
+
+![Figure 24.3 — Value of a Convertible Bond versus the Value of the Stock for a Given Interest Rate. 교재 p.750](/courses/financial-management/figures/ch24/fig-24-3.png)
+
+> **직관**: 그 바닥 *위* 의 진짜 가치. 낮은 주가에선 bond floor 에 붙고(채권처럼), 높은 주가에선 conversion value 에 수렴(주식처럼), 중간에선 둘보다 위로 *부푼다* — 그 봉긋한 차이가 *option value*. 곧 전환사채 = max(floor, conversion) + 전환옵션.
 
 ### §2.4 Conversion premium
 

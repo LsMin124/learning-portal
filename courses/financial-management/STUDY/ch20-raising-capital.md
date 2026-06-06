@@ -13,6 +13,20 @@
 
 ---
 
+## §0 도입 — *돈을 어디서 끌어오나*
+
+> **핵심 한 문장**: 가치평가(2부)와 자본구조(4부)가 "얼마짜리냐·어떻게 섞느냐"였다면, 20장은 그 자본을 *실제로 어디서·어떻게 조달하나* — **VC → IPO → SEO** 의 생애주기와, 길목마다 *정보 비대칭* 이 물리는 비용.
+
+기업의 자금 조달은 성장 단계를 따라 사다리를 오른다:
+
+1. **사적 단계 — Venture Capital** (§1): 위험이 커 공개시장이 못 받는 초기 기업을 VC 가 *단계별(staged)* 로 댄다. 대부분 실패하고 소수가 대박이라(figure 20.2 의 exit funnel — IPO 는 14%뿐) *option to abandon* 이 핵심. 소프트웨어·바이오에 집중되고(figure 20.1), 산업 자체가 닷컴버블처럼 출렁인다(figure 20.4).
+2. **공개 진입 — IPO** (§2–3): underwriter 가 S-1·로드쇼·book building 으로 가격을 매기고(figure 20.5 의 tombstone 이 그 신디케이트), 첫날 평균 +15~20% *underpricing* 이 발생한다(figure 20.6) — winner's curse 로 설명되는 *균형* 현상. 발행 물량 자체도 *hot issue* 시장처럼 군집한다(figure 20.7).
+3. **상장 후 — SEO·Rights** (§4–5): 이미 상장된 회사가 더 발행하면 평균 −3% 하락 — *Myers-Majluf*: "경영진이 고평가라 여길 때 주식을 판다"는 신호. Rights offering 은 그 희석을 기존 주주에게 *우선권* 으로 돌려준다.
+
+관통하는 주제는 **정보 비대칭** 이다: 발행자는 자기 회사를 투자자보다 잘 안다 → underpricing(IPO)과 −3%(SEO)는 그 격차의 *가격표*. §6 은 이 모두를 "발행의 6가지 비용"으로 묶는다.
+
+---
+
 ## §1 Early-Stage Financing
 
 ### §1.1 자금 조달 단계
@@ -25,6 +39,10 @@
 | **Late stage** | Growth equity, crossover funds |
 | **Exit** | IPO 또는 M&A |
 
+![Figure 20.3 — 2016 Venture Capital Investment by Company Stage. 교재 p.615](/courses/financial-management/figures/ch20/fig-20-3.png)
+
+> **직관**: VC 투자를 *기업 단계별* 로 쪼갠 파이. Angel/Seed 10% → Early VC 35% → Later VC 56% — 돈의 대부분은 *검증된 후기* 단계로 간다. 초기일수록 위험해 비중이 작은 게 §1.1 사다리의 그림.
+
 ### §1.2 Venture Capital 특징
 
 - *High risk, high return* (대부분 실패, 소수 대박)
@@ -33,12 +51,24 @@
 - *Convertible preferred* (Ch 15) — downside 보호 + upside
 - *Exit 목표* (5-7년, IPO/M&A)
 
+![Figure 20.1 — Venture Capital Investments in 2016 by Industry Sector. 교재 p.614](/courses/financial-management/figures/ch20/fig-20-1.png)
+
+> **직관**: VC 가 *어느 산업* 에 가나 — Software 48% + Pharma/Biotech 11% 가 절반 이상. *확장성(scalability)* 높고 IP 로 보호되는 분야에 집중된다. '대부분 실패, 소수 대박' 모델은 이런 고성장 가능 산업에서만 작동한다.
+
+![Figure 20.4 — Capital Commitments to U.S. Venture Funds ($ in billions) 1985 to 2016. 교재 p.616](/courses/financial-management/figures/ch20/fig-20-4.png)
+
+> **직관**: VC 산업 자체의 *경기순환*. 1985~2016 미국 벤처펀드 출자액 — 2000년 닷컴버블에 $100B 로 폭발했다 급락. VC 는 *시장 타이밍* 에 극도로 민감(IPO 창구가 열려야 exit)하다. 자금 가용성이 곧 스타트업 생태계의 호흡.
+
 ### §1.3 VC 의 *staged financing* 이유
 
 1. **Option to abandon** — milestone 실패 시 중단
 2. **Discipline** — 자금 효율 강제
 3. **Information** — 각 단계 정보 업데이트
 4. **Valuation step-up** — 성공 시 다음 라운드 높은 가치
+
+![Figure 20.2 — The Exit Funnel: Outcomes of the 11,686 Companies First Funded 1991 to 2000. 교재 p.614](/courses/financial-management/figures/ch20/fig-20-2.png)
+
+> **직관**: 왜 *staged financing* 인가 — 1991~2000 첫 펀딩 11,686개사의 운명. IPO('Went/Going Public')는 **14%** 뿐, Acquired 33%, *Known Failed 18% + Still Private 35%*. 절반이 실패하거나 발이 묶인다. 이 냉혹한 깔때기가 VC 의 *option to abandon*(milestone 실패 시 중단)을 정당화한다.
 
 ### §1.4 주요 조항 (term sheet)
 
@@ -97,6 +127,14 @@
 
 → *Issuer 손해* (money left on table), 그러나 균형 현상.
 
+![Figure 20.6 — Average Initial Returns by Month for SEC-Registered Initial Public Offerings: 1960–2017. 교재 p.627](/courses/financial-management/figures/ch20/fig-20-6.png)
+
+> **직관**: IPO *underpricing* 의 실증. 1960~2017 월별 평균 첫날 수익률 — 평상시 +10~20%지만 2000년 닷컴기엔 +160%까지 치솟았다. 평균이 *양(+)* 이라는 게 핵심: 발행가가 체계적으로 *낮게* 책정돼 'money left on the table'이 된다. winner's curse 로 설명되는 균형.
+
+![Figure 20.7 — Number of Offerings by Month for SEC-Registered Initial Public Offerings: 1960–2017. 교재 p.628](/courses/financial-management/figures/ch20/fig-20-7.png)
+
+> **직관**: 발행 *물량* 도 군집한다 — 같은 기간 월별 IPO 건수. underpricing 이 높은 시기(2000)에 건수도 폭증하는 *hot issue market*. 창구가 열리면 너도나도 상장 → 시장 타이밍이 발행 결정을 지배함을 보여준다(20.6 과 짝).
+
 ### §2.5 IPO Long-run Underperformance
 
 - *3-5년* market 대비 *−15~−20%* (Loughran-Ritter)
@@ -130,6 +168,10 @@
 - *Lead underwriter* (bookrunner) + *co-managers* + *selling group*
 - *위험 분산* + *distribution network*
 - *League table* (IB 순위)
+
+![Figure 20.5 — An Example of a Tombstone Advertisement. 교재 p.618](/courses/financial-management/figures/ch20/fig-20-5.png)
+
+> **직관**: *Tombstone 광고* — 발행 완료를 알리는 공식 공고(WWF 1999 IPO). 'New Issue 11,500,000 Shares, $17.00'와 함께 아래로 *신디케이트* 가 위계순으로 나열된다: lead(Bear Stearns·Credit Suisse·Merrill) → co-manager → selling group. 누가 어디에 적히느냐가 IB league table 의 자존심.
 
 ### §3.4 Direct Listing (대안)
 

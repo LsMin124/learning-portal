@@ -12,6 +12,21 @@
 
 ---
 
+## §0 도입 — *부채 문제인가, 사업 문제인가*
+
+> **핵심 한 문장**: 재무적 곤경의 첫 질문은 "**부채 문제인가 사업 문제인가**" — 운영은 건전한데 부채만 과한 *재무적* 곤경은 *회생*(Ch11)으로, 사업성 자체를 잃은 *경제적* 곤경은 *청산*(Ch7)으로 갈린다.
+
+30장은 곤경의 지도다:
+
+1. **무엇이 곤경인가** (§1–2): business failure·legal bankruptcy·technical insolvency(불이행)·accounting insolvency 의 네 정의 — 자산<부채(*stock-based*)냐 현금흐름<채무(*flow-based*)냐(figure 30.1). 핵심은 *재무적*(부채 과다, 운영 OK → 회생) vs *경제적*(사업성 상실 → 청산)의 구분.
+2. **무슨 일이 벌어지나** (§3): 곤경 기업은 *사적 정리(workout)* 또는 *공식 파산* 으로 — 실증을 보면 절반은 restructuring 없이 넘기고, 나머지는 workout·법적 파산으로 갈라져 대부분 *reorganize* 한다(figure 30.2).
+3. **청산 vs 회생** (§4–6): *Chapter 7*(청산, trustee, *APR* 순서로 분배 — 주주는 최후)과 *Chapter 11*(존속, DIP·automatic stay·cramdown).
+4. **사적이냐 공식이냐** (§7–8): workout 은 싸고 빠르지만 *holdout* 문제, prepackaged 가 그 절충. 곤경 비용은 직접보다 *간접*(매출·인재 이탈)이 크고, *Altman Z* 로 예측한다.
+
+한 문장으로: **파산은 청산이 아니다 — 사업이 살아있으면 부채를 갈아끼우고 다시 일어선다.**
+
+---
+
 ## §1 재무적 곤경이란?
 
 ### §1.1 4 가지 정의
@@ -22,6 +37,10 @@
 | *Legal bankruptcy* | 법적 파산 신청 |
 | *Technical insolvency* | 채무 불이행 (만기 미상환) |
 | *Accounting insolvency* | 부채 > 자산 (negative equity) |
+
+![Figure 30.1 — Insolvency. 교재 p.920](/courses/financial-management/figures/ch30/fig-30-1.png)
+
+> **직관**: *지급불능(insolvency)* 의 두 얼굴. **A. stock-based**: 자산 < 부채라 *자기자본이 음(−)* — 대차대조표상 부실. **B. flow-based**: 자산은 있어도 *현금흐름이 계약상 의무에 못 미쳐* 약속을 못 지킴(cash flow shortfall). 회계적 부실과 현금 부실은 다른 문제다.
 
 ### §1.2 재무적 곤경 정의 (Ross)
 
@@ -64,6 +83,10 @@
     ├── Chapter 7 (청산)
     └── Chapter 11 (회생)
 ```
+
+![Figure 30.2 — What Happens in Financial Distress with Large Public Firms. 교재 p.922](/courses/financial-management/figures/ch30/fig-30-2.png)
+
+> **직관**: 곤경에 빠진 대형 상장사의 *실제 행로*. 재무적 곤경의 *49%* 는 별 재구성 없이 넘기고, *51%* 가 재무 재구성으로 — 그중 47%는 *사적 workout*, 53%는 *법적 파산(Ch11)*. 파산에 가도 *83%는 회생(reorganize)* 하고 청산(liquidation)은 10%뿐 — '파산=청산'이 아님을 보여주는 그림.
 
 ### §3.2 자산 매각/재구성
 

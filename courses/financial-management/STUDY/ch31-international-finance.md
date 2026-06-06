@@ -12,6 +12,22 @@
 
 ---
 
+## §0 도입 — *환율이 더해진 재무*
+
+> **핵심 한 문장**: 국제재무는 기업재무에 **환율** 이라는 변수를 더한다 — 환율·금리·물가는 *4개의 평가관계(parity)* 로 *무차익* 하에 서로 묶이고, 그 골격 위에서 국제 자본예산과 환위험·정치위험 관리가 펼쳐진다.
+
+31장(전 과정의 마지막)은 다섯 층이다:
+
+1. **환율 시장** (§1–2): spot/forward, direct/indirect 표기(figure 31.1 의 실제 시세표), cross-rate 와 삼각차익.
+2. **4 평가관계** (§3–5) — 무차익이 묶는 네 끈: *PPP*(인플레 차이 → 환율 변화)·*IRP*(금리 차이 = forward premium)·*UFR*(forward = 기대 spot)·*IFE*(실질금리 국가 간 동일). 넷이 연결돼 금리·인플레·spot·forward 가 일관된다.
+3. **국제 자본예산** (§6): *home currency*(외화 CF 를 환산 후 자국 할인율)와 *foreign currency*(외화 할인율 후 환산) — parity 가정 하 *같은 NPV*.
+4. **환위험** (§7): *transaction*(확정 외화 결제)·*translation*(회계 환산)·*economic*(장기 경쟁력). 앞 둘은 forward/swap 으로, economic 은 *operational hedge*(생산 분산)로.
+5. **정치적 위험** (§8): 국유화·송금 제한 → 현지 조달·합작·보험·할인율 가산.
+
+한 문장으로: **국경을 넘으면 모든 현금흐름에 환율이 곱해지고, 그 환율은 금리·물가와 무차익으로 한 몸이다.**
+
+---
+
 ## §1 국제재무 용어
 
 ### §1.1 핵심 용어
@@ -33,6 +49,10 @@
 - *Appreciation/Depreciation* (절상/절하)
 
 ---
+
+![Figure 31.1 — Exchange Rate Quotations. 교재 p.938](/courses/financial-management/figures/ch31/fig-31-1.png)
+
+> **직관**: *환율 시세표* 읽는 법. 각 통화에 대해 *USD equiv*(1단위가 몇 달러)와 *currency per USD*(1달러가 몇 단위)가 나란히 — 둘은 서로 역수다. 지역별(Americas·Europe·Asia-Pacific…)로 나열돼, 여기서 cross-rate 와 삼각차익(§2)이 계산된다. spot 시장의 출발점.
 
 ## §2 환율 + Triangle Arbitrage
 

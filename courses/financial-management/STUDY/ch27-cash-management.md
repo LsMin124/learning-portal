@@ -12,6 +12,22 @@
 
 ---
 
+## §0 도입 — *유휴 현금과의 싸움*
+
+> **핵심 한 문장**: 현금은 수익을 못 내는 자산이라 "*필요한 만큼만, 그러나 부족하지 않게*" 들고 있어야 한다 — 26장이 운전자본 전체를 봤다면 27장은 그중 **현금 자체** 의 보유·회수·지급·투자를 정밀하게 다룬다.
+
+현금 관리는 다섯 갈래다:
+
+1. **왜 들고 있나** (§1): 일상 결제(transaction)·예비(precautionary)·기회(speculative) — 세 동기. 다만 현금은 *기회비용* 이 크므로 과다 보유는 손해.
+2. **float — 장부와 은행의 시차** (§2): 수표가 처리되는 동안 *장부 잔액 ≠ 은행 가용 잔액*. 발행한 수표가 아직 안 빠진 *disbursement float*(우리에게 유리, figure 27.1 의 누적)와, 받은 수표가 아직 안 들어온 *collection float*(불리). float 를 없애면 잔액이 곧장 0 으로 떨어진다(figure 27.2).
+3. **수금은 빠르게, 지급은 늦게** (§3–4): *lockbox*(고객이 지역 사서함에 직접 송금 → 은행이 수거, figure 27.3)와 *concentration bank*(figure 27.4)로 수금을 가속하고, *ZBA*(잔액 0 유지, figure 27.5)로 유휴 현금을 줄인다.
+4. **목표 잔액** (§5–6): 현금흐름이 *일정* 하면 EOQ 형 *Baumol*($C^*=\sqrt{2TF/K}$), *랜덤* 이면 *Miller-Orr*(상·하한·목표). 변동성이 클수록 범위가 넓어진다.
+5. **남는 현금은 굴린다** (§7): 임시 잉여(계절, figure 27.6)는 T-bill·CD·MMF 같은 *money market* 에 — 유동·안전·낮은 수익. 영구 잉여는 배당/buyback(19장).
+
+한 문장으로: **현금 관리는 float 를 내 편으로 만들고, 목표 잔액을 지키며, 남는 건 안전하게 굴리는 일이다.**
+
+---
+
 ## §1 현금 보유 동기
 
 ### §1.1 세 가지 동기 (Keynes)
@@ -63,6 +79,14 @@ $$\text{Net float} = \text{Disbursement float} - \text{Collection float}$$
 
 ---
 
+![Figure 27.1 — Buildup of the Float. 교재 p.831](/courses/financial-management/figures/ch27/fig-27-1.png)
+
+> **직관**: *disbursement float* 가 쌓이는 모습. 매일 $1,000 짜리 수표를 받지만(checks received) 인출(cash available)은 며칠 늦으므로 ending float 가 $1,000→$2,000→$3,000 으로 쌓이다 안정된다. 이 시차만큼 *은행 잔액이 장부보다 많아* 우리에게 유리하다.
+
+![Figure 27.2 — Effect of Eliminating the Float. 교재 p.831](/courses/financial-management/figures/ch27/fig-27-2.png)
+
+> **직관**: 그 float 를 *없애면*. 첫날 누적 float($3,000)이 한꺼번에 인출되며(−$4,000) ending float 가 0 으로 떨어지고, 이후 매일 받는 만큼 매일 빠져 *항상 0*. float 가 사라지면 장부=은행 — '현금이 더 있는 것처럼' 쓰던 여유가 없어진다.
+
 ## §3 수금 (Collection) 가속
 
 ### §3.1 Float 구성
@@ -83,6 +107,14 @@ $$\text{Net float} = \text{Disbursement float} - \text{Collection float}$$
 - 지역 은행 → *집중 계좌*로 자금 이동
 - 잉여자금 통합 관리
 
+![Figure 27.3 — Overview of Lockbox Processing. 교재 p.835](/courses/financial-management/figures/ch27/fig-27-3.png)
+
+> **직관**: *lockbox* 의 흐름. 고객이 대금을 본사가 아닌 *지역 사서함* 으로 보내면(여러 Customer payments → Post office box), 은행이 하루에도 여러 번 직접 수거해 곧장 계좌에 넣는다. 우편·사내처리 시간이 빠져 *collection float ↓* — 수금 가속의 핵심 도구.
+
+![Figure 27.4 — Lockboxes and Concentration Banks in a Cash Management System. 교재 p.836](/courses/financial-management/figures/ch27/fig-27-4.png)
+
+> **직관**: lockbox 위에 *concentration bank* 를 얹은 전체 그림. 여러 지역의 lockbox·local bank 자금을 *집중 계좌* 하나로 모으고, firm cash manager 가 거기서 현금 준비·지급·단기투자·보상예금을 한꺼번에 관리한다. 분산된 잔액을 통합해 유휴 현금을 줄인다.
+
 ### §3.3 전자 수금
 
 - *Wire transfer*, *ACH*, *EDI*
@@ -101,6 +133,10 @@ $$\text{Net float} = \text{Disbursement float} - \text{Collection float}$$
 **Zero-balance account (ZBA)**:
 - 잔액 0 유지 → 수표 결제 시점에만 자금 이동
 - 유휴 현금 ↓
+
+![Figure 27.5 — Zero-Balance Accounts. 교재 p.839](/courses/financial-management/figures/ch27/fig-27-5.png)
+
+> **직관**: *ZBA(잔액 0 계좌)* 의 효과. 왼쪽(ZBA 없음): 급여·지급 계좌마다 *각각 안전재고* 현금을 깔아둬 돈이 묶인다. 오른쪽(ZBA): *master account* 하나에만 안전재고를 두고, 수표가 결제될 때만 자금을 흘려보낸다 — 유휴 현금을 한 곳으로 모아 최소화.
 
 ### §4.2 윤리/현실
 
@@ -199,6 +235,10 @@ $$\text{평균} = \frac{4Z^* - L}{3}$$
 - *영구 잉여* → 배당/buyback, 투자, 부채상환 (Ch 19)
 
 ---
+
+![Figure 27.6 — Seasonal Cash Demands. 교재 p.840](/courses/financial-management/figures/ch27/fig-27-6.png)
+
+> **직관**: *계절적* 현금 수요와 투자. 총자금 수요(물결)가 장기 자금(직선) 위로 솟는 구간은 *bank loans*(단기차입)로, 아래로 내려가 *남는* 구간은 *marketable securities* 매수로 굴린다. 임시 잉여를 money market 에 넣었다 필요할 때 빼는 전형.
 
 ## §8 자주 빠지는 함정
 

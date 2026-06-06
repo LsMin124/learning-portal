@@ -12,6 +12,21 @@
 
 ---
 
+## §0 도입 — *위험을 옮기는 도구, 그리고 왜 옮기나*
+
+> **핵심 한 문장**: 파생상품은 미래 가격을 *고정*(forward/futures)하거나 *보험*(option)을 들거나 *현금흐름을 교환*(swap)해 위험을 옮긴다 — 그런데 M&M 은 "주주가 직접 분산하니 헤징은 무관"이라 한다. 기업이 *그래도* 헤징하는 이유는 **시장 불완전성** 에 있다.
+
+25장은 도구함과 그 사용 이유로 나뉜다:
+
+1. **가격 고정 — forward / futures** (§1–2): 미래 거래를 지금 약정한다. forward 는 OTC 맞춤형(만기에 한 번 정산), futures 는 거래소 표준형(*일일정산* + clearinghouse 로 상대방 위험 제거). 같은 미래라도 *현금흐름 시점* 이 다르다(figure 25.1 — T-bond 를 지금 사는 것과 forward 로 사는 것의 현금흐름 비교).
+2. **헤지의 기술** (§3–5): 기존 노출의 *반대* 포지션(short/long hedge). 단 헤지 대상과 기초자산이 어긋나면 *basis risk*. 금융기관은 자산·부채 *duration* 을 맞춰 금리 위험을 면역한다.
+3. **흐름의 교환 — swap** (§6): 고정↔변동 금리(이자만 교환)나 통화(원리금 교환)를 맞바꿔 comparative advantage 를 살린다.
+4. **옵션 헤지** (§7): 선물이 *대칭*(upside 포기)인 반면 옵션은 *비대칭* — premium 을 내는 대신 downside 만 막고 upside 는 남긴다.
+
+그리고 결정적 질문(§8): 완전시장이라면 헤징은 무의미한데, 현실의 기업은 *distress 비용↓·세금 convexity·부채여력↑·과소투자 회피* 때문에 헤징한다. 단 헤지가 *투기로 변질* 되면 Metallgesellschaft·Barings·AIG 처럼 재앙이 된다(§9).
+
+---
+
 ## §1 Forward Contracts
 
 ### §1.1 정의
@@ -22,6 +37,10 @@
 - 만기에만 정산 (no interim cash flow)
 - *Counterparty risk* (상대방 부도 위험)
 - OTC → 비표준 (수량/만기 자유)
+
+![Figure 25.1 — Cash Flows for Both a Treasury Bond and a Forward Contract on a Treasury Bond. 교재 p.772](/courses/financial-management/figures/ch25/fig-25-1.png)
+
+> **직관**: forward 의 본질을 *현금흐름 타임라인* 으로. 위(*Treasury Bond*): 지금 채권값 −$P 를 내고 매 반기 +$40 쿠폰과 만기 +$1,040 을 받는다. 아래(*Forward Contract*): 똑같은 쿠폰·원금 흐름을 받되 *지금이 아니라 인도일에* 값을 치른다. 곧 forward = *지급 시점만 미룬* 현물 거래 — 그 차이가 forward 가격에 담긴 이자다.
 
 ### §1.2 Payoff
 

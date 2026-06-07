@@ -21,13 +21,13 @@
         {"stem": "ch03-transport-layer", "pages": 122, "label": "Ch 3. Transport Layer"},
         {"stem": "ch04-network-data-plane", "pages": 74, "label": "Ch 4. The Network Layer: Data Plane"},
         {"stem": "ch05-network-control-plane", "pages": 72, "label": "Ch 5. The Network Layer: Control Plane"},
-        {"stem": "ch06-link-layer-lans", "pages": 82, "label": "Ch 6. The Link Layer and LANs"}
+        {"stem": "ch06-link-layer-and-lans", "pages": 82, "label": "Ch 6. The Link Layer and LANs"}
       ]
     },
     {
       "title": "Advanced Topics",
       "items": [
-        {"stem": "ch07-wireless-mobile", "pages": 76, "label": "Ch 7. Wireless and Mobile Networks"},
+        {"stem": "ch07-wireless-and-mobile", "pages": 76, "label": "Ch 7. Wireless and Mobile Networks"},
         {"stem": "ch08-security", "pages": 84, "label": "Ch 8. Security in Computer Networks"}
       ]
     }

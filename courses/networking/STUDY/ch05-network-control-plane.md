@@ -2,12 +2,30 @@
 
 > Kurose & Ross 의 Ch 5. *Network layer 의 다른 면* — routing algorithm 이 forwarding table 을 *어떻게 만드나*. Data plane (Ch 4) 의 *upstream*.
 
-이 장의 무게중심:
-1. **Routing algorithm** — link state vs distance vector
-2. **Intra-AS routing** — OSPF
-3. **Inter-AS routing** — BGP. *Internet 의 접착제*.
-4. **SDN control plane** — OpenFlow / ONOS / OpenDaylight
-5. **Network management** — SNMP / NETCONF / YANG / Telemetry
+---
+
+## §0 도입 — *forwarding table 은 누가 채우는가*
+
+> **핵심 한 문장**: 4장의 router 가 빠르게 *forwarding* 하려면 먼저 누군가 forwarding table 을 *채워야* 하고, 5장의 control plane 이 바로 그 일 — "A 에서 B 로 가는 최선의 경로"를 *계산* 하는 routing algorithm 과, 그것을 운영하는 protocol(OSPF·BGP)·architecture(SDN)의 이야기다.
+
+두 고전 알고리즘이 출발점이다 — 전체 지도를 알고 Dijkstra 를 푸는 *link state*(§2)와, 이웃의 소문만 듣고 수렴하는 *distance vector*(§3, Bellman-Ford). 이 둘의 성질이 곧 실제 protocol 의 성질이 된다.
+
+규모가 커지면 *AS* 단위로 쪼갠다(§4): AS *안* 은 OSPF(§5)가 최단경로로, AS *사이* 는 BGP(§6)가 *정책* 으로 잇는다. BGP 는 성능이 아니라 "누구와 거래하는가"를 라우팅하는, Internet 을 붙이는 *접착제* 다.
+
+마지막으로 *SDN*(§7)은 control 을 router 에서 떼어 중앙 controller 로 옮기고, NETCONF·YANG·telemetry(§8~§9)가 그 network 를 *선언적으로* 운영하는 현대적 관리법이다.
+
+---
+
+## 들어가기 전에
+
+- **선수 지식**: 4장(forwarding table, longest prefix match, SDN data plane), 그래프 최단경로(Dijkstra/Bellman-Ford) 기초
+- **학습 목표**
+  1. **Routing algorithm** — link state vs distance vector
+  2. **Intra-AS routing** — OSPF(area, LSA)
+  3. **Inter-AS routing** — BGP, *Internet 의 접착제*
+  4. **SDN control plane** — OpenFlow / ONOS / OpenDaylight
+  5. **Network management** — SNMP / NETCONF / YANG / Telemetry
+- **예상 학습 시간**: 150~200분
 
 ---
 
@@ -567,6 +585,16 @@ Telemetry = *push* — device 가 자동 보고.
 
 ---
 
-## §12 한 줄 요약
+## §12 다음 학습으로
+
+- **6장 (Link Layer)** — 계산된 경로의 *한 hop* 을 frame 으로 실현. switch 의 self-learning
+- **7장 (Wireless/Mobile)** — host 가 움직일 때의 routing 과 handover
+- **4장 되돌아보기** — control plane 이 만든 table 이 data plane 에서 *어떻게 쓰이나*
+
+> *Tools to try*: `traceroute`로 AS 경로 추정, BGP looking glass(`lg.he.net`)로 실제 AS_PATH, `frr`/`bird`로 OSPF·BGP 실습, RIPE Atlas로 경로 관측
+
+---
+
+## §13 한 줄 요약
 
 > **Control plane = forwarding table *어떻게 만드나*. *Link state (OSPF) + Distance vector (BGP)* 의 *intra/inter-AS* 분리. SDN 의 *중앙 controller* 가 차세대. NETCONF + YANG + Telemetry 가 *modern network management*.**

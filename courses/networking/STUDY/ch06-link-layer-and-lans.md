@@ -2,13 +2,31 @@
 
 > Kurose & Ross 의 Ch 6. *Network layer 의 한 hop 아래* — link 의 *frame 단위 통신*. 같은 *physical medium* 의 *neighbor 간 데이터 전달*.
 
-이 장의 무게중심:
-1. **Link layer 의 역할** — framing, error detection, multiple access
-2. **Error detection** — parity, checksum, CRC
-3. **Multiple access protocols** — *공유 medium* 의 충돌 회피
-4. **LAN — Ethernet, VLAN, switch**
-5. **MPLS** — link layer 와 network layer 사이
-6. **Datacenter networking** — 현대 LAN 의 극한
+---
+
+## §0 도입 — *마지막 한 hop, 같은 선을 나눠 쓰는 법*
+
+> **핵심 한 문장**: network layer 가 "어느 router 로?"를 풀었다면, link layer 는 *바로 옆 노드까지* datagram 을 frame 에 담아 실제 *물리 매체* 위로 보내는 일 — 그리고 그 매체를 여럿이 *공유* 할 때 누가 언제 말할지를 정하는 *multiple access*(§3)가 6장의 심장이다.
+
+먼저 link 가 주는 service(framing·error detection·신뢰성)와 CRC 같은 *오류 검출*(§2)을 본다. 그다음 핵심 난제 — 한 선을 여럿이 쓰면 충돌한다 — 를 푸는 *multiple access protocol*: 유선의 CSMA/CD 와 무선의 CSMA/CA 가 *왜 갈라지는지* 가 7장 wireless 로 이어진다.
+
+실세계의 LAN 은 *Ethernet + switch*(§5)다. switch 의 self-learning·MAC table, 그리고 ARP(§4)가 IP↔MAC 를 잇는다. *VLAN*(§6)·*MPLS*(§7)는 이 LAN 을 논리적으로 쪼개고 빠르게 forwarding 하는 진화다.
+
+마지막 *datacenter networking*(§8, spine-leaf)은 server↔server 의 east-west 트래픽을 위한 현대 LAN 의 극한으로, 클라우드 인프라의 바닥을 이룬다.
+
+---
+
+## 들어가기 전에
+
+- **선수 지식**: 4~5장(IP datagram, forwarding), 2진수·다항식 나눗셈(CRC) 기초, 1장 encapsulation
+- **학습 목표**
+  1. **Link layer 의 역할** — framing·error detection·multiple access
+  2. **Error detection** — parity·checksum·CRC
+  3. **Multiple access protocols** — 공유 medium 의 충돌 회피
+  4. **LAN** — Ethernet·switch·ARP·VLAN
+  5. **MPLS** — link 와 network layer 사이
+  6. **Datacenter networking** — spine-leaf, east-west
+- **예상 학습 시간**: 150~200분
 
 ---
 
@@ -550,6 +568,16 @@ Server Server Server
 
 ---
 
-## §12 한 줄 요약
+## §12 다음 학습으로
+
+- **7장 (Wireless/Mobile)** — CSMA/CA 가 본격화되는 *무선 link*. 802.11 frame
+- **8장 (Security)** — link/LAN 공격(ARP spoofing, MAC flooding)과 802.1X
+- **2~3장 되돌아보기** — frame 위 IP/TCP 가 *한 hop* 에서 어떻게 보이나
+
+> *Tools to try*: `arp -a`/`ip neigh`(ARP cache), Wireshark로 Ethernet·ARP frame, `ethtool`(link 속도/duplex), 스위치 MAC table 조회
+
+---
+
+## §13 한 줄 요약
 
 > **Link layer 는 *한 hop* 의 *frame 단위 통신*. Multiple access protocol (CSMA/CD, CSMA/CA) 로 *공유 medium 의 충돌 회피*. Switch + VLAN + MPLS 의 *LAN 진화*. Spine-leaf 의 *east-west datacenter* 가 현대 LAN 의 정점.**

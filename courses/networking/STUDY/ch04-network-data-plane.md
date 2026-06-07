@@ -2,12 +2,30 @@
 
 > Kurose & Ross 의 Ch 4. *Network layer 의 두 면 중 data plane* — packet 의 입력 → 처리 → 출력 의 *router 내부 동작*. Control plane (routing protocol, table 생성) 은 Ch 5.
 
-이 장의 *지적 무게중심*:
-1. **Data plane vs Control plane 분리** — SDN 이전과 이후 의 architecture
-2. **Router 의 내부 4 component**
-3. **IPv4 의 실제 운영** — 주소 / NAT / DHCP / fragmentation
-4. **IPv6 의 *왜 만들었고 왜 아직 안 끝났나*
-5. **Generalized forwarding** — OpenFlow → P4
+---
+
+## §0 도입 — *packet 하나가 router 를 통과하는 수 나노초*
+
+> **핵심 한 문장**: Network layer 의 일은 단 하나 — datagram 을 출발 host 에서 목적 host 로 옮기는 것 — 이고, 4장은 그중 *data plane*, 즉 router *내부* 에서 packet 이 입력 → table lookup → switching → 출력으로 빠져나가는 *수 나노초* 의 기계장치를 들여다본다(경로를 *계산* 하는 control plane 은 §5장).
+
+router 의 핵심은 *forwarding table* 과 *longest prefix match*(§3), 그리고 그 lookup 을 line-speed 로 처리하는 input/output port·switching fabric 의 4 component(§2)다. 여기서 "어떻게 충분히 빠른가"가 hardware 설계의 전부다.
+
+그 위에 *IPv4 의 실제 운영*(§3~§6) — datagram format, 주소 체계와 CIDR, DHCP, NAT, fragmentation — 이 얹힌다. NAT 와 IPv6(§7)는 모두 "IPv4 주소가 부족하다"는 *한 압력* 에서 갈라져 나온 두 답이다.
+
+마지막 *generalized forwarding*(§9, OpenFlow→P4)은 "destination IP 만 보던" router 를 "임의 field 를 match 해 임의 action 을 하는" programmable 장치로 일반화하며, §5장 SDN 의 다리가 된다.
+
+---
+
+## 들어가기 전에
+
+- **선수 지식**: 1장(packet switching, encapsulation, 5-layer), 2~3장(IP·port 의 쓰임), 2진수/CIDR 비트 연산
+- **학습 목표**
+  1. **Data plane vs control plane 분리** — SDN 이전/이후의 architecture
+  2. **Router 내부 4 component** — input port·switching fabric·output port·routing processor
+  3. **IPv4 의 실제 운영** — datagram·주소/CIDR·DHCP·NAT·fragmentation
+  4. **IPv6** — *왜 만들었고, 왜 전환이 아직 안 끝났나*
+  5. **Generalized forwarding** — OpenFlow → P4 의 match-action
+- **예상 학습 시간**: 150~200분
 
 ---
 
@@ -738,6 +756,16 @@ OpenFlow 한계: *fixed header parsing*.
 
 ---
 
-## §13 한 줄 요약
+## §13 다음 학습으로
+
+- **5장 (Network Layer: Control Plane)** — 이 장의 forwarding table 을 *누가 채우나*. OSPF·BGP routing, SDN controller
+- **6장 (Link Layer)** — IP datagram 을 한 hop 씩 나르는 *frame*. ARP 가 IP↔MAC 를 잇는다
+- **3장 되돌아보기** — NAT·fragmentation 이 TCP/QUIC 에 주는 *실제 영향*
+
+> *Tools to try*: `traceroute`(hop별 TTL), `ip route`/`netstat -rn`(forwarding table), 받은 IP를 `whois`로 prefix 확인, `tcpdump`로 fragment 관찰
+
+---
+
+## §14 한 줄 요약
 
 > **Data plane = router 내부 의 *packet 처리* (forwarding table lookup, switching fabric, queueing). IPv4 = best-effort + NAT + DHCP 의 *실제 운영*. IPv6 = next-gen 의 *느린 전환*. SDN = data + control plane 분리 — programmable network 의 미래.**

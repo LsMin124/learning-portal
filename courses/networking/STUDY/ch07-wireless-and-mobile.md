@@ -2,12 +2,30 @@
 
 > Kurose & Ross 의 Ch 7. *Wireless link* 의 특성 + *mobile host 의 routing/handover*. 2026 의 *WiFi 7 + 5G + Starlink* 시대 의 *physical layer 의 정점*.
 
-이 장의 무게중심:
-1. **Wireless link 특성** — 왜 wired 와 *근본적으로 다른가*
-2. **802.11 (WiFi)** — *home + enterprise WLAN* 표준
-3. **Cellular network** — 4G LTE / 5G / 6G 진화
-4. **Mobility** — host 가 움직여도 IP 유지
-5. **Wireless 가 상위 layer 에 미치는 영향**
+---
+
+## §0 도입 — *선을 끊었을 때 생기는 모든 문제*
+
+> **핵심 한 문장**: wireless 는 단순히 "선 없는 Ethernet" 이 아니다 — path loss·multipath fading·interference 라는 *물리적 현실*(§1) 때문에 link layer 부터 다시 설계해야 하고, 거기에 *host 가 움직인다* 는 mobility(§5)가 겹치며 routing·TCP·streaming 전 stack 에 파문을 일으킨다.
+
+출발점은 wireless link 가 wired 와 *근본적으로 다른* 이유(§1): 거리에 따른 신호 약화, 반사로 인한 fading, 그리고 hidden/exposed node 문제. 이것이 WiFi 의 CSMA/CA + RTS/CTS(§3)와 cellular 의 cell 설계(§4)를 낳는다.
+
+두 거대 생태계 — *802.11 WiFi*(§3, BSS·association·WPA3)와 *cellular*(§4, 4G→5G 의 eMBB/URLLC/mMTC) — 를 비교하고, host 가 cell·AP 를 옮겨 다닐 때 연결을 유지하는 *handover* 와 *mobility*(§5)를 본다.
+
+핵심 통찰은 §6: wireless 의 loss 를 TCP 가 congestion 으로 *오해* 하듯, 물리계층의 특성이 *상위 모든 layer* 로 새어 올라간다는 것 — QUIC·BBR·edge 가 그 답이다.
+
+---
+
+## 들어가기 전에
+
+- **선수 지식**: 6장(link layer, CSMA, MAC), 3장(TCP congestion control), 4~5장(IP mobility 배경), dB·SNR 기초
+- **학습 목표**
+  1. **Wireless link 특성** — 왜 wired 와 *근본적으로* 다른가
+  2. **802.11 (WiFi)** — home·enterprise WLAN 표준
+  3. **Cellular network** — 4G LTE / 5G / 6G 진화
+  4. **Mobility** — host 가 움직여도 IP/연결 유지
+  5. **상위 layer 영향** — TCP·streaming·edge
+- **예상 학습 시간**: 120~160분
 
 ---
 
@@ -378,6 +396,16 @@ Wireless latency 변동:
 
 ---
 
-## §9 한 줄 요약
+## §9 다음 학습으로
+
+- **8장 (Security)** — WPA3·802.1X 의 cryptography, wireless 도청/스푸핑 방어
+- **3장 되돌아보기** — BBR·QUIC 가 wireless loss 를 다루는 *원리*
+- **심화** — 5G network slicing, Starlink LEO, WiFi 7(802.11be), MPTCP
+
+> *Tools to try*: WiFi analyzer 앱(채널·RSSI), `iw dev`/`airport -I`(macOS, SNR·rate), `ping`으로 무선 vs 유선 RTT 변동 비교
+
+---
+
+## §10 한 줄 요약
 
 > **Wireless link 의 *path loss + multipath fading + interference* 가 wired 와 *근본 차이*. WiFi 의 CSMA/CA + RTS/CTS, cellular 의 macro/micro cell + handover. 5G 의 eMBB/URLLC/mMTC. Mobility 의 *application-level handling* (QUIC migration). Wireless 가 TCP, streaming, edge 의 *모든 stack* 에 영향.**

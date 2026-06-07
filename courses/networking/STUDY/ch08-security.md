@@ -2,15 +2,33 @@
 
 > Kurose & Ross 의 Ch 8. *Network security 의 종합* — cryptography 부터 *firewall, IDS, operational security* 까지. 2026 의 *AI-based attack + post-quantum* 시대 의 *방어 architecture*.
 
-이 장의 무게중심:
-1. **Cryptography 기초** — symmetric, asymmetric, hash
-2. **Authentication + integrity** — MAC, digital signature
-3. **PKI** — public key 의 trust
-4. **TLS** — *web security 의 표준*
-5. **IPsec + VPN** — network layer 보안
-6. **Wireless 보안** — WEP/WPA/WPA2/WPA3
-7. **Firewall, IDS/IPS, DDoS 방어**
-8. **Operational security** — zero trust, secret 관리
+---
+
+## §0 도입 — *적이 모든 packet 을 본다고 가정하라*
+
+> **핵심 한 문장**: 8장은 1~7장에서 쌓은 stack 위에 *보안* 을 얹는다 — 도청·변조·위장·서비스 거부를 막는 네 요구(기밀성·무결성·인증·가용성, §1)를, cryptography 라는 수학 도구로 풀고 그것을 TLS·IPsec 같은 실제 protocol 로 구현하는 *방어 architecture* 의 종합이다.
+
+기초는 두 종류의 암호 — 빠르지만 key 분배가 문제인 *symmetric*(§2)와, 느리지만 공개키로 그 문제를 푸는 *asymmetric*(§3) — 이고, 실세계는 둘을 결합한 *hybrid* 를 쓴다. 무결성·인증은 hash·MAC·digital signature(§4)가, 공개키의 신뢰는 PKI·인증서(§5)가 맡는다.
+
+이 도구들이 모여 protocol 이 된다: web 의 *TLS*(§6, 1.3 의 1-RTT·forward secrecy), network layer 의 *IPsec/VPN*(§7), 그리고 wireless 의 WPA3(§8).
+
+마지막으로 암호만으로는 부족하다 — *firewall·IDS/IPS*(§9)와 *zero trust·secret 관리*(§10)의 운영 보안, 그리고 다가오는 post-quantum 전환까지가 *defense in depth* 다.
+
+---
+
+## 들어가기 전에
+
+- **선수 지식**: 2장(HTTP/TLS 의 쓰임), 3장(TCP handshake), 4~7장(IP·link·wireless), modular 산술·확률 기초
+- **학습 목표**
+  1. **Cryptography 기초** — symmetric·asymmetric·hash
+  2. **Authentication + integrity** — MAC·digital signature
+  3. **PKI** — public key 의 trust
+  4. **TLS** — web security 의 표준
+  5. **IPsec + VPN** — network layer 보안
+  6. **Wireless 보안** — WEP/WPA/WPA2/WPA3
+  7. **Firewall·IDS/IPS·DDoS 방어**
+  8. **Operational security** — zero trust, secret 관리
+- **예상 학습 시간**: 180~220분
 
 ---
 
@@ -471,6 +489,16 @@ Components: key exchange + auth + encryption + MAC.
 
 ---
 
-## §13 한 줄 요약
+## §13 다음 학습으로
+
+- **2~3장 되돌아보기** — TLS 가 HTTP/TCP 위에서 *실제로* 어디에 끼는가
+- **심화** — post-quantum(ML-KEM/Kyber), DNSSEC, mTLS, WireGuard 내부
+- **실무** — OWASP Top 10, zero-trust 아키텍처, 인증서 자동화(ACME/Let's Encrypt)
+
+> *Tools to try*: `openssl s_client -connect host:443`(인증서 chain), `curl -v https://`(TLS 버전·cipher), Wireshark TLS handshake, `nmap --script ssl-enum-ciphers`
+
+---
+
+## §14 한 줄 요약
 
 > **Network security = CIA + non-repudiation + availability. Symmetric (AES-GCM) + Asymmetric (ECDH, EdDSA) 의 hybrid. TLS 1.3 가 web security 표준. IPsec + WireGuard 의 network layer 보안. Firewall + IDS + Zero Trust 의 defense in depth. Post-quantum 의 다가오는 변화.**

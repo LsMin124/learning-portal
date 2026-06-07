@@ -3,6 +3,20 @@
 > *Computer Networking: A Top-Down Approach* (Kurose & Ross, 8th Global Edition, 2021) **Chapter 1** (책 p.33~112).
 > 1장은 책 전체의 *지도*. **Top-down approach** — application 부터 시작해 link layer 까지 내려가는 책의 *철학* 을 소개. 이후 2~6장이 각 layer 의 상세.
 
+---
+
+## §0 도입 — *가장 가까운 곳부터 한 겹씩 벗긴다*
+
+> **핵심 한 문장**: Internet 은 중앙 통제자 없이 ISP 들이 자발적으로 연결된 *network of networks* 이고, best-effort 로 packet 을 나르는 이 거대한 시스템을 이 책은 *너에게 가장 가까운 application layer 부터* 아래로 한 겹씩 벗겨 내려간다(top-down).
+
+1장은 Internet 을 두 시선으로 본다 — 부품 목록(host·link·router·ISP)으로 보는 *nuts-and-bolts* 관점(§1)과, 분산 application 에 service 를 파는 *infrastructure* 관점. 그 둘을 잇는 약속이 *protocol* — format·order·actions(§1.3) 이다.
+
+핵심 긴장은 §3 의 한 질문에 응축된다: 회선을 미리 잡는 *circuit switching* 과 쪼개서 통계적으로 나눠 쓰는 *packet switching* 중 무엇이 이기는가. "bursty 트래픽엔 packet" 이라는 답이 곧 Internet 의 설계 철학이고, §4 의 *4가지 delay* 와 throughput 은 그 철학의 *비용* 을 정량화한다.
+
+마지막으로 §5 의 *5-layer stack + encapsulation* 은 이 책의 목차 그 자체다. 1장은 답을 주는 장이 아니라, *2~8장에서 만날 모든 어휘의 지도* 를 먼저 펼쳐 두는 장이다.
+
+---
+
 ## 들어가기 전에
 
 - **선수 지식**
@@ -22,9 +36,9 @@
 
 ---
 
-## 1. What Is the Internet?
+## §1 What Is the Internet?
 
-### 1.1 Nuts-and-Bolts View — *구성요소* 관점
+### §1.1 Nuts-and-Bolts View — *구성요소* 관점
 
 > *수십억 개의 connected computing devices*
 
@@ -52,7 +66,7 @@
   - RFC 791 (IP), RFC 793 (TCP), RFC 9110 (HTTP semantics) 등 *모든 핵심 protocol*
 - *Rough consensus and running code* 원칙 — 이론보다 *실제 구현 + 다수 합의*
 
-### 1.2 Services View — *분산 application 의 기반*
+### §1.2 Services View — *분산 application 의 기반*
 
 > *applications 에 서비스를 제공* 하는 infrastructure
 
@@ -64,7 +78,7 @@
 - *내려가며* (bottom up): 구성요소 → 동작 mechanism
 - *올라가며* (top down): application 의 service 요구 → 그것을 *어떻게 만족* 시키나
 
-### 1.3 What's a Protocol? — *통신 규칙*
+### §1.3 What's a Protocol? — *통신 규칙*
 
 > *Protocol* = 두 entity 사이의 *통신 규칙*
 
@@ -115,9 +129,9 @@ Connection: keep-alive
 
 ---
 
-## 2. Network Edge — *사용자 쪽*
+## §2 Network Edge — *사용자 쪽*
 
-### 2.1 End Systems
+### §2.1 End Systems
 
 = **hosts**. 두 카테고리:
 
@@ -135,7 +149,7 @@ Connection: keep-alive
 - *Edge computing* — server 가 *사용자 가까이* (Cloudflare Workers, AWS Lambda@Edge)
 - *Mobile-as-server* — 스마트폰이 *photo 공유의 source* (P2P 특성)
 
-### 2.2 Access Networks — *Internet 연결의 첫 hop*
+### §2.2 Access Networks — *Internet 연결의 첫 hop*
 
 end system 을 *Internet 의 첫 router* (edge router) 에 연결하는 *first-hop* network.
 
@@ -203,7 +217,7 @@ end system 을 *Internet 의 첫 router* (edge router) 에 연결하는 *first-h
 - *URLLC* (Ultra-Reliable Low-Latency Communication) — < 1ms latency (자율주행, 의료)
 - *mMTC* (massive Machine-Type Communication) — 수십만 IoT 동시 연결
 
-### 2.3 Physical Media — *bit 가 흐르는 매체*
+### §2.3 Physical Media — *bit 가 흐르는 매체*
 
 #### Guided media (line-bound)
 
@@ -226,9 +240,9 @@ end system 을 *Internet 의 첫 router* (edge router) 에 연결하는 *first-h
 
 ---
 
-## 3. Network Core — *Internet 의 중심*
+## §3 Network Core — *Internet 의 중심*
 
-### 3.1 Packet Switching — Internet 의 핵심
+### §3.1 Packet Switching — Internet 의 핵심
 
 ![Figure 1.10 — Network core. 책 p.22](/courses/networking/figures/ch01/fig-1-10.png)
 
@@ -275,7 +289,7 @@ L = 1500 bytes (= 12,000 bits), R = 100 Mbps (= 10^8 bps), N = 5 hop:
 - 같은 link 를 *여러 source 가 공유* 가능
 - 그러나 *동시 burst* 시 queue 폭증
 
-### 3.2 Statistical Multiplexing 의 *수학적 이득*
+### §3.2 Statistical Multiplexing 의 *수학적 이득*
 
 > 책의 핵심 통찰 (p.30 예제).
 
@@ -296,7 +310,7 @@ L = 1500 bytes (= 12,000 bits), R = 100 Mbps (= 10^8 bps), N = 5 hop:
 
 > Internet 이 *packet switching 채택* 결정적 이유 — *bursty traffic 의 통계* 가 *statistical multiplexing* 으로 큰 효율.
 
-### 3.3 Circuit Switching — 전통 전화망
+### §3.3 Circuit Switching — 전통 전화망
 
 ![Figure 1.13 — Circuit switching. 책 p.27](/courses/networking/figures/ch01/fig-1-13.png)
 
@@ -337,7 +351,7 @@ L = 1500 bytes (= 12,000 bits), R = 100 Mbps (= 10^8 bps), N = 5 hop:
 
 > **함정 2**: "packet > circuit" 의 단순 결론. 사실은 *trade-off*. 5G 의 *URLLC* (1ms latency 보장) 은 *근본적으로 circuit-like* 자원 예약. *DiffServ, MPLS* 도 packet 위에서 *circuit 의 일부 특성* 모방.
 
-### 3.4 Network of Networks — ISP 의 계층 구조
+### §3.4 Network of Networks — ISP 의 계층 구조
 
 ![Figure 1.15 — ISP 의 상호연결. 책 p.34](/courses/networking/figures/ch01/fig-1-15.png)
 
@@ -369,9 +383,9 @@ L = 1500 bytes (= 12,000 bits), R = 100 Mbps (= 10^8 bps), N = 5 hop:
 
 ---
 
-## 4. Delay, Loss, and Throughput — *성능의 정량 분석*
+## §4 Delay, Loss, and Throughput — *성능의 정량 분석*
 
-### 4.1 Nodal Delay — 4 가지 구성요소
+### §4.1 Nodal Delay — 4 가지 구성요소
 
 ![Figure 1.16 — Nodal delay 의 종류. 책 p.36](/courses/networking/figures/ch01/fig-1-16.png)
 
@@ -420,7 +434,7 @@ $$d_{nodal} = d_{proc} + d_{queue} + d_{trans} + d_{prop}$$
 
 > *Trans 와 prop 의 흔한 혼동* — trans 는 "packet 이 link 위에 *들어가는 시간*", prop 은 "*들어간 후 끝까지 이동* 하는 시간". 비유: 자동차 *toll booth 통과* (trans) + *고속도로 운전* (prop).
 
-### 4.2 Caravan 비유 (책의 명물)
+### §4.2 Caravan 비유 (책의 명물)
 
 ![Figure 1.17 — Toll booth 의 자동차 행렬 비유. 책 p.38](/courses/networking/figures/ch01/fig-1-17.png)
 
@@ -453,7 +467,7 @@ $$d_{nodal} = d_{proc} + d_{queue} + d_{trans} + d_{prop}$$
 - *Caravan 길이* (packet size) > *highway 속도 × toll 시간 차이* 면 store-and-forward 가 자연스러움
 - Internet 의 *cut-through switching* (옛 Myrinet) 은 store-and-forward 보다 *살짝 빠름*, 그러나 error 처리 어려움 → 현대 router 는 *store-and-forward 가 표준*
 
-### 4.3 Traffic Intensity 와 Queueing
+### §4.3 Traffic Intensity 와 Queueing
 
 ![Figure 1.18 — Traffic intensity 의 queuing delay 영향. 책 p.40](/courses/networking/figures/ch01/fig-1-18.png)
 
@@ -491,7 +505,7 @@ R = 1 Mbps, L = 1000 bits, 다양한 a:
 
 → $\rho > 0.9$ 부터 *delay 폭주*. 산업 SLO 는 *peak ρ < 0.7* 권장.
 
-### 4.4 End-to-End Delay
+### §4.4 End-to-End Delay
 
 전체 path 의 N router + N+1 link:
 
@@ -514,7 +528,7 @@ traceroute www.google.com
 
 산업에서 *MTR* (Matt's Traceroute) 가 더 강력 — 지속 ping + statistics.
 
-### 4.5 Throughput
+### §4.5 Throughput
 
 ![Figure 1.19 — File transfer 의 throughput. 책 p.44](/courses/networking/figures/ch01/fig-1-19.png)
 
@@ -570,9 +584,9 @@ $$T \approx \frac{MSS}{RTT \cdot \sqrt{p}}$$
 
 ---
 
-## 5. Protocol Layers + Encapsulation
+## §5 Protocol Layers + Encapsulation
 
-### 5.1 Layered Architecture — *복잡도 관리*
+### §5.1 Layered Architecture — *복잡도 관리*
 
 ![Figure 1.21 — 비행기 여행의 계층. 책 p.47](/courses/networking/figures/ch01/fig-1-21.png)
 ![Figure 1.22 — 비행기 functionality 의 horizontal layering. 책 p.48](/courses/networking/figures/ch01/fig-1-22.png)
@@ -594,7 +608,7 @@ $$T \approx \frac{MSS}{RTT \cdot \sqrt{p}}$$
 4. **Standardization** — *interface 가 명세* 되어 *interoperability*
 5. **Conceptual clarity** — 한 번에 *한 layer* 만 생각
 
-### 5.2 Internet Protocol Stack — 5 Layers
+### §5.2 Internet Protocol Stack — 5 Layers
 
 ![Figure 1.23 — Internet protocol stack. 책 p.50](/courses/networking/figures/ch01/fig-1-23.png)
 
@@ -651,7 +665,7 @@ $$T \approx \frac{MSS}{RTT \cdot \sqrt{p}}$$
 - **Spec**: UTP, fiber, radio frequency
 - *Modulation* (QAM, OFDM 등) — bit ↔ electrical/optical/radio signal
 
-### 5.3 OSI Model (참고) — 7 Layer
+### §5.3 OSI Model (참고) — 7 Layer
 
 | OSI | Internet |
 |--|--|
@@ -674,7 +688,7 @@ OSI 의 *Presentation, Session* 은 Internet 에선 *application layer 가 담�
 
 같은 system 의 *layer count 가 다른* 이유 — 어떤 boundary 를 *명시할지* 의 차이. 모두 *유효한 추상*.
 
-### 5.4 Encapsulation — *Header 의 Nesting*
+### §5.4 Encapsulation — *Header 의 Nesting*
 
 ![Figure 1.24 — Hosts, routers, link-layer switches + encapsulation. 책 p.52](/courses/networking/figures/ch01/fig-1-24.png)
 
@@ -737,11 +751,11 @@ Layer 1 Physical:     bits (electrical/optical/radio signal)
 
 ---
 
-## 6. Networks Under Attack
+## §6 Networks Under Attack
 
 > 1장의 마지막 큰 주제. 8장 (Security) 의 *맛보기*. 4 가지 위협 유형.
 
-### 6.1 Malware — *악성 코드 침투*
+### §6.1 Malware — *악성 코드 침투*
 
 | 유형 | 특징 | 예시 |
 |--|--|--|
@@ -757,7 +771,7 @@ Layer 1 Physical:     bits (electrical/optical/radio signal)
 - *Sandboxing* — 의심 코드 격리 실행
 - *User education* — phishing 인식
 
-### 6.2 DoS (Denial of Service) / DDoS
+### §6.2 DoS (Denial of Service) / DDoS
 
 ![Figure 1.25 — DDoS attack. 책 p.56](/courses/networking/figures/ch01/fig-1-25.png)
 
@@ -783,7 +797,7 @@ Layer 1 Physical:     bits (electrical/optical/radio signal)
 - *Anycast* — traffic 을 *여러 PoP* 에 분산
 - *SYN cookies* — half-open connection 회피
 
-### 6.3 Packet Sniffing — *도청*
+### §6.3 Packet Sniffing — *도청*
 
 - *Promiscuous* network interface 가 *링크 위 모든 packet* 캡처
 - 같은 WiFi 의 *다른 사용자* 의 traffic 도 볼 수 있음 (옛 WiFi)
@@ -796,7 +810,7 @@ Layer 1 Physical:     bits (electrical/optical/radio signal)
 
 > *TLS 후 packet sniffing 의 한계* — payload 는 *암호화*. 그러나 *metadata* (출발지/목적지 IP, hostname (SNI), packet size, timing) 는 여전히 노출.
 
-### 6.4 IP Spoofing
+### §6.4 IP Spoofing
 
 > 잘못된 *source IP* 를 가진 packet.
 
@@ -812,11 +826,11 @@ Layer 1 Physical:     bits (electrical/optical/radio signal)
 
 ---
 
-## 7. History of Computer Networking — *진화의 5 era*
+## §7 History of Computer Networking — *진화의 5 era*
 
 ![Figure 1.26 — 초기 packet switch. 책 p.59](/courses/networking/figures/ch01/fig-1-26.png)
 
-### 7.1 1961~1972: Packet Switching 의 *탄생*
+### §7.1 1961~1972: Packet Switching 의 *탄생*
 
 핵심 인물·사건:
 - **Leonard Kleinrock** (MIT, 1961) — packet switching 의 *queuing theory* 기반
@@ -825,7 +839,7 @@ Layer 1 Physical:     bits (electrical/optical/radio signal)
 - **ARPANET** (1969) — 첫 packet 교환 network. 4 node (UCLA, **SRI** (Stanford Research Institute, 현 SRI International), UCSB, Utah)
 - **NCP (Network Control Protocol)** (1972) — ARPANET 의 *첫 host protocol*
 
-### 7.2 1972~1980: 다른 network 들 + Internetworking
+### §7.2 1972~1980: 다른 network 들 + Internetworking
 
 - **Ethernet** (1976, Metcalfe + Boggs at Xerox PARC) — LAN의 시작
 - **ALOHANET** (1970, 하와이) — wireless packet switching
@@ -834,14 +848,14 @@ Layer 1 Physical:     bits (electrical/optical/radio signal)
 
 핵심 통찰 — 어떻게 *서로 다른 network* 를 연결? → *common protocol* (TCP/IP) + *gateway/router*.
 
-### 7.3 1980~1990: 표준화 + 폭증
+### §7.3 1980~1990: 표준화 + 폭증
 
 - **TCP/IP 의 ARPANET 채택** (1983-01-01) — Internet 의 *생일*. NCP → TCP/IP cutover.
 - **DNS** (Mockapetris, 1983) — IP 주소 → name. *수동 hosts.txt* 의 한계 해결
 - **NSFNET** (1986) — 미국 과학재단 backbone. ARPANET 의 *민간 후속*
 - *각종 LAN technology* 정착: Ethernet, Token Ring (IBM), FDDI
 
-### 7.4 1990s: WWW + Commercialization
+### §7.4 1990s: WWW + Commercialization
 
 핵심 사건:
 - **WWW 발명** — Tim Berners-Lee, CERN, 1989-1991. HTTP + HTML + URL
@@ -856,7 +870,7 @@ Layer 1 Physical:     bits (electrical/optical/radio signal)
 - *DNS root server* 글로벌 분산
 - *Java*, *JavaScript*, *cookies* — 동적 web 의 기반
 
-### 7.5 2000s ~ 현재: Mobile + Cloud + Content
+### §7.5 2000s ~ 현재: Mobile + Cloud + Content
 
 **2000년대**:
 - *WiFi 보급* — 가정·카페·공항
@@ -882,7 +896,7 @@ Layer 1 Physical:     bits (electrical/optical/radio signal)
 ![Figure 1.27 — End-to-end message transport. 책 p.69](/courses/networking/figures/ch01/fig-1-27.png)
 ![Figure 1.28 — Wireshark screenshot. 책 p.71](/courses/networking/figures/ch01/fig-1-28.png)
 
-### 7.6 *지속되는 원칙*
+### §7.6 *지속되는 원칙*
 
 50년 진화에도 *변하지 않은 것*:
 1. **Packet switching** — Kleinrock 의 theory 가 *여전히* 토대
@@ -895,7 +909,7 @@ Layer 1 Physical:     bits (electrical/optical/radio signal)
 
 ---
 
-## 자주 빠지는 함정
+## §8 자주 빠지는 함정
 
 | # | 함정 | 정정 |
 |--|--|--|
@@ -916,7 +930,7 @@ Layer 1 Physical:     bits (electrical/optical/radio signal)
 
 ---
 
-## 자가점검
+## §9 자가점검
 
 1. *Internet* 의 두 가지 정의 (nuts-and-bolts + services).
 2. *Protocol* 의 3 요소 (format, order, actions).
@@ -952,7 +966,7 @@ Layer 1 Physical:     bits (electrical/optical/radio signal)
 
 ---
 
-## 다음 학습으로
+## §10 다음 학습으로
 
 - **2장 (Application Layer)** — top-down 의 *첫 layer*. HTTP/1.1, HTTP/2, HTTP/3, DNS, SMTP, P2P (BitTorrent), socket programming
 - **3장 (Transport Layer)** — TCP 의 reliable data transfer, congestion control (Reno, CUBIC, BBR), UDP, QUIC
@@ -963,3 +977,9 @@ Layer 1 Physical:     bits (electrical/optical/radio signal)
 > Top-down approach 의 의미 — *application 의 요구* 부터 시작해 *물리적 구현* 까지 내려감. 1장의 *지도* 가 모든 후속 챕터의 *위치 + 동기* 를 보여준다. 다시 돌아오면서 *각 layer 의 service 가 왜 그런 모양인지* 깊이 이해될 것.
 
 > **공부 팁** — 이 장의 *수식·예제* 는 *암기보다 직접 계산*. 자기 가정의 ISP 속도, RTT (`ping`), traceroute hop 수를 측정하고 위 공식에 *직접 넣어* 보면 *직관이 강해짐*. *Wireshark* 로 자기 HTTP 요청을 *캡처* 해 *5 layer encapsulation* 을 *시각적으로* 보면 잊을 수 없는 학습.
+
+---
+
+## §11 한 줄 요약
+
+> **Internet = 중앙 통제 없는 *network of networks*. *protocol*(format·order·actions)로 말하고, bursty 트래픽을 *packet switching* 으로 통계 다중화한다. 성능은 *4 delay*(proc·queue·trans·prop)와 bottleneck throughput 으로 정량화되고, 전체는 *5-layer stack + encapsulation* 으로 조직된다. 1장은 2~8장 모든 어휘의 *지도* 다.**

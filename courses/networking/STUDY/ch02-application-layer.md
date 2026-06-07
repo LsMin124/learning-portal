@@ -3,6 +3,20 @@
 > *Computer Networking: A Top-Down Approach* (Kurose & Ross, 8th Global Edition, 2021) **Chapter 2** (책 p.113~212).
 > 2장은 *top-down 의 첫 layer*. 우리가 매일 사용하는 **HTTP, DNS, SMTP, BitTorrent, video streaming** 의 동작 + 그 *protocol 의 모양*. 1장의 *application 동기* 가 여기서 본격적으로 풀린다.
 
+---
+
+## §0 도입 — *우리가 매일 쓰는 layer*
+
+> **핵심 한 문장**: Application layer 는 network 의 *edge*(end system)에서만 돌고 core 의 router 는 건드리지 않는다 — 그래서 누구나 새 app 을 *Internet 자체의 변경 없이* 띄울 수 있고, 이 자유가 HTTP·DNS·BitTorrent·streaming 을 낳았다.
+
+2장의 출발점은 두 architecture — *client-server*(§1)와 *P2P* — 그리고 transport 에게 무엇을 요구하느냐(reliable·throughput·timing·security)는 §1 의 4요구다. 이 요구가 곧 TCP/UDP 선택(3장)을 결정한다.
+
+가장 중요한 사례는 *HTTP*(§2): *stateless* 라는 단순한 약속 위에 cookie·web cache·CDN 으로 *stateful* 세계를 쌓아 올린다. HTTP/1.1 → 2 → 3 의 진화는 "어떻게 더 적은 RTT 로 더 많이"라는 한 줄 동기로 읽힌다.
+
+DNS(§3)는 *분산 계층 데이터베이스* 가 단일 장애점 없이 전 세계 이름을 해석하는 법을, email(§4)·BitTorrent(§5)·DASH streaming(§6)은 각각 push/pull·fairness·adaptive 라는 서로 다른 설계 압력을 보여준다. §7 의 socket 으로 *직접* 만들어 보면 이 추상들이 손에 잡힌다.
+
+---
+
 ## 들어가기 전에
 
 - **선수 지식**: 1장 (encapsulation, protocol 의 3요소, host/router/ISP), HTTP·DNS 의 *명칭 정도* 익숙
@@ -21,9 +35,9 @@
 
 ---
 
-## 1. Principles of Network Applications
+## §1 Principles of Network Applications
 
-### 1.1 Application Architecture — 두 가지 모델
+### §1.1 Application Architecture — 두 가지 모델
 
 #### Client-Server
 
@@ -60,7 +74,7 @@
 - WhatsApp: client-server (E2E encryption 만 P2P 같이)
 - BitTorrent: P2P + *tracker* (peer 찾기)
 
-### 1.2 Process Communication
+### §1.2 Process Communication
 
 #### Process = *running program*
 
@@ -95,7 +109,7 @@ Socket 으로 application 이 *transport service* 사용. socket API 는 *OS 가
 - 6379: Redis
 - 27017: MongoDB
 
-### 1.3 Transport Service 의 4 가지 요구
+### §1.3 Transport Service 의 4 가지 요구
 
 application 마다 transport 에 *다른 요구*:
 
@@ -128,7 +142,7 @@ application 마다 transport 에 *다른 요구*:
 - *Banking, login* — TLS 필수
 - *Public information* — 옵션, but 현대는 *encrypted-by-default*
 
-### 1.4 Internet Transport Service — TCP vs UDP
+### §1.4 Internet Transport Service — TCP vs UDP
 
 ![Figure 2.4 — Internet transport protocol 의 service requirement 비교. 책 p.92](/courses/networking/figures/ch02/fig-2-4.png)
 
@@ -149,9 +163,9 @@ application 마다 transport 에 *다른 요구*:
 
 ---
 
-## 2. The Web and HTTP
+## §2 The Web and HTTP
 
-### 2.1 Web 의 구조
+### §2.1 Web 의 구조
 
 #### Web page = *base HTML* + *referenced objects*
 
@@ -181,7 +195,7 @@ scheme   hostname    port    path        query  fragment
 - *query* — `?key=value&key2=value2`
 - *fragment* — client-side only (browser 의 *anchor*)
 
-### 2.2 HTTP 의 동작
+### §2.2 HTTP 의 동작
 
 > **HTTP** = HyperText Transfer Protocol. *Web 의 application-layer protocol*. RFC 9110 (2022 reorganized).
 
@@ -241,7 +255,7 @@ $$\text{Total} = 2 \text{ RTT} + \text{file transmission time}$$
 
 HTTP/1.1 default — persistent + pipelining. 거의 모든 modern browser.
 
-### 2.3 HTTP Message Format
+### §2.3 HTTP Message Format
 
 #### Request
 
@@ -303,7 +317,7 @@ Set-Cookie: session_id=xyz789; HttpOnly; Secure\r\n
 | 4xx | Client error | **400 Bad Request**, 401 Unauthorized, **403 Forbidden**, **404 Not Found**, 429 Too Many Requests |
 | 5xx | Server error | **500 Internal Server Error**, 502 Bad Gateway, 503 Service Unavailable, 504 Gateway Timeout |
 
-### 2.4 User-Server State: Cookies
+### §2.4 User-Server State: Cookies
 
 > *HTTP is stateless*. But *web app needs login, cart, preferences*. → **cookie**.
 
@@ -335,7 +349,7 @@ Set-Cookie: session=abc; HttpOnly; Secure; SameSite=Strict; Max-Age=86400
 
 > **Cookie 의 윤리** — *3rd-party cookie* (광고용) 가 privacy 침해. Safari/Firefox 가 *block by default*. Chrome 의 *Privacy Sandbox* 가 대체 모색.
 
-### 2.5 Web Caching
+### §2.5 Web Caching
 
 > **Web cache** (= **proxy server**) 가 *client 와 origin server 사이* 에서 자주 요청되는 resource 를 *캐시*.
 
@@ -370,7 +384,7 @@ Origin 응답:
 
 ETag (entity tag) 도 같은 역할 — opaque hash 비교.
 
-### 2.6 HTTP/2 와 HTTP/3
+### §2.6 HTTP/2 와 HTTP/3
 
 #### HTTP/2 (RFC 7540, 2015)
 
@@ -396,7 +410,7 @@ ETag (entity tag) 도 같은 역할 — opaque hash 비교.
 - Chrome/Firefox/Safari 모두 지원
 - 약 30~50% 의 web traffic 이 HTTP/3 (CDN 통해)
 
-### 2.7 CDN — Content Delivery Networks
+### §2.7 CDN — Content Delivery Networks
 
 ![Figure 2.27 — CDN 의 architecture. 책 p.154](/courses/networking/figures/ch02/fig-2-27.png)
 
@@ -432,9 +446,9 @@ CDN provider (Akamai, Cloudflare, Fastly, AWS CloudFront) 가:
 
 ---
 
-## 3. DNS — The Internet's Directory Service
+## §3 DNS — The Internet's Directory Service
 
-### 3.1 Hostname ↔ IP Address
+### §3.1 Hostname ↔ IP Address
 
 > *Human-readable name* (www.google.com) ↔ *machine address* (142.250.46.110).
 
@@ -447,7 +461,7 @@ CDN provider (Akamai, Cloudflare, Fastly, AWS CloudFront) 가:
 - *Load distribution* — 같은 name 의 *여러 IP*
 - *Geo-routing* — region 별 다른 IP
 
-### 3.2 Distributed, Hierarchical Database
+### §3.2 Distributed, Hierarchical Database
 
 > *Single central server* 는 *single point of failure* + *너무 먼 거리* + *부하* + *유지보수*.
 
@@ -478,7 +492,7 @@ CDN provider (Akamai, Cloudflare, Fastly, AWS CloudFront) 가:
 - Public resolver: Google `8.8.8.8`, Cloudflare `1.1.1.1`
 - *Cache* 보유 — 자주 요청되는 name 의 결과 *짧은 TTL 동안* 저장
 
-### 3.3 DNS Query — Iterative vs Recursive
+### §3.3 DNS Query — Iterative vs Recursive
 
 ![Figure 2.19 — Iterative + recursive query. 책 p.128](/courses/networking/figures/ch02/fig-2-19.png)
 
@@ -512,7 +526,7 @@ Local → Host: "93.184.216.34"
 
 산업 패턴 — *host → local* 만 recursive, *local → root/TLD* 는 iterative.
 
-### 3.4 DNS Caching
+### §3.4 DNS Caching
 
 > 모든 *DNS server* 가 *cache* 보유 — 같은 query 의 *반복 비용 절약*.
 
@@ -528,7 +542,7 @@ Local → Host: "93.184.216.34"
 
 산업 — 보통 *5분 ~ 1시간*. *DNS-based load balancing* 의 *redirect* 는 짧은 TTL.
 
-### 3.5 DNS Records — *5 가지 핵심 type*
+### §3.5 DNS Records — *5 가지 핵심 type*
 
 | Type | 의미 | 예시 |
 |--|--|--|
@@ -544,7 +558,7 @@ Local → Host: "93.184.216.34"
 - **CAA** — *어떤 CA* 가 *cert 발급 가능* (보안)
 - **PTR** — reverse (IP → hostname)
 
-### 3.6 실용 DNS tool
+### §3.6 실용 DNS tool
 
 ```bash
 # A record query
@@ -567,7 +581,7 @@ $ dig @8.8.8.8 www.google.com
 $ dig -x 142.250.46.4
 ```
 
-### 3.7 DNS 의 취약성
+### §3.7 DNS 의 취약성
 
 #### DDoS
 
@@ -589,9 +603,9 @@ $ dig -x 142.250.46.4
 
 ---
 
-## 4. Electronic Mail in the Internet
+## §4 Electronic Mail in the Internet
 
-### 4.1 Email 의 3 가지 component
+### §4.1 Email 의 3 가지 component
 
 ![Figure 2.14 — Email system 의 구조. 책 p.116](/courses/networking/figures/ch02/fig-2-14.png)
 
@@ -599,7 +613,7 @@ $ dig -x 142.250.46.4
 2. **Mail servers (MTA)** — *sender 와 recipient 의 mailbox*. SMTP 로 전송
 3. **SMTP** — *mail server 끼리* + *MUA → MTA* 의 protocol
 
-### 4.2 SMTP — Simple Mail Transfer Protocol
+### §4.2 SMTP — Simple Mail Transfer Protocol
 
 > RFC 5321 (2008, 옛 RFC 821 의 update).
 
@@ -636,7 +650,7 @@ S: 221 Bye
 
 → 모든 byte 가 *human-readable*. 이게 *디버깅 + 학습 용이*.
 
-### 4.3 IMAP vs POP3 — *mailbox 에서 가져오기*
+### §4.3 IMAP vs POP3 — *mailbox 에서 가져오기*
 
 | | **POP3** (Post Office Protocol v3) | **IMAP** (Internet Message Access Protocol) |
 |--|--|--|
@@ -649,7 +663,7 @@ S: 221 Bye
 
 산업 현실 — Gmail, Outlook 365 등은 *IMAP* 표준. POP3 는 *legacy*.
 
-### 4.4 현대의 Email — *이메일 보안 의 진화*
+### §4.4 현대의 Email — *이메일 보안 의 진화*
 
 #### SPF (Sender Policy Framework)
 
@@ -675,9 +689,9 @@ example.com.   IN   TXT   "v=spf1 include:_spf.google.com ~all"
 
 ---
 
-## 5. Peer-to-Peer File Distribution — BitTorrent
+## §5 Peer-to-Peer File Distribution — BitTorrent
 
-### 5.1 P2P 의 *scalability* 우위
+### §5.1 P2P 의 *scalability* 우위
 
 #### Client-server 의 distribution time
 
@@ -701,7 +715,7 @@ $$d_{p2p} = \max\left( \frac{F}{u_s}, \frac{F}{d_{min}}, \frac{NF}{u_s + \sum_i 
 
 → P2P 의 *self-scalability* 가 결정적. *수십만 사용자에게 영화 배포* 같은 케이스에 우월.
 
-### 5.2 BitTorrent — *file sharing 의 표준*
+### §5.2 BitTorrent — *file sharing 의 표준*
 
 > Bram Cohen, 2001. *P2P file distribution 의 dominant* protocol.
 
@@ -724,7 +738,7 @@ File 을 *256 KB chunk* 로 분할. 각 chunk 가 *독립* 으로 distribute.
 - 드문 chunk 가 *swarm 에서 사라지면* 영원히 못 받음
 - *Rarity 우선* 으로 *전체 swarm 의 distribution 균형*
 
-### 5.3 Tit-for-tat — *Incentive*
+### §5.3 Tit-for-tat — *Incentive*
 
 > "*나에게 upload 해 주는 peer 에게* 더 빨리 upload".
 
@@ -737,7 +751,7 @@ File 을 *256 KB chunk* 로 분할. 각 chunk 가 *독립* 으로 distribute.
 
 → *free rider 가 자연스럽게 도태*. P2P 의 *분산 fairness*.
 
-### 5.4 산업의 P2P 응용
+### §5.4 산업의 P2P 응용
 
 - *BitTorrent* — 여전히 유효 (Linux ISO, large data set, archive)
 - *IPFS* — Interplanetary File System, *content-addressed* (hash-based)
@@ -747,9 +761,9 @@ File 을 *256 KB chunk* 로 분할. 각 chunk 가 *독립* 으로 distribute.
 
 ---
 
-## 6. Video Streaming and CDNs
+## §6 Video Streaming and CDNs
 
-### 6.1 DASH — Dynamic Adaptive Streaming over HTTP
+### §6.1 DASH — Dynamic Adaptive Streaming over HTTP
 
 > *HTTP 위의* video streaming. Netflix, YouTube, Twitch 의 표준.
 
@@ -790,7 +804,7 @@ trade-off:
 - *MPC* (Model Predictive Control) — 미래 N step 예측 후 최적화 (학계)
 - *Pensieve* (MIT) — *neural network* 학습한 ABR
 
-### 6.2 CDN 의 video distribution
+### §6.2 CDN 의 video distribution
 
 #### 산업 솔루션
 
@@ -815,9 +829,9 @@ trade-off:
 
 ---
 
-## 7. Socket Programming — *직접 만들어 보기*
+## §7 Socket Programming — *직접 만들어 보기*
 
-### 7.1 TCP Socket — Python 예제
+### §7.1 TCP Socket — Python 예제
 
 #### Server
 
@@ -864,7 +878,7 @@ client_sock.close()
 4. Server 가 `send()`, client 가 `recv()`
 5. `close()` — 4-way handshake (TCP FIN)
 
-### 7.2 UDP Socket — Python 예제
+### §7.2 UDP Socket — Python 예제
 
 #### Server
 
@@ -904,7 +918,7 @@ client_sock.close()
 | Order | 자동 정렬 | 임의 순서 |
 | Address per message | connection 한 번 | 매 datagram 명시 |
 
-### 7.3 산업 socket API — 더 복잡한 경우
+### §7.3 산업 socket API — 더 복잡한 경우
 
 - *Non-blocking + epoll/kqueue* — 한 thread 가 *수천 connection* 처리 (`nginx`, `Node.js`)
 - *Thread/process pool* — connection 별 동시 처리
@@ -913,7 +927,7 @@ client_sock.close()
 
 ---
 
-## 자주 빠지는 함정
+## §8 자주 빠지는 함정
 
 | # | 함정 | 정정 |
 |--|--|--|
@@ -932,7 +946,7 @@ client_sock.close()
 
 ---
 
-## 자가점검
+## §9 자가점검
 
 1. *Client-server* vs *P2P* 의 *3 가지 차이*.
 2. *Transport service* 의 4 가지 요구 (reliable, throughput, timing, security).
@@ -970,7 +984,7 @@ client_sock.close()
 
 ---
 
-## 다음 학습으로
+## §10 다음 학습으로
 
 - **3장 (Transport Layer)** — TCP 의 reliable data transfer, congestion control, UDP. *Mathis equation* 의 수학적 derivation.
 - **4-5장 (Network Layer)** — IP routing, BGP, *DNS query path 의 underlying routing*.
@@ -982,3 +996,9 @@ client_sock.close()
 > - `wireshark` — local network 의 HTTP/DNS packet 캡처
 > - `nc -v example.com 80` 후 `GET / HTTP/1.1` 직접 입력 — *raw HTTP* 체험
 > - Python `socket` 으로 *간단한 echo server* 구현
+
+---
+
+## §11 한 줄 요약
+
+> **Application layer 는 *edge*(end system)에서만 돌아 누구나 app 을 띄운다. *HTTP* 는 stateless 위에 cookie·cache·CDN 으로 stateful 을 쌓고 1.1→2→3 으로 RTT 를 줄였다. *DNS* 는 분산 계층 DB, email 은 push(SMTP)+pull(IMAP/POP), *BitTorrent* 는 tit-for-tat, streaming 은 *DASH* adaptive bitrate. §7 socket 으로 직접 구현하면 추상이 손에 잡힌다.**

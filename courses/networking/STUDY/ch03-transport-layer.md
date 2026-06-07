@@ -3,6 +3,20 @@
 > *Computer Networking: A Top-Down Approach* (Kurose & Ross, 8th Global Edition, 2021) **Chapter 3** (책 p.213~334, 책에서 가장 두꺼운 챕터).
 > 3장은 *process-to-process* 통신의 *abstraction*. **UDP** (minimal) vs **TCP** (full-featured). *Reliable data transfer*, *flow control*, *congestion control* 의 fundamental.
 
+---
+
+## §0 도입 — *신뢰할 수 없는 바닥 위에 신뢰를 쌓다*
+
+> **핵심 한 문장**: Transport layer 는 host-to-host 인 network layer 위에 *process-to-process* 추상을 얹고, packet 이 *유실·중복·순서 뒤바뀜* 되는 best-effort IP 위에서 TCP 가 어떻게 *완벽한 byte stream* 이라는 착시를 만드는지가 3장 전체의 이야기다.
+
+먼저 multiplexing/demultiplexing(§1) — port 하나로 수많은 process 를 구분하는 법 — 과 *minimal* 의 표본 UDP(§2)를 본다. 그다음 책의 백미: *RDT 를 원리부터*(§3) 쌓는다. sequence number·ACK·timeout 만으로 신뢰를 만들고, pipelining(§4, Go-Back-N vs Selective Repeat)으로 속도를 회복한다.
+
+TCP(§5)는 이 원리들의 *완성형* — handshake, flow control, 그리고 §6~§7 의 *congestion control*(Reno→CUBIC→BBR). "네트워크가 막혔는지 어떻게 *추측* 하는가"가 핵심 질문이다.
+
+마지막 §8 의 *QUIC* 은 TCP 의 한계(HOL blocking, 고정 IP)를 UDP 위에서 다시 설계한 *현재형* transport 로 HTTP/3 의 기반이다. 3장은 책에서 가장 두껍지만 *원리 → 완성형 → 차세대* 의 한 줄기로 읽으면 무너지지 않는다.
+
+---
+
 ## 들어가기 전에
 
 - **선수 지식**: 1~2장 (IP, encapsulation, socket, HTTP)
@@ -19,9 +33,9 @@
 
 ---
 
-## 1. Transport Layer 의 역할
+## §1 Transport Layer 의 역할
 
-### 1.1 Process-to-Process Delivery
+### §1.1 Process-to-Process Delivery
 
 > Network layer (IP) 는 *host-to-host* delivery. Transport 는 *process-to-process*.
 
@@ -29,7 +43,7 @@
 
 해결 — **port number** + *multiplexing/demultiplexing*.
 
-### 1.2 Multiplexing / Demultiplexing
+### §1.2 Multiplexing / Demultiplexing
 
 ![Figure 3.2 — Multiplexing + demultiplexing. 책 p.219](/courses/networking/figures/ch03/fig-3-2.png)
 
@@ -51,7 +65,7 @@
 - 다른 source 면 *다른 socket* — server 가 *수만 connection* 동시 처리 가능
 - *Web server* 가 한 port (80) 로 *수만 client* 받는 비결
 
-### 1.3 Transport 의 *2가지* — UDP vs TCP
+### §1.3 Transport 의 *2가지* — UDP vs TCP
 
 | | UDP | TCP |
 |--|--|--|
@@ -65,9 +79,9 @@
 
 ---
 
-## 2. UDP — Connectionless Transport
+## §2 UDP — Connectionless Transport
 
-### 2.1 UDP 의 *minimal* 서비스
+### §2.1 UDP 의 *minimal* 서비스
 
 > RFC 768 (1980). 가장 단순한 transport. *best-effort delivery*.
 
@@ -82,7 +96,7 @@ UDP 가 *안 하는* 일:
 - Flow control
 - Congestion control
 
-### 2.2 UDP Segment Structure
+### §2.2 UDP Segment Structure
 
 ![Figure 3.7 — UDP segment header (8 bytes). 책 p.229](/courses/networking/figures/ch03/fig-3-7.png)
 
@@ -101,7 +115,7 @@ UDP 가 *안 하는* 일:
 - *Length*: header + data 의 byte 수
 - *Checksum*: 16-bit one's complement sum (error detection)
 
-### 2.3 UDP 의 사용 사례
+### §2.3 UDP 의 사용 사례
 
 | App | 왜 UDP |
 |--|--|
@@ -112,7 +126,7 @@ UDP 가 *안 하는* 일:
 | **NTP** | Time sync, small message |
 | **QUIC** | 자체 reliability + congestion control, UDP 는 transport |
 
-### 2.4 UDP Checksum
+### §2.4 UDP Checksum
 
 > 16-bit one's complement sum of segment header + data + pseudo-header (src/dst IP, protocol).
 
@@ -126,9 +140,9 @@ UDP 가 *안 하는* 일:
 
 ---
 
-## 3. Principles of Reliable Data Transfer
+## §3 Principles of Reliable Data Transfer
 
-### 3.1 RDT 의 목표
+### §3.1 RDT 의 목표
 
 > *Unreliable channel* (loss, error, reorder) 위에서 *reliable byte stream* 제공.
 
@@ -143,7 +157,7 @@ UDP 가 *안 하는* 일:
 - **rdt 3.0**: + packet loss
 - **TCP**: + reorder, duplicate, congestion
 
-### 3.2 rdt 1.0 — Perfect Channel
+### §3.2 rdt 1.0 — Perfect Channel
 
 ```
 sender: send packet
@@ -152,7 +166,7 @@ receiver: extract data, deliver to upper layer
 
 trivial. Channel 의 *가정 약화* 가 핵심 학습.
 
-### 3.3 rdt 2.0 — Bit Errors
+### §3.3 rdt 2.0 — Bit Errors
 
 채널이 *bit 를 corrupt*. 어떻게 *retransmission* 시켜?
 
@@ -165,7 +179,7 @@ trivial. Channel 의 *가정 약화* 가 핵심 학습.
 
 문제 — *ACK/NAK 자체가 corrupt* 면?
 
-### 3.4 rdt 2.1 — Sequence Number
+### §3.4 rdt 2.1 — Sequence Number
 
 > Packet 에 *sequence number* (0 또는 1) 추가.
 
@@ -173,7 +187,7 @@ trivial. Channel 의 *가정 약화* 가 핵심 학습.
 
 stop-and-wait 의 *최소 필요 sequence number = 2* (0, 1 alternating).
 
-### 3.5 rdt 3.0 — Packet Loss
+### §3.5 rdt 3.0 — Packet Loss
 
 > Packet 또는 ACK 가 *완전히 사라짐*.
 
@@ -205,9 +219,9 @@ $$U_{sender} = \frac{d_{trans}}{RTT + d_{trans}} = \frac{8 \text{ μs}}{30 \text
 
 ---
 
-## 4. Pipelined Reliable Data Transfer
+## §4 Pipelined Reliable Data Transfer
 
-### 4.1 Pipelining 의 *효율 향상*
+### §4.1 Pipelining 의 *효율 향상*
 
 여러 *unacknowledged packet* 동시 in-flight:
 
@@ -221,7 +235,7 @@ $$U = \min\left( \frac{N \cdot d_{trans}}{RTT + d_{trans}}, 1 \right)$$
 
 이 *N* 이 *bandwidth-delay product (BDP)* 까지 도달해야 link 의 *full bandwidth* 활용.
 
-### 4.2 Go-Back-N (GBN)
+### §4.2 Go-Back-N (GBN)
 
 > Sender 가 *N 까지 unack* 가능. Receiver 가 *cumulative ACK* — "이 seq 까지 모두 받았음".
 
@@ -240,7 +254,7 @@ $$U = \min\left( \frac{N \cdot d_{trans}}{RTT + d_{trans}}, 1 \right)$$
 
 - *Burst loss* 시 *모든 후속 packet 재전송* → 낭비
 
-### 4.3 Selective Repeat (SR)
+### §4.3 Selective Repeat (SR)
 
 > Receiver 가 *out-of-order packet* 도 *buffer*. 각 packet 의 *개별 ACK*.
 
@@ -268,9 +282,9 @@ $$U = \min\left( \frac{N \cdot d_{trans}}{RTT + d_{trans}}, 1 \right)$$
 
 ---
 
-## 5. TCP — Transmission Control Protocol
+## §5 TCP — Transmission Control Protocol
 
-### 5.1 TCP 의 특성
+### §5.1 TCP 의 특성
 
 > RFC 793 (1981, 옛). 현대는 RFC 9293 (2022 consolidated). *Internet 의 가장 핵심 protocol*.
 
@@ -282,7 +296,7 @@ $$U = \min\left( \frac{N \cdot d_{trans}}{RTT + d_{trans}}, 1 \right)$$
 - **Flow control** — receiver buffer overflow 방지
 - **Congestion control** — network congestion 회피
 
-### 5.2 TCP Segment Structure
+### §5.2 TCP Segment Structure
 
 ![Figure 3.29 — TCP segment header. 책 p.262](/courses/networking/figures/ch03/fig-3-29.png)
 
@@ -311,7 +325,7 @@ $$U = \min\left( \frac{N \cdot d_{trans}}{RTT + d_{trans}}, 1 \right)$$
 - **Receive window (rwnd)** — receiver 의 *남은 buffer*
 - **Flags**: SYN (open), FIN (close), RST (reset), ACK (ack valid), PSH (push to app), URG
 
-### 5.3 Sequence Number — Byte-stream
+### §5.3 Sequence Number — Byte-stream
 
 > TCP 의 *seq 는 byte 단위*, segment 단위가 아님.
 
@@ -323,7 +337,7 @@ $$U = \min\left( \frac{N \cdot d_{trans}}{RTT + d_{trans}}, 1 \right)$$
 
 ACK 도 byte 단위. *"seq 1000 까지 모두 받음, 다음 1001 보내"*.
 
-### 5.4 TCP Connection Establishment — 3-way Handshake
+### §5.4 TCP Connection Establishment — 3-way Handshake
 
 ![Figure 3.39 — TCP 3-way handshake. 책 p.281](/courses/networking/figures/ch03/fig-3-39.png)
 
@@ -351,7 +365,7 @@ Client                              Server
 - 2 step 만 으로는 *delayed packet* 이 *fake connection* 시작 위험
 - 3 step 으로 *양쪽이 서로의 SYN 받음 확인*
 
-### 5.5 TCP Connection Termination — 4-way Handshake
+### §5.5 TCP Connection Termination — 4-way Handshake
 
 ```
 Client                              Server
@@ -365,7 +379,7 @@ Client                              Server
 
 *Full-duplex* 이라 *양방향 close* 각각 처리. **TIME_WAIT** 2*MSL (= 2 분, 최대 segment lifetime) 동안 *delayed packet 흡수*.
 
-### 5.6 TCP RTT 추정 + Timer
+### §5.6 TCP RTT 추정 + Timer
 
 #### EWMA — Exponentially Weighted Moving Average
 
@@ -388,7 +402,7 @@ $$TimeoutInterval = EstimatedRTT + 4 \cdot DevRTT$$
 
 *Margin 4 × DevRTT* — variance 가 큰 link 에 더 큰 timeout.
 
-### 5.7 Fast Retransmit
+### §5.7 Fast Retransmit
 
 > *Timeout 기다리지 않고* loss 빠르게 감지.
 
@@ -401,7 +415,7 @@ $$TimeoutInterval = EstimatedRTT + 4 \cdot DevRTT$$
 
 → Timeout (보통 ~3 RTT) 보다 *훨씬 빠른 recovery*.
 
-### 5.8 TCP Flow Control
+### §5.8 TCP Flow Control
 
 > Receiver 의 *buffer overflow* 방지.
 
@@ -422,9 +436,9 @@ rwnd = BufferSize - (LastByteRcvd - LastByteRead)
 
 ---
 
-## 6. Principles of Congestion Control
+## §6 Principles of Congestion Control
 
-### 6.1 Congestion 의 *비용*
+### §6.1 Congestion 의 *비용*
 
 ![Figure 3.46 — Throughput vs offered load. 책 p.292](/courses/networking/figures/ch03/fig-3-46.png)
 
@@ -434,7 +448,7 @@ Offered load ↑ → throughput ↑ (까지는 잘 됨). Load > capacity 면:
 
 이게 **congestion collapse** — 1980년대 NSFNET 의 실제 사고. throughput 이 *0 에 가깝게 떨어짐*.
 
-### 6.2 두 접근
+### §6.2 두 접근
 
 - **End-to-end** — sender 가 *loss/delay 관찰* 후 self-throttle. *TCP 의 방식*.
 - **Network-assisted** — router 가 *explicit feedback* 제공 (ECN — Explicit Congestion Notification).
@@ -443,9 +457,9 @@ Offered load ↑ → throughput ↑ (까지는 잘 됨). Load > capacity 면:
 
 ---
 
-## 7. TCP Congestion Control
+## §7 TCP Congestion Control
 
-### 7.1 *AIMD* — Additive Increase, Multiplicative Decrease
+### §7.1 *AIMD* — Additive Increase, Multiplicative Decrease
 
 ![Figure 3.50 — AIMD 의 sawtooth. 책 p.298](/courses/networking/figures/ch03/fig-3-50.png)
 
@@ -457,7 +471,7 @@ Sender 가 *congestion window (cwnd)* 보유:
 
 → *sawtooth* pattern. 결과적 *공정한 sharing*.
 
-### 7.2 TCP Reno — 4 phase
+### §7.2 TCP Reno — 4 phase
 
 ![Figure 3.53 — TCP Reno 의 4 phase. 책 p.302](/courses/networking/figures/ch03/fig-3-53.png)
 
@@ -485,7 +499,7 @@ Sender 가 *congestion window (cwnd)* 보유:
 - ssthresh = cwnd / 2
 - *cwnd = 1 MSS* — slow start 다시 시작
 
-### 7.3 TCP CUBIC — 현대 default
+### §7.3 TCP CUBIC — 현대 default
 
 > Linux 의 *default*. *High BDP* network 에 최적화.
 
@@ -502,7 +516,7 @@ $$cwnd(t) = C \cdot (t - K)^3 + W_{max}$$
 - *그 후 천천히* probing
 - *High-BDP* network 에서 Reno 보다 *훨씬 빠른 recovery*
 
-### 7.4 TCP BBR — 2016년 Google
+### §7.4 TCP BBR — 2016년 Google
 
 > Loss 기반이 아닌 *bandwidth + RTT 측정* 기반.
 
@@ -517,7 +531,7 @@ $$cwnd(t) = C \cdot (t - K)^3 + W_{max}$$
 - Cloudflare 의 일부
 - Linux 4.9+ option
 
-### 7.5 Throughput 식 — Mathis Equation
+### §7.5 Throughput 식 — Mathis Equation
 
 steady-state TCP throughput 의 *근사*:
 
@@ -530,9 +544,9 @@ $$T \approx \frac{MSS}{RTT \cdot \sqrt{p}}$$
 
 ---
 
-## 8. QUIC — Modern Transport
+## §8 QUIC — Modern Transport
 
-### 8.1 동기
+### §8.1 동기
 
 TCP 의 한계:
 - *3-way handshake* 의 1 RTT
@@ -540,7 +554,7 @@ TCP 의 한계:
 - *TLS 별도 handshake* — 추가 1 RTT
 - *Connection migration 어려움* — IP 변경 시 connection 끊김 (mobile 의 WiFi↔cellular)
 
-### 8.2 QUIC 의 해결
+### §8.2 QUIC 의 해결
 
 > Google 2012 시작, IETF 표준화 2021 (RFC 9000).
 
@@ -551,14 +565,14 @@ TCP 의 한계:
 - **Connection ID** — IP 바뀌어도 *connection 유지*
 - **Forward error correction** (옵션) — packet loss 일부 회복
 
-### 8.3 QUIC 의 산업 채택
+### §8.3 QUIC 의 산업 채택
 
 - **HTTP/3** 의 transport
 - 2026 현재 *Internet traffic 의 30~50%*
 - Google, Cloudflare, Facebook, Akamai 가 *default*
 - Chrome, Firefox, Safari 모두 지원
 
-### 8.4 TCP vs QUIC 의 비교
+### §8.4 TCP vs QUIC 의 비교
 
 | | TCP | QUIC |
 |--|--|--|
@@ -573,7 +587,7 @@ TCP 의 한계:
 
 ---
 
-## 자주 빠지는 함정
+## §9 자주 빠지는 함정
 
 | # | 함정 | 정정 |
 |--|--|--|
@@ -592,7 +606,7 @@ TCP 의 한계:
 
 ---
 
-## 자가점검
+## §10 자가점검
 
 1. *Multiplexing/demultiplexing* 의 *UDP 와 TCP 차이* (2-tuple vs 4-tuple).
 2. UDP 의 *5 가지 service 부재*.
@@ -626,7 +640,7 @@ TCP 의 한계:
 
 ---
 
-## 다음 학습으로
+## §11 다음 학습으로
 
 - **4-5장 (Network Layer)** — TCP 의 *underlying transport* — IP routing, queueing
 - **8장 (Security)** — TLS 1.3 의 handshake details + QUIC 의 *built-in* TLS
@@ -639,3 +653,9 @@ TCP 의 한계:
 > - `tc qdisc add dev eth0 root netem delay 100ms loss 1%` — *artificial RTT/loss* injection
 > - `iperf3 -c server` — bandwidth measurement
 > - Wireshark 의 *TCP Stream Graph* — sequence number + ACK 시각화
+
+---
+
+## §12 한 줄 요약
+
+> **Transport 는 best-effort IP 위에 *process-to-process* + *신뢰* 를 얹는다. port 로 (de)mux, UDP 는 minimal, TCP 는 seq·ACK·timeout 으로 RDT 를, pipelining(GBN·SR)으로 속도를, flow/congestion control(Reno·CUBIC·BBR)로 안정을 얻는다. *QUIC* 은 UDP 위에서 HOL blocking·handshake 를 재설계한 HTTP/3 의 기반이다.**

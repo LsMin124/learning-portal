@@ -34,6 +34,10 @@
 
 ## §1 Network security 의 *4 요구*
 
+![Figure 8.1 — sender·receiver·intruder (Alice·Bob·Trudy). 책 p.609](/courses/networking/figures/ch08/fig-8-1.png)
+
+> 직관: 보안의 기본 등장인물 — Alice(송신)·Bob(수신)·Trudy(도청·변조·위장). 네트워크 보안은 *Trudy 가 channel 의 모든 것을 본다* 고 가정하고 설계한다.
+
 **CIA + 1**:
 
 | 요구 | 의미 |
@@ -51,6 +55,10 @@
 ## §2 Symmetric key cryptography
 
 ### §2.1 기본 원리
+
+![Figure 8.2 — cryptographic components. 책 p.611](/courses/networking/figures/ch08/fig-8-2.png)
+
+> 직관: plaintext → (key K_A) encryption → ciphertext → (key K_B) decryption → plaintext. *symmetric* 은 K_A=K_B, *asymmetric* 은 다른 키쌍이다.
 
 같은 key 로 encrypt + decrypt:
 $$C = E_K(P), \quad P = D_K(C)$$
@@ -76,6 +84,10 @@ $$C = E_K(P), \quad P = D_K(C)$$
 
 ### §2.3 Mode of operation
 
+![Figure 8.5 — block cipher 의 예. 책 p.616](/courses/networking/figures/ch08/fig-8-5.png)
+
+> 직관: 입력을 블록으로 쪼개 *치환(T_i) + 섞기(scramble)* 를 *n 라운드* 반복한다. AES 가 이 구조의 표준 — 라운드를 거듭할수록 평문-암호문 관계가 흩어진다(confusion·diffusion).
+
 | Mode | 동작 | 특징 |
 |--|--|--|
 | ECB | 각 block 독립 | *Pattern 노출 — 절대 사용 X* |
@@ -99,6 +111,10 @@ $$C = E_K(P), \quad P = D_K(C)$$
 ## §3 Asymmetric (public key) cryptography
 
 ### §3.1 기본 원리
+
+![Figure 8.6 — public key cryptography. 책 p.619](/courses/networking/figures/ch08/fig-8-6.png)
+
+> 직관: Bob 의 *공개키* K_B+ 로 누구나 암호화하지만, *개인키* K_B− 를 가진 Bob 만 복호화한다. key 분배 문제를 푼 결정적 아이디어 — 단, 느리다.
 
 각 측이 2 key — public (공개) + private (비밀).
 
@@ -139,6 +155,10 @@ Asymmetric 은 100~1000x 느림.
 
 ### §4.1 Hash function
 
+![Figure 8.7 — hash function. 책 p.625](/courses/networking/figures/ch08/fig-8-7.png)
+
+> 직관: 임의 길이 message → *고정 길이* hash(many-to-one). 같은 입력은 같은 출력, 한 비트만 바뀌어도 전혀 다른 값(avalanche). 무결성·signature 의 토대.
+
 **Property**:
 - Fixed output (256 bit SHA-256)
 - One-way — hash → input 불가
@@ -155,11 +175,19 @@ Asymmetric 은 100~1000x 느림.
 
 ### §4.2 HMAC
 
+![Figure 8.9 — message authentication code (MAC). 책 p.627](/courses/networking/figures/ch08/fig-8-9.png)
+
+> 직관: message m 에 *공유 비밀 s* 를 붙여 hash → H(m+s) 를 함께 전송. 수신측이 같은 s 로 다시 계산해 비교 — s 를 모르면 위조 불가하므로 *무결성 + 출처 인증*.
+
 $$HMAC(K, M) = H((K \oplus opad) || H((K \oplus ipad) || M))$$
 
 **한계**: 두 측 same key 필요, *non-repudiation 없음*.
 
 ### §4.3 Digital signature
+
+![Figure 8.10 — digital signature 생성. 책 p.629](/courses/networking/figures/ch08/fig-8-10.png)
+
+> 직관: Bob 이 자기 *개인키* 로 message(보통 그 hash)를 암호화한 것이 서명. 누구나 Bob 의 *공개키* 로 풀어 확인 → "Bob 만 만들 수 있었다"는 *부인봉쇄(non-repudiation)*.
 
 **Process** (RSA):
 1. $S = \text{sign}_{K_{priv}}(\text{hash}(M))$
@@ -206,6 +234,10 @@ $$HMAC(K, M) = H((K \oplus opad) || H((K \oplus ipad) || M))$$
 
 ### §5.3 PKI
 
+![Figure 8.14 — CA 가 Bob 의 공개키를 인증. 책 p.634](/courses/networking/figures/ch08/fig-8-14.png)
+
+> 직관: "이 공개키가 진짜 Bob 것"임을 신뢰된 *CA* 가 자기 개인키로 서명한 게 *인증서*. 우리는 OS/브라우저에 내장된 root CA 만 믿으면 되고, 그 신뢰가 chain 으로 퍼진다.
+
 **Trust 문제**: "이 public key 가 진짜 google.com 의 것?"
 
 **CA**:
@@ -248,6 +280,10 @@ Root CA (self-signed)
 | TLS 1.3 | 2018 | 현재 표준 |
 
 ### §6.2 TLS 1.2 handshake
+
+![Figure 8.25 — almost-TLS handshake (TCP 위에서). 책 p.646](/courses/networking/figures/ch08/fig-8-25.png)
+
+> 직관: (a) TCP 3-way → (b) TLS hello + *인증서* → (c) client 가 master secret 을 server 의 *공개키로 암호화*해 전달. 이후 이 secret 으로 만든 *대칭키* 로 빠르게 통신(hybrid).
 
 ```
 Client                       Server
@@ -327,6 +363,10 @@ Components: key exchange + auth + encryption + MAC.
 
 ### §7.2 VPN
 
+![Figure 8.27 — virtual private network (VPN). 책 p.652](/courses/networking/figures/ch08/fig-8-27.png)
+
+> 직관: 공개 Internet 위에서 IPsec 으로 *암호화된 터널* 을 만들어, 멀리 떨어진 지사·재택 노트북을 *사설망처럼* 잇는다. 외부엔 IP+IPsec header 만 보이고 payload 는 암호화된다.
+
 | 종류 | 의미 |
 |--|--|
 | Site-to-site | 본부 ↔ 지사 |
@@ -371,6 +411,10 @@ Components: key exchange + auth + encryption + MAC.
 ## §9 Firewall, IDS, IPS
 
 ### §9.1 Firewall 종류
+
+![Figure 8.34 — administered network 와 외부 사이의 firewall. 책 p.667](/courses/networking/figures/ch08/fig-8-34.png)
+
+> 직관: firewall 은 내부망과 public Internet *경계* 에 앉아 정책에 맞는 트래픽만 통과시킨다 — 그러나 perimeter 방어만으론 내부 위협을 못 막아 zero trust 로 이어진다.
 
 | | 동작 | 특징 |
 |--|--|--|

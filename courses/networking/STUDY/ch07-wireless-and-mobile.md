@@ -78,6 +78,10 @@ WiFi 5: B=80 MHz, SNR=30 dB → C ≈ 800 Mbps. 실제 ~700 Mbps.
 
 ### §1.5 Hidden node 문제
 
+![Figure 7.4 — hidden terminal 문제 (장애물 + fading). 책 p.538](/courses/networking/figures/ch07/fig-7-4.png)
+
+> 직관: A·C 가 *서로의 신호를 못 들으면*(산·거리로 가려져) 둘 다 B 에게 동시에 보내 충돌한다 — 충돌을 *당사자가 모른다*. 유선 CSMA/CD 가 무선에서 안 통하는 이유.
+
 A, B 가 서로 못 들음 (멀리), 둘 다 C 통신 → 둘이 *동시 transmit* → C 에서 충돌. A, B 가 *충돌 안 보임* → retry 안 함.
 
 **해결 — RTS/CTS**:
@@ -95,6 +99,10 @@ A→B 통신 중 C 가 D 에 transmit 하려 함. C 가 A 신호 들음 (busy) �
 ---
 
 ## §2 Wireless link 표준 비교
+
+![Figure 7.2 — WiFi·cellular·Bluetooth 의 전송속도 vs 범위. 책 p.534](/courses/networking/figures/ch07/fig-7-2.png)
+
+> 직관: 무선 표준은 *속도와 범위의 trade-off* 위에 놓인다 — Bluetooth(근거리 저속) → WiFi(실내 고속) → 4G/5G(원거리). 축이 비선형임에 유의.
 
 | 표준 | 범위 | 속도 | 사용 |
 |--|--|--|--|
@@ -128,6 +136,10 @@ A→B 통신 중 C 가 D 에 transmit 하려 함. C 가 A 신호 들음 (busy) �
 
 ### §3.2 Architecture
 
+![Figure 7.7 — IEEE 802.11 LAN architecture. 책 p.544](/courses/networking/figures/ch07/fig-7-7.png)
+
+> 직관: 기본 단위는 *BSS*(AP 1 + 그에 붙은 station 들). 여러 BSS 가 switch/router 로 묶여 Internet 에 닿는다. station 은 한 AP 와 *association* 으로 결합한다.
+
 **Infrastructure**:
 ```
                  ↓ Internet
@@ -151,6 +163,10 @@ A→B 통신 중 C 가 D 에 transmit 하려 함. C 가 A 신호 들음 (busy) �
 
 ### §3.4 802.11 frame — 4 address
 
+![Figure 7.13 — 802.11 frame 의 frame-control 필드. 책 p.554](/courses/networking/figures/ch07/fig-7-13.png)
+
+> 직관: frame control 의 *To AP / From AP* 비트가 4개 주소 필드의 해석을 정한다. Protocol version·Type·Subtype 으로 frame 종류(관리/제어/데이터)를 구분한다.
+
 ```
 | Frame Control | Duration | Addr1 | Addr2 | Addr3 | SeqCtrl | Addr4 | Data | FCS |
 ```
@@ -160,6 +176,10 @@ A→B 통신 중 C 가 D 에 transmit 하려 함. C 가 A 신호 들음 (busy) �
 - AP → AP (mesh): Addr 4 필요
 
 ### §3.5 CSMA/CA + RTS/CTS
+
+![Figure 7.12 — RTS/CTS 를 이용한 충돌 회피. 책 p.552](/courses/networking/figures/ch07/fig-7-12.png)
+
+> 직관: data 전에 짧은 *RTS→CTS* 를 교환해 채널을 예약한다. CTS 를 들은 다른 노드는 그동안 *defer* — hidden terminal 충돌을 피한다. SIFS<DIFS 라 ACK·CTS 가 우선권을 갖는다.
 
 ```
 1. Carrier sense — idle?
@@ -172,6 +192,10 @@ A→B 통신 중 C 가 D 에 transmit 하려 함. C 가 A 신호 들음 (busy) �
 SIFS < DIFS — ACK 가 우선.
 
 ### §3.6 802.11 association
+
+![Figure 7.9 — AP 탐색: active vs passive scanning. 책 p.547](/courses/networking/figures/ch07/fig-7-9.png)
+
+> 직관: *passive* 는 AP 가 주기적으로 뿌리는 beacon 을 듣고, *active* 는 station 이 probe 를 broadcast 해 응답을 받는다. 이후 association request/response 로 한 AP 에 붙는다.
 
 1. **Beacon** — AP 주기적 broadcast
 2. **Probe request** — Device 의 검색
@@ -227,6 +251,10 @@ SIFS < DIFS — ACK 가 우선.
 
 ### §4.2 Architecture (4G LTE)
 
+![Figure 7.17 — 4G LTE architecture 의 구성요소. 책 p.565](/courses/networking/figures/ch07/fig-7-17.png)
+
+> 직관: *radio access network*(base station=eNodeB) + *all-IP EPC* — MME(이동성 관리)·S-GW/P-GW(데이터 경로)·HSS(가입자 DB). control 과 data 평면이 분리돼 있다.
+
 ```
 [UE] ↔ [eNB] ↔ [EPC] ↔ [Internet]
 ```
@@ -249,6 +277,10 @@ SIFS < DIFS — ACK 가 우선.
 - 5G mmWave — 100~500 m
 
 ### §4.4 Handover
+
+![Figure 7.30 — base station 간 handover 단계. 책 p.590](/courses/networking/figures/ch07/fig-7-30.png)
+
+> 직관: source→target base station 으로 옮길 때 MME·S-GW 가 경로를 재설정하고(①~⑤), 잠시 *간접 전달*(source→target) 후 직접 경로로 전환(⑥⑦)해 끊김을 최소화한다.
 
 **Soft handover** (CDMA): 두 cell 동시 연결, smooth.
 **Hard handover** (GSM, LTE): 순차 전환, < 100 ms disconnection. Make-before-break 완화.
@@ -277,9 +309,17 @@ SIFS < DIFS — ACK 가 우선.
 
 ### §5.1 문제
 
+![Figure 7.24 — network 관점의 다양한 이동성 수준. 책 p.579](/courses/networking/figures/ch07/fig-7-24.png)
+
+> 직관: 이동성은 스펙트럼이다 — (a) 옮길 때 꺼짐 → (d) 여러 provider 를 넘나들며 *연결 유지*. 어려운 쪽일수록 handover·주소 유지 기술이 필요하다.
+
 Host 이동 → IP 변경. 기존 연결 (VoIP call, TCP) 끊김.
 
 ### §5.2 Mobile IP (RFC 5944)
+
+![Figure 7.26 — mobile device 로의 indirect routing. 책 p.583](/courses/networking/figures/ch07/fig-7-26.png)
+
+> 직관: correspondent 는 device 의 *home network* 로 보내고(①②), home gateway 가 *visited network* 로 tunnel(④a)해 전달한다. 이 *triangle routing* 의 비효율이 Mobile IP 가 잘 안 쓰이는 이유.
 
 **원리**:
 - **Home Agent** — host 의 home network router

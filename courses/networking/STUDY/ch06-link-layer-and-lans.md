@@ -32,6 +32,10 @@
 
 ## §1 Link layer 의 *역할*
 
+![Figure 6.1 — wireless host 와 server 사이 6개 link-layer hop. 책 p.451](/courses/networking/figures/ch06/fig-6-1.png)
+
+> 직관: 한 통신 경로는 *서로 다른 link*(WiFi·Ethernet·광)들의 연속이다. 각 hop 마다 link layer 가 datagram 을 그 link 에 맞는 frame 으로 새로 감싸 다음 노드로 넘긴다.
+
 Network layer 의 datagram 은 *수많은 link* 거침:
 - Host → router 1 — Ethernet
 - Router 1 → router 2 — 광섬유 (SONET)
@@ -97,6 +101,10 @@ Link 의 physical medium 이 *완벽 아님*:
 
 ### §2.4 CRC
 
+![Figure 6.6 — CRC. 책 p.459](/courses/networking/figures/ch06/fig-6-6.png)
+
+> 직관: 데이터 D 뒤에 r비트 CRC R 을 붙여, 전체 `D·2^r XOR R` 가 생성 다항식 G 로 *나누어떨어지게* 만든다. 수신측이 G 로 나눠 나머지가 0 이 아니면 오류 — burst error 검출에 강하다.
+
 **원리**:
 - Frame data $D$ 와 generator $G$ 의 나눗셈
 - *나머지* 가 CRC bit
@@ -142,6 +150,10 @@ Link 의 physical medium 이 *완벽 아님*:
 
 ### §3.2 *3 부류*
 
+![Figure 6.8 — 다양한 multiple access 채널. 책 p.462](/courses/networking/figures/ch06/fig-6-8.png)
+
+> 직관: 케이블(shared wire)·WiFi(shared wireless)·위성, 심지어 *칵테일 파티* 까지 — 하나의 매체를 여럿이 나눠 쓰는 모든 상황이 같은 문제다: "누가 언제 말할 것인가".
+
 **1. Channel partitioning** — 시간/주파수/code 나눔. 충돌 없음, 효율 ↓.
 **2. Random access** — 충돌 허용 + 재전송. 효율 ↑ (light), 불안정 (heavy).
 **3. Taking turns** — Token / polling. Predictable, 복잡.
@@ -163,6 +175,10 @@ Link 의 physical medium 이 *완벽 아님*:
 - Max throughput = $1/e \approx 0.37$
 
 ### §3.5 CSMA
+
+![Figure 6.13 — CSMA/CD (collision detection). 책 p.472](/courses/networking/figures/ch06/fig-6-13.png)
+
+> 직관: 두 노드가 *동시에* 보내 신호가 겹치면(space-time 다이어그램의 교차), 전송 중 들으며 충돌을 *감지하는 즉시 중단*(abort)한다 — 유선의 full-duplex 청취가 가능해 CSMA/CD 가 성립한다.
 
 **CSMA**: 송신 전 carrier sense.
 
@@ -221,6 +237,10 @@ n=16 → give up
 
 ### §4.2 IP vs MAC
 
+![Figure 6.17 — LAN 의 각 interface 는 IP + MAC 둘 다 가진다. 책 p.481](/courses/networking/figures/ch06/fig-6-17.png)
+
+> 직관: 모든 adapter 는 *MAC 주소*(link layer, 영구)와 *IP 주소*(network layer, 위치)를 동시에 가진다. 같은 subnet 안 통신은 MAC 으로, subnet 을 넘으면 router 가 IP 로 중계한다.
+
 | | IP | MAC |
 |--|--|--|
 | Layer | Network | Link |
@@ -278,6 +298,10 @@ n=16 → give up
 
 ### §5.2 Ethernet frame format
 
+![Figure 6.20 — Ethernet frame 구조. 책 p.486](/courses/networking/figures/ch06/fig-6-20.png)
+
+> 직관: Preamble(동기) · Dest/Source MAC · Type(상위 protocol) · Data · CRC. type 으로 IP/ARP 를 구분하고, CRC 로 오류를 검출해 *조용히 버린다*(재전송은 상위 몫).
+
 ```
 | Preamble (7B) | SFD (1B) | Dst MAC (6B) | Src MAC (6B) |
 | EtherType (2B) | Data (46~1500B) | CRC (4B) |
@@ -305,6 +329,10 @@ n=16 → give up
 현대 — switch only. Hub 는 박물관.
 
 ### §5.4 Switch self-learning
+
+![Figure 6.23 — switch self-learning (MAC 학습). 책 p.493](/courses/networking/figures/ch06/fig-6-23.png)
+
+> 직관: switch 는 들어온 frame 의 *source MAC + 도착 interface* 를 표에 기록한다. 다음에 그 MAC 이 목적지면 *해당 port 로만* 보내고(아니면 flood), 사람 개입 없이 스스로 표를 채운다.
 
 ```
 Switch MAC table:
@@ -334,6 +362,10 @@ Switch MAC table:
 
 ### §6.1 *왜* VLAN
 
+![Figure 6.25 — 2개 VLAN 이 설정된 단일 switch. 책 p.498](/courses/networking/figures/ch06/fig-6-25.png)
+
+> 직관: 한 물리 switch 의 port 들을 *논리 그룹*(EE: 2–8, CS: 9–15)으로 나눠, 같은 장비를 쓰면서도 broadcast domain 을 분리한다 — 부서 격리·보안의 기본.
+
 - 같은 switch 의 모든 port = 같은 broadcast domain
 - 큰 회사 — 너무 큰 broadcast
 - Department 분리
@@ -342,6 +374,10 @@ Switch MAC table:
 → *논리적 분리*.
 
 ### §6.2 802.1Q tagging
+
+![Figure 6.27 — 원본 Ethernet frame(위) vs 802.1Q-tagged frame(아래). 책 p.500](/courses/networking/figures/ch06/fig-6-27.png)
+
+> 직관: VLAN trunk 는 frame 에 4 byte *802.1Q tag*(TPID + VLAN ID 등)를 끼워 "이 frame 이 어느 VLAN 소속"인지 표시한다. 내용이 바뀌므로 CRC 는 재계산된다.
 
 ```
 | Dst MAC | Src MAC | 802.1Q tag | EtherType | Data | CRC |
@@ -378,6 +414,10 @@ Trunk 의 기본 — untagged frame 의 VLAN.
 ## §7 MPLS
 
 ### §7.1 *왜* MPLS
+
+![Figure 6.28 — MPLS header (link·network layer 사이). 책 p.502](/courses/networking/figures/ch06/fig-6-28.png)
+
+> 직관: MPLS 는 IP header *앞에* 짧은 *label*(+Exp·S·TTL)을 끼운다. router 는 IP longest-prefix 대신 *label* 만 보고 빠르게 forwarding — "2.5 계층"으로 불리는 이유.
 
 - LPM 보다 빠름
 - Explicit path (traffic engineering)
@@ -439,6 +479,10 @@ Trunk 의 기본 — untagged frame 의 VLAN.
 
 ### §8.2 Topology
 
+![Figure 6.30 — 계층적 topology 의 datacenter network. 책 p.506](/courses/networking/figures/ch06/fig-6-30.png)
+
+> 직관: border→access→tier-1→tier-2→TOR→server racks 의 트리. 하지만 server↔server(east-west) traffic 이 폭증하며 이 전통 트리의 한계가 드러나고, spine-leaf 로 진화하는 동기가 된다.
+
 **Hierarchical** (옛):
 - Core → Aggregation → Edge → Server
 - Bandwidth oversubscription
@@ -491,6 +535,10 @@ Server Server Server
 `https://google.com` fetch:
 
 ### §9.1 단계
+
+![Figure 6.33 — router 로 연결된 3개 subnet. 책 p.523](/courses/networking/figures/ch06/fig-6-33.png)
+
+> 직관: 한 packet 이 출발 host → switch(같은 subnet, MAC) → router(subnet 경계, IP) → … 로 가며, 매 hop 에서 *frame 은 새로 만들어지고 IP datagram 은 유지* 되는 전 과정의 무대다.
 
 1. **DHCP** — 새 device IP (DORA)
 2. **ARP** — gateway MAC

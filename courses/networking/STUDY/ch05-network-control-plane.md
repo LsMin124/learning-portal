@@ -38,6 +38,10 @@ Network 를 *graph* 로 모델링:
 
 **Task**: source A → destination B 의 *least-cost path*.
 
+![Figure 5.3 — network 의 추상 graph 모델. 책 p.381](/courses/networking/figures/ch05/fig-5-3.png)
+
+> 직관: routing 은 결국 *graph 최단경로* 문제다 — router=vertex, link=edge, 숫자=cost. 이 추상화 위에서 Dijkstra(LS)·Bellman-Ford(DV)가 돈다.
+
 ### §1.1 Cost 의 의미
 
 Cost 의 종류:
@@ -53,6 +57,10 @@ $$\text{Cost} = K_1 \cdot BW + K_2 \cdot \frac{BW}{256-Load} + K_3 \cdot Delay +
 → 현실의 cost = *operator policy 의 표현*.
 
 ### §1.2 Routing algorithm 의 *2 부류*
+
+![Figure 5.1 — Per-router control — 라우터마다 routing algorithm. 책 p.378](/courses/networking/figures/ch05/fig-5-1.png)
+
+> 직관: 전통 방식은 *각 router 안에* routing algorithm 이 들어 있어, 이웃과 메시지를 주고받아 *스스로* forwarding table 을 만든다. OSPF·BGP 가 이 분산 모델이다.
 
 | | Link State (LS) | Distance Vector (DV) |
 |--|--|--|
@@ -117,6 +125,10 @@ D --1-- E --3-- F
 
 → 최단: A → B → C → F (cost 7).
 
+![Figure 5.4 — node u 의 least-cost path tree 와 forwarding table. 책 p.386](/courses/networking/figures/ch05/fig-5-4.png)
+
+> 직관: Dijkstra 의 결과는 source(u) 를 뿌리로 한 *최단경로 트리* — 각 destination 의 *첫 link* 만 추리면 그대로 forwarding table 이 된다.
+
 ### §2.4 LS 의 *문제*
 
 **Oscillation**:
@@ -177,6 +189,10 @@ On change / periodically:
 
 ### §3.4 Count-to-infinity 문제
 
+![Figure 5.7 — link cost 변화. 책 p.393](/courses/networking/figures/ch05/fig-5-7.png)
+
+> 직관: y–x link 가 4→60 으로 *나빠지면*, DV 는 이웃의 *옛 정보* 에 기대 cost 를 1씩 찔끔찔끔 올린다(count-to-infinity). 반대로 좋아질 땐 즉시 수렴 — DV 는 *나쁜 소식에 느리다*.
+
 **Topology**: A — 1 — B — 1 — C. Link B-C fail.
 
 C fail 감지 *전*:
@@ -207,6 +223,10 @@ Internet 의 수십만 router. 모두 *전체 topology* → 메모리 + flooding
 - 같은 *administrative control* 의 router 묶음
 - AS 내부: intra-AS
 - AS 사이: inter-AS
+
+![Figure 5.8 — 3개 autonomous system 으로 구성된 network. 책 p.401](/courses/networking/figures/ch05/fig-5-8.png)
+
+> 직관: Internet 은 AS(같은 관리주체의 router 묶음)들의 network 다. AS *내부* 는 intra-AS(OSPF)로, AS *사이* 는 inter-AS(BGP)로 라우팅 — 이 분리가 확장성과 정책 자율성을 준다.
 
 ### §4.2 AS 의 종류
 
@@ -305,6 +325,10 @@ BGP = *Internet 의 접착제*.
 
 ### §6.2 BGP 의 *2 종*
 
+![Figure 5.9 — eBGP 와 iBGP 연결. 책 p.402](/courses/networking/figures/ch05/fig-5-9.png)
+
+> 직관: *eBGP*(굵은 선)는 서로 다른 AS 의 gateway router 끼리, *iBGP*(점선)는 같은 AS 안 router 끼리. 외부에서 배운 경로를 iBGP 로 AS 전체에 퍼뜨린다(full-mesh 또는 route reflector).
+
 **eBGP** (external):
 - 다른 AS 와 peering
 - TCP 179
@@ -346,6 +370,10 @@ BGP = *Internet 의 접착제*.
 → 위에서 아래로. 동률 시 다음.
 
 ### §6.5 BGP 의 policy 표현
+
+![Figure 5.13 — 단순 BGP policy 시나리오. 책 p.408](/courses/networking/figures/ch05/fig-5-13.png)
+
+> 직관: provider 는 *돈 안 되는 transit* 을 거른다 — 예컨대 X 는 자기 고객(Y)으로 가는 길만 광고하고 B↔C 간 transit 은 해주지 않는다. BGP 경로는 *기술이 아니라 계약(LOCAL_PREF)* 이 정한다.
 
 **예 — Customer route 우선**:
 ```
@@ -390,6 +418,10 @@ Provider LOCAL_PREF = 50
 
 ### §7.1 SDN 의 철학
 
+![Figure 5.2 — logically centralized control. 책 p.379](/courses/networking/figures/ch05/fig-5-2.png)
+
+> 직관: SDN 은 routing 계산을 *원격 controller* 로 모으고, 각 switch 엔 가벼운 control agent(CA)만 둔다. controller 가 전체 view 로 flow table 을 만들어 내려보낸다 — per-router 분산의 반대.
+
 **전통적**: 각 router 가 자기 결정, 분산 message, 복잡.
 
 **SDN**: Controller 가 *전체 view*, 각 switch 의 flow table 원격 설치, 단순 + programmable.
@@ -413,6 +445,10 @@ Provider LOCAL_PREF = 50
 - Packet-in (no matching rule)
 - Flow stat report
 - Asynchronous events
+
+![Figure 5.16 — SDN controller 시나리오 (link-state 변화). 책 p.418](/courses/networking/figures/ch05/fig-5-16.png)
+
+> 직관: link 상태가 바뀌면 ① OpenFlow 로 controller 가 감지 → ②③ link-state·network graph 갱신 → ④ Dijkstra 재계산 → ⑤⑥ 새 flow table 을 switch 들에 설치. control logic 이 switch 밖 *app* 으로 빠진 모습이다.
 
 ### §7.3 Northbound API
 

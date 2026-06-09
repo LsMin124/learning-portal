@@ -41,6 +41,10 @@ Network layer 의 task = host A 의 datagram 을 host B 에게 전달. 이를 �
 | 동작 | Forwarding table lookup → output port | Routing algorithm → forwarding table 생성 |
 | 비유 | *교차로에서 차를 안내* | *지도 작성 + 업데이트* |
 
+![Figure 4.1 — Network layer — host·router 의 계층. 책 p.304](/courses/networking/figures/ch04/fig-4-1.png)
+
+> 직관: network layer 는 *모든 host 와 모든 router* 가 구현하는 유일한 계층이다. End system 은 5계층 전부를, router 는 network 까지(아래 link·physical 포함)를 갖는다 — 그래서 datagram 이 host→router→…→host 로 *계층을 오르내리며* 전달된다.
+
 ### §1.1 Forwarding vs Routing
 
 - **Forwarding** = router 의 *하나의 packet* 처리. *local + 빠름*.
@@ -100,9 +104,17 @@ IP 가 *보장 안 하는 것*:
                     (control plane)
 ```
 
+![Figure 4.4 — Router 내부 구조 (architecture). 책 p.311](/courses/networking/figures/ch04/fig-4-4.png)
+
+> 직관: 윗부분(routing processor)이 *control plane*(software, ms~s), 아랫부분(input port·switch fabric·output port)이 *data plane*(hardware, ns). packet 은 아래쪽 고속 경로로만 흐르고, 경로 계산은 위에서 따로 일어난다.
+
 ### §2.1 Input port
 
 3 단계 처리:
+
+![Figure 4.5 — Input port 처리 단계. 책 p.314](/courses/networking/figures/ch04/fig-4-5.png)
+
+> 직관: line termination(신호→bit) → link 처리(decapsulation) → *lookup·forwarding·queuing*. 마지막 단계의 forwarding table lookup 이 longest prefix match 로 출력 port 를 정하는 핵심이며, line-speed 를 맞추려 TCAM 으로 한다.
 
 1. **Physical layer** — Line termination, signal → bit
 2. **Link layer** — Frame parsing, bit → frame (Ethernet, PPP, SONET)
@@ -132,6 +144,10 @@ Destination `11001000 00010111 00011000 10101010` 입력:
 ### §2.2 Switching fabric
 
 3 가지 방식:
+
+![Figure 4.6 — Switching fabric 3 방식. 책 p.317](/courses/networking/figures/ch04/fig-4-6.png)
+
+> 직관: *memory*(CPU 경유, 1세대) → *bus*(공유 버스, 한 번에 1 packet) → *crossbar/interconnection*(N×N, 서로 다른 입출력 쌍 동시 전송). 위로 갈수록 병렬도가 높아 Tbps 가 가능하다.
 
 **1. Memory (1st gen)**:
 - Input → CPU → memory write → output read
@@ -165,6 +181,10 @@ Tasks:
 Buffer 가득 차면 → *packet drop* (loss 의 주 원인).
 
 ### §2.4 Buffer 크기 의 변천 — Bufferbloat
+
+![Figure 4.10 — Bufferbloat — 가시지 않는 queue. 책 p.324](/courses/networking/figures/ch04/fig-4-10.png)
+
+> 직관: buffer 가 *너무 크면* TCP 가 그것을 가득 채울 때까지 cwnd 를 키워, queue 가 *늘 차 있는* 상태(b)가 된다 → 모든 흐름의 RTT 가 수백 ms 로 폭증. 해결은 *작은 buffer* + AQM(CoDel).
 
 **고전 rule**:
 $$B = RTT \cdot C$$
@@ -204,6 +224,10 @@ Linux default: FQ-CoDel.
 ## §3 IPv4 datagram
 
 ### §3.1 IPv4 header (20+ byte)
+
+![Figure 4.17 — IPv4 datagram 형식. 책 p.331](/courses/networking/figures/ch04/fig-4-17.png)
+
+> 직관: 20 byte 고정부 + 옵션. *Identifier·Flags·Fragmentation offset* 가 fragment 재조립을, *TTL* 이 loop 방지를, *Upper-layer protocol* 이 TCP(6)/UDP(17) 구분을 맡는다. checksum 은 header 만 보호한다.
 
 ```
 | Version(4) | HL(4)  | DSCP(6) | ECN(2) | Total Length (16) |
@@ -296,6 +320,10 @@ Linux default: FQ-CoDel.
 
 ### §4.2 Subnet + CIDR
 
+![Figure 4.20 — 3 router 가 잇는 6 subnet. 책 p.337](/courses/networking/figures/ch04/fig-4-20.png)
+
+> 직관: subnet 은 *router 를 거치지 않고* 서로 직접 닿는 interface 들의 묶음(같은 prefix). router interface 마다 다른 subnet 에 속하므로, 그림의 6개 "섬"이 각각 하나의 subnet 이다.
+
 `192.168.1.0/24`:
 - First 24 bits = network ID = `192.168.1`
 - Last 8 bits = host ID = `0~255`
@@ -325,6 +353,10 @@ Linux default: FQ-CoDel.
 - 임의 prefix
 - 1000 host = /22 (1022 host)
 - *Route aggregation* — 여러 prefix → 하나
+
+![Figure 4.21 — 계층적 주소 배정과 route aggregation. 책 p.339](/courses/networking/figures/ch04/fig-4-21.png)
+
+> 직관: ISP 가 고객들의 prefix 를 *하나의 큰 prefix*(200.23.16.0/20)로 묶어 광고 → Internet 의 routing table 이 작아진다. CIDR 이 이 aggregation 을 가능케 한 핵심 이유다.
 
 ### §4.4 Special ranges
 
@@ -482,6 +514,10 @@ Home (192.168.1.0/24)             Internet
 
 ### §7.2 IPv6 header (40 byte, fixed)
 
+![Figure 4.26 — IPv6 datagram 형식. 책 p.349](/courses/networking/figures/ch04/fig-4-26.png)
+
+> 직관: 40 byte *고정* header — IPv4 의 fragmentation·checksum·options 를 본체에서 걷어내 router 처리를 단순·고속화했다. *Flow label* 로 흐름을 식별하고, 부가 기능은 extension header 로 뺀다.
+
 ```
 | Version(4)| Traffic Class(8) | Flow Label (20)         |
 | Payload Length (16)| Next Header(8) | Hop Limit (8)    |
@@ -531,6 +567,10 @@ Home (192.168.1.0/24)             Internet
    - *Happy eyeballs* — 둘 다 시도, 빠른 쪽
 
 2. **Tunneling** — IPv6 packet 을 IPv4 안에 (6to4, Teredo, 옛)
+
+![Figure 4.27 — Tunneling — IPv6 를 IPv4 로 감싸기. 책 p.352](/courses/networking/figures/ch04/fig-4-27.png)
+
+> 직관: IPv6 섬(A·B / E·F) 사이에 IPv4 구간(C·D)이 있으면, B 가 IPv6 packet 을 *IPv4 packet 안에 통째로 넣어*(encapsulate) 보내고 끝(E)에서 꺼낸다 — 전환기의 핵심 기법.
 
 3. **Translation (NAT64)** — IPv6 ↔ IPv4 변환
 
@@ -632,6 +672,10 @@ Destination-based forwarding — *dst IP 만* 으로 결정.
 
 ### §9.3 OpenFlow (2008)
 
+![Figure 4.30 — OpenFlow match-action network (switch 3·host 6·controller). 책 p.357](/courses/networking/figures/ch04/fig-4-30.png)
+
+> 직관: 중앙 *OpenFlow controller* 가 각 switch 의 flow table(match→action)을 채운다. switch 는 dst IP 만 보는 게 아니라 *임의 header field 를 match* 해 forward/drop/modify — destination 기반 forwarding 의 일반화다.
+
 ```
 [OpenFlow Controller]
        |
@@ -704,6 +748,10 @@ OpenFlow 한계: *fixed header parsing*.
 - 일부 기업 *QUIC block* — HTTP/3 deploy 어려움
 
 → Internet evolution 의 가장 큰 장벽.
+
+![Figure 4.31 — Internet 의 hourglass — IP 라는 좁은 허리. 책 p.362](/courses/networking/figures/ch04/fig-4-31.png)
+
+> 직관: 위(application·transport)도 아래(link·physical)도 다양하지만, 가운데는 *오직 IP* 하나로 좁다. 이 "narrow waist" 덕에 양쪽이 독립적으로 진화했지만, 동시에 IP 를 바꾸기 어렵게(ossification) 만든 이유이기도 하다.
 
 ---
 
